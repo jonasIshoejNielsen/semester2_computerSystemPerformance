@@ -12,16 +12,22 @@ public class DataHandler {
     private static final HashMap<Integer, StringBuilder> buffer              = new HashMap<>();
     private static final HashMap<Integer, HashMap<String, Integer>> results  = new HashMap<>();
     private static final ArrayList<LineStorage> linesToCount                 = new ArrayList<>();
+    private final boolean cMode;
 
-    public static void countLine () {
-        while (!linesToCount.isEmpty()) {
-            LineStorage ls = linesToCount.remove(0);
-            HashMap<String, Integer> wc = results.getOrDefault(ls.getClientId(), new HashMap<>());
-            ls.doWordCount(wc);
-        }
-    }
     public static void addLineToCount(String line, int clientId) {
         linesToCount.add(new LineStorage(line, clientId));
+    }
+
+    public DataHandler(boolean cMode) {
+        this.cMode = cMode;
+    }
+
+    public void countLine () {
+        while (!linesToCount.isEmpty()) {
+            LineStorage ls = linesToCount.remove(0);
+            HashMap<String, Integer> wc = results.getOrDefault(ls.clientId, new HashMap<>());
+            ls.doWordCount(wc, cMode);
+        }
     }
 
     public boolean readFromChanel(ByteBuffer bb, SocketChannel client) throws IOException {
@@ -113,5 +119,4 @@ public class DataHandler {
             return "";
         }
     }
-
 }
