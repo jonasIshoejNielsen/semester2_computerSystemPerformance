@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +40,7 @@ public class DataHandler {
         boolean hasResult = receiveData(clientId, result);
 
         if (hasResult) {
-            var returnMessage = serializeResultForClient(clientId).getBytes();
+            byte[] returnMessage = serializeResultForClient(clientId).getBytes();
             ByteBuffer ba = ByteBuffer.wrap(returnMessage);
             client.write(ba);
         }
@@ -108,7 +107,7 @@ public class DataHandler {
         if (results.containsKey(clientId)) {
             StringBuilder sb = new StringBuilder();
             HashMap<String, Integer> hm = results.get(clientId);
-            for (var entry : hm.entrySet()) {
+            for (Map.Entry<String, Integer> entry : hm.entrySet()) {
                 sb.append(entry.getKey()).append(",");
                 sb.append(entry.getValue()).append(",");
             }

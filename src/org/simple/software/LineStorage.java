@@ -27,10 +27,8 @@ public class LineStorage {
      */
     public void doWordCount(Map<String, Integer> wc, boolean cMode) {
         String ucLine = line;       //todo: .toLowerCase();
-        System.out.println(ucLine);
         String cleanedLine = (cMode) ? removeTags(ucLine) : ucLine;
         String[] words = getWordsFromString(cleanedLine);
-        System.out.println(Arrays.toString(words));
         addWordsToMap(words, wc);
     }
     private static String removeTags(String line){

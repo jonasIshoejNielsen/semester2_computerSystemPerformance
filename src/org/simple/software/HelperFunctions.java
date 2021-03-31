@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 public class HelperFunctions {
     public static void print (Class c, String... msg) {
         Logger logger = Logger.getLogger(c.getSimpleName());
-        var sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
         for(String m : msg) {
             sb.append(m);
         }
