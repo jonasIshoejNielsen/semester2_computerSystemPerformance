@@ -5,11 +5,15 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class DataHandler {
     private static final HashMap<Integer, StringBuilder> buffer              = new HashMap<>();
     private static final HashMap<Integer, HashMap<String, Integer>> results  = new HashMap<>();
     private static final ArrayList<LineStorage> linesToCount                 = new ArrayList<>();
+    private static final Logger logger = Logger.getLogger(DataHandler.class.getSimpleName());
 
     public static void countLine () {
         while (!linesToCount.isEmpty()) {
@@ -66,11 +70,11 @@ public class DataHandler {
         String rest = (bufData.length()>indexNL+1) ? bufData.substring(indexNL+1) : null;
 
         if (indexNL==0) {
-            System.out.println("SEP@"+indexNL+" bufdata:\n"+bufData);
+            logger.log(Level.INFO, new StringBuilder("SEP@").append(indexNL).append(" bufdata:\n").append(bufData).toString());
         }
 
         if (rest != null) {
-            System.out.println("more than one line: \n"+rest);
+            logger.log(Level.INFO, new StringBuilder("more than one line: \n").append(rest).toString());
             try {
                 System.in.read();
             } catch (IOException e) {
@@ -99,9 +103,9 @@ public class DataHandler {
         if (results.containsKey(clientId)) {
             StringBuilder sb = new StringBuilder();
             HashMap<String, Integer> hm = results.get(clientId);
-            for (String key : hm.keySet()) {
-                sb.append(key+",");
-                sb.append(hm.get(key)+",");
+            for (Map.Entry entry : hm.entrySet()) {
+                sb.append(entry.getKey()).append(",");
+                sb.append(entry.getValue()).append(",");
             }
             results.remove(clientId);
             sb.append("\n");
@@ -113,8 +117,8 @@ public class DataHandler {
 
 }
 class LineStorage {
-    public String line;
-    public int clientId;
+    public final String line;
+    public final int clientId;
 
     public LineStorage(String line, int clientId) {
         this.line = line;
@@ -129,7 +133,7 @@ class LineStorage {
      *
      * @param wc   A HashMap to store the results in.
      */
-    public void doWordCount(HashMap<String, Integer> wc) {
+    public void doWordCount(Map<String, Integer> wc) {
         String ucLine = line.toLowerCase();
         StringBuilder asciiLine = new StringBuilder();
 
