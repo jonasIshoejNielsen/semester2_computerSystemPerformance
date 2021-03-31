@@ -134,16 +134,31 @@ class LineStorage {
      */
     public void doWordCount(Map<String, Integer> wc) {
         String ucLine = line.toLowerCase();
+        String cleanedLine = removeTags(ucLine);
+        String[] words = getWordsFromString(cleanedLine);
+        addWordsToMap(words, wc);
+    }
+    private static String removeTags(String line){
+        StringBuilder sb = new StringBuilder();
+        for (String v : line.split(">")) {
+            int indexToDiscardFrom = v.indexOf("<");
+            sb.append(v, 0, indexToDiscardFrom);
+        }
+        return sb.toString();
+    }
+    private static String[] getWordsFromString(String line) {
         StringBuilder asciiLine = new StringBuilder();
         char lastAdded = ' ';
-        for (char cc : ucLine.toCharArray()) {
+        for (char cc : line.toCharArray()) {
             if ((cc >= 'a' && cc <= 'z') || (cc == ' ' && lastAdded != ' ')) {
                 asciiLine.append(cc);
                 lastAdded = cc;
             }
         }
 
-        String[] words = asciiLine.toString().split(" ");
+        return asciiLine.toString().split(" ");
+    }
+    private static void addWordsToMap(String[] words, Map<String, Integer> wc) {
         for (String s : words) {
             wc.put(s, wc.getOrDefault(s, 0) + 1);
         }

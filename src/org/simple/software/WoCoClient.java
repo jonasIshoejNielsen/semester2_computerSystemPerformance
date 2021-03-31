@@ -214,7 +214,7 @@ public class WoCoClient {
 		
 		//We generate one document for the entire runtime of this client
 		//Otherwise the client would spend too much time generating new inputs.
-    	String docu = WoCoClient.generateDocument((int) (dSize), file, seed);    	
+    	String docu = WoCoClient.generateDocument((int) (dSize), file, seed);
 		WoCoClient client = new WoCoClient(sName, sPort);    	
     	
     	//send requests to the server in a loop.    	
