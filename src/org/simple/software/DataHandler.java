@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +35,8 @@ public class DataHandler {
         boolean hasResult = receiveData(clientId, result);
 
         if (hasResult) {
-            ByteBuffer ba = ByteBuffer.wrap(serializeResultForClient(clientId).getBytes());
+            var returnMessage = serializeResultForClient(clientId).getBytes();
+            ByteBuffer ba = ByteBuffer.wrap(returnMessage);
             client.write(ba);
         }
         return true;
@@ -133,10 +135,8 @@ class LineStorage {
     public void doWordCount(Map<String, Integer> wc) {
         String ucLine = line.toLowerCase();
         StringBuilder asciiLine = new StringBuilder();
-
         char lastAdded = ' ';
-        for (int i = 0; i < line.length(); i++) {
-            char cc = ucLine.charAt(i);
+        for (char cc : ucLine.toCharArray()) {
             if ((cc >= 'a' && cc <= 'z') || (cc == ' ' && lastAdded != ' ')) {
                 asciiLine.append(cc);
                 lastAdded = cc;
@@ -145,11 +145,7 @@ class LineStorage {
 
         String[] words = asciiLine.toString().split(" ");
         for (String s : words) {
-            if (wc.containsKey(s)) {
-                wc.put(s, wc.get(s) + 1);
-            } else {
-                wc.put(s, 1);
-            }
+            wc.put(s, wc.getOrDefault(s, 0) + 1);
         }
     }
 }
