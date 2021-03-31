@@ -40,7 +40,7 @@ public class Server {
                     bb.rewind();
                     SocketChannel client = (SocketChannel) key.channel();
                     Boolean readFromChannel = dataHandler.readFromChanel(bb, client);
-                    if (!readFromChannel) {
+                    if (readFromChannel.equals(false)) {
                         key.cancel();
                     }
                 }

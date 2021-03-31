@@ -6,14 +6,11 @@ import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class DataHandler {
     private static final HashMap<Integer, StringBuilder> buffer              = new HashMap<>();
     private static final HashMap<Integer, HashMap<String, Integer>> results  = new HashMap<>();
     private static final ArrayList<LineStorage> linesToCount                 = new ArrayList<>();
-    private static final Logger logger = Logger.getLogger(DataHandler.class.getSimpleName());
 
     public static void countLine () {
         while (!linesToCount.isEmpty()) {
@@ -70,11 +67,11 @@ public class DataHandler {
         String rest = (bufData.length()>indexNL+1) ? bufData.substring(indexNL+1) : null;
 
         if (indexNL==0) {
-            logger.log(Level.INFO, new StringBuilder("SEP@").append(indexNL).append(" bufdata:\n").append(bufData).toString());
+            HelperFunctions.print(DataHandler.class, "SEP@", indexNL+"", " bufdata:\n", bufData);
         }
 
         if (rest != null) {
-            logger.log(Level.INFO, new StringBuilder("more than one line: \n").append(rest).toString());
+            HelperFunctions.print(DataHandler.class, "more than one line: \n", rest);
             try {
                 System.in.read();
             } catch (IOException e) {
