@@ -11,8 +11,6 @@ public class DataHandler {
     private static final HashMap<Integer, HashMap<String, Integer>> results  = new HashMap<>();
     private static final ArrayList<LineStorage> linesToCount                 = new ArrayList<>();
 
-    public DataHandler() {
-    }
     public static void countLine () {
         while (!linesToCount.isEmpty()) {
             LineStorage ls = linesToCount.remove(0);
@@ -51,59 +49,42 @@ public class DataHandler {
      * @return A document has been processed or not.
      */
     public boolean receiveData(int clientId, String dataChunk) {
+        results.putIfAbsent(clientId, new HashMap<>());
+        buffer.putIfAbsent( clientId, new StringBuilder());
 
-        StringBuilder sb;
-
-        if (!results.containsKey(clientId)) {
-            results.put(clientId, new HashMap<String, Integer>());
-        }
-
-        if (!buffer.containsKey(clientId)) {
-            sb = new StringBuilder();
-            buffer.put(clientId, sb);
-        } else {
-            sb = buffer.get(clientId);
-        }
-
+        StringBuilder sb = buffer.get(clientId);
         sb.append(dataChunk);
 
-        if (dataChunk.indexOf(WoCoServer.SEPARATOR)>-1) {
-            //we have at least one line
-
-            String bufData = sb.toString();
-
-            int indexNL = bufData.indexOf(WoCoServer.SEPARATOR);
-
-            String line = bufData.substring(0, indexNL);
-            String rest = (bufData.length()>indexNL+1) ? bufData.substring(indexNL+1) : null;
-
-            if (indexNL==0) {
-                System.out.println("SEP@"+indexNL+" bufdata:\n"+bufData);
-            }
-
-            if (rest != null) {
-                System.out.println("more than one line: \n"+rest);
-                try {
-                    System.in.read();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                buffer.put(clientId, new StringBuilder(rest));
-            } else {
-                buffer.put(clientId, new StringBuilder());
-            }
-
-
-            //word count in line
-            addLineToCount(line, clientId);
-            countLine();
-
-
-            return true;
-
-        } else {
+        if (dataChunk.indexOf(WoCoServer.SEPARATOR)==-1) {
             return false;
         }
+
+        String bufData = sb.toString();
+        int indexNL = bufData.indexOf(WoCoServer.SEPARATOR);
+
+        String line = bufData.substring(0, indexNL);
+        String rest = (bufData.length()>indexNL+1) ? bufData.substring(indexNL+1) : null;
+
+        if (indexNL==0) {
+            System.out.println("SEP@"+indexNL+" bufdata:\n"+bufData);
+        }
+
+        if (rest != null) {
+            System.out.println("more than one line: \n"+rest);
+            try {
+                System.in.read();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            buffer.put(clientId, new StringBuilder(rest));
+        } else {
+            buffer.put(clientId, new StringBuilder());
+        }
+
+        //word count in line
+        addLineToCount(line, clientId);
+        countLine();
+        return true;
 
     }
 
@@ -163,8 +144,6 @@ class LineStorage {
 
         String[] words = asciiLine.toString().split(" ");
         for (String s : words) {
-
-
             if (wc.containsKey(s)) {
                 wc.put(s, wc.get(s) + 1);
             } else {
