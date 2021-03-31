@@ -4,13 +4,14 @@ import org.junit.jupiter.api.Test;
 import org.simple.software.LineStorage;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class TestLineStorage {
     @Test
     void testDoWordCountInputMap() {
-        var inputString = "<p><b>Foo hEj</br> hej</p> </b>";
-        var inputMap    = new HashMap<String, Integer>();
+        String inputString = "<p><b>Foo hEj</br> hej</p> </b>";
+        Map<String, Integer> inputMap    = new HashMap<>();
         inputMap.put("Foo", 4);
         inputMap.put("br", 1);
         inputMap.put("p", 2);
@@ -26,8 +27,8 @@ public class TestLineStorage {
 
     @Test
     void testDoWordCountLink() {
-        var inputString = "<a href='xyz' title='FooBar'>foo<a title='foo' href='xyz' > foo</a> bar</a>";
-        var inputMap    = new HashMap<String, Integer>();
+        String inputString = "<a href='xyz' title='FooBar'>foo<a title='foo' href='xyz' > foo</a> bar</a>";
+        Map<String, Integer> inputMap    = new HashMap<>();
 
         LineStorage ls  = new LineStorage(inputString, new Random().nextInt());
         ls.doWordCount(inputMap, true);
