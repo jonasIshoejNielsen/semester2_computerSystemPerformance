@@ -12,16 +12,22 @@ public class DataHandler {
     private static final HashMap<Integer, StringBuilder> buffer              = new HashMap<>();
     private static final HashMap<Integer, HashMap<String, Integer>> results  = new HashMap<>();
     private static final ArrayList<LineStorage> linesToCount                 = new ArrayList<>();
+    private final boolean cMode;
 
-    public static void countLine () {
+    public static void addLineToCount(String line, int clientId) {
+        linesToCount.add(new LineStorage(line, clientId));
+    }
+
+    public DataHandler(boolean cMode) {
+        this.cMode = cMode;
+    }
+
+    public void countLine () {
         while (!linesToCount.isEmpty()) {
             LineStorage ls = linesToCount.remove(0);
             HashMap<String, Integer> wc = results.getOrDefault(ls.clientId, new HashMap<>());
-            ls.doWordCount(wc);
+            ls.doWordCount(wc, cMode);
         }
-    }
-    public static void addLineToCount(String line, int clientId) {
-        linesToCount.add(new LineStorage(line, clientId));
     }
 
     public boolean readFromChanel(ByteBuffer bb, SocketChannel client) throws IOException {
@@ -131,11 +137,14 @@ class LineStorage {
      * words based on spaces.
      *
      * @param wc   A HashMap to store the results in.
+     * @param cMode
      */
-    public void doWordCount(Map<String, Integer> wc) {
+    public void doWordCount(Map<String, Integer> wc, boolean cMode) {
         String ucLine = line.toLowerCase();
-        String cleanedLine = removeTags(ucLine);
+        System.out.println(ucLine);
+        String cleanedLine = (cMode) ? removeTags(ucLine) : ucLine;
         String[] words = getWordsFromString(cleanedLine);
+        System.out.println(Arrays.toString(words));
         addWordsToMap(words, wc);
     }
     private static String removeTags(String line){

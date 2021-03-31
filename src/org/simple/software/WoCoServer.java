@@ -18,14 +18,9 @@ public class WoCoServer {
 		int lPort = Integer.parseInt(args[1]);
 		boolean cMode = Boolean.parseBoolean(args[2]);
 		int threadCount = Integer.parseInt(args[3]);
-		
-		if (cMode) {
-			//TODO: will have to implement cleaning from HTML tags
-			HelperFunctions.print(WoCoServer.class, "FEATURE NOT IMPLEMENTED");
-			System.exit(0);
+		System.out.println(cMode? "Clean tags": "Don't clean tags");
+		System.out.println(threadCount + " number of threads");
 
-		}
-		
 		if (threadCount>1) {
 			//TODO: will have to implement multithreading
 			HelperFunctions.print(WoCoServer.class, "FEATURE NOT IMPLEMENTED");
@@ -33,7 +28,7 @@ public class WoCoServer {
 
 		}
 
-		DataHandler dataHandler = new DataHandler();
+		DataHandler dataHandler = new DataHandler(cMode);
 
 		Server server = new Server(lAddr, lPort);
 		server.startListening(dataHandler);
