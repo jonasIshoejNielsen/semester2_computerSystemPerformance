@@ -130,7 +130,7 @@ public class WoCoClient {
 			HashMap<String, Integer> wordMap = new HashMap<String,Integer>();			
 			String[] rParts = response.split(",");
 			for (int i=0; i<rParts.length; i+=2) {
-				wordMap.put(rParts[i], new Integer(rParts[i+1]));
+				wordMap.put(rParts[i], Integer.valueOf(rParts[i+1]));
 			}
 			return wordMap;
 		} else {

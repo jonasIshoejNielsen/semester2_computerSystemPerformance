@@ -3,7 +3,7 @@ package org.simple.software;
 import java.util.Arrays;
 import java.util.Map;
 
-class LineStorage {
+public class LineStorage {
     public final String line;
     public final int clientId;
 
@@ -26,7 +26,7 @@ class LineStorage {
      * @param cMode
      */
     public void doWordCount(Map<String, Integer> wc, boolean cMode) {
-        String ucLine = line.toLowerCase();
+        String ucLine = line;       //todo: .toLowerCase();
         System.out.println(ucLine);
         String cleanedLine = (cMode) ? removeTags(ucLine) : ucLine;
         String[] words = getWordsFromString(cleanedLine);
@@ -36,8 +36,20 @@ class LineStorage {
     private static String removeTags(String line){
         StringBuilder sb = new StringBuilder();
         for (String v : line.split(">")) {
-            int indexToDiscardFrom = v.indexOf("<");
-            sb.append(v, 0, indexToDiscardFrom);
+            String[] split = v.split("<");
+            sb.append(split[0]);
+            if (split.length < 2) {
+                continue;
+            }
+
+            int index = split[1].toLowerCase().indexOf("title");
+            if(index == -1) {
+                continue;
+            }
+            String fromTitle    = split[1].substring(index+6);
+            int indexEndTitle   = fromTitle.indexOf(fromTitle.charAt(0), 1);
+            String titleValue   = fromTitle.substring(1, indexEndTitle);
+            sb.append(" ").append(titleValue).append(" ");
         }
         return sb.toString();
     }
@@ -45,7 +57,7 @@ class LineStorage {
         StringBuilder asciiLine = new StringBuilder();
         char lastAdded = ' ';
         for (char cc : line.toCharArray()) {
-            if ((cc >= 'a' && cc <= 'z') || (cc == ' ' && lastAdded != ' ')) {
+            if ((cc >= 'a' && cc <= 'z') || (cc >= 'A' && cc <= 'Z') || (cc == ' ' && lastAdded != ' ')) {
                 asciiLine.append(cc);
                 lastAdded = cc;
             }

@@ -25,7 +25,7 @@ public class DataHandler {
     public void countLine () {
         while (!linesToCount.isEmpty()) {
             LineStorage ls = linesToCount.remove(0);
-            HashMap<String, Integer> wc = results.getOrDefault(ls.clientId, new HashMap<>());
+            HashMap<String, Integer> wc = results.getOrDefault(ls.getClientId(), new HashMap<>());
             ls.doWordCount(wc, cMode);
         }
     }
