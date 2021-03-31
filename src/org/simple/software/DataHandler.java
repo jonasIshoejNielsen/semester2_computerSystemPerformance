@@ -1,6 +1,8 @@
 package org.simple.software;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -20,6 +22,23 @@ public class DataHandler {
     }
     public static void addLineToCount(String line, int clientId) {
         linesToCount.add(new LineStorage(line, clientId));
+    }
+
+    public boolean readFromChanel(ByteBuffer bb, SocketChannel client) throws IOException {
+        int readCnt = client.read(bb);
+        if (readCnt<=0) {
+            return false;
+        }
+        int clientId = client.hashCode();
+        String result = new String(bb.array(),0, readCnt);
+
+        boolean hasResult = receiveData(clientId, result);
+
+        if (hasResult) {
+            ByteBuffer ba = ByteBuffer.wrap(serializeResultForClient(clientId).getBytes());
+            client.write(ba);
+        }
+        return true;
     }
 
     /**
