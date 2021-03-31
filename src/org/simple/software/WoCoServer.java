@@ -47,12 +47,11 @@ public class WoCoServer {
 			System.exit(0);
 
 		}
-		
-		
+
 		DataHandler dataHandler = new DataHandler();
 
-
-		Server server = new Server(lAddr, lPort, dataHandler);
+		Server server = new Server(lAddr, lPort);
+		server.startListening(dataHandler);
 	}
 
 }

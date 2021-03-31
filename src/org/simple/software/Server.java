@@ -11,10 +11,14 @@ import java.util.Iterator;
 import java.util.Set;
 
 public class Server {
-    public Server(String lAddr, int lPort, DataHandler dataHandler) throws IOException {
-        Selector selector = Selector.open();
-        ServerSocketChannel serverSocket = openSocket(new InetSocketAddress(lAddr, lPort), selector);
+    private Selector selector;
+    ServerSocketChannel serverSocket;
 
+    public Server(String lAddr, int lPort) throws IOException {
+        selector = Selector.open();
+        serverSocket = openSocket(new InetSocketAddress(lAddr, lPort), selector);
+    }
+    public void startListening(DataHandler dataHandler) throws IOException {
         // Infinite loop..
         // Keep server running
         ByteBuffer bb = ByteBuffer.allocate(1024*1024);
@@ -43,7 +47,9 @@ public class Server {
                 iterator.remove();
             }
         }
+
     }
+
     private static ServerSocketChannel openSocket(InetSocketAddress myAddr, Selector selector) throws IOException {
         ServerSocketChannel serverSocket = ServerSocketChannel.open();
         serverSocket.bind(myAddr);
