@@ -100,7 +100,7 @@ public class DataHandler {
         if (results.containsKey(clientId)) {
             StringBuilder sb = new StringBuilder();
             HashMap<String, Integer> hm = results.get(clientId);
-            for (Map.Entry entry : hm.entrySet()) {
+            for (var entry : hm.entrySet()) {
                 sb.append(entry.getKey()).append(",");
                 sb.append(entry.getValue()).append(",");
             }

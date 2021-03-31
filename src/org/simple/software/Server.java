@@ -12,11 +12,11 @@ import java.util.Set;
 
 public class Server {
     private Selector selector;
-    ServerSocketChannel serverSocket;
+    private ServerSocketChannel serverSocket;
 
     public Server(String lAddr, int lPort) throws IOException {
         selector = Selector.open();
-        serverSocket = openSocket(new InetSocketAddress(lAddr, lPort), selector);
+        openSocket(new InetSocketAddress(lAddr, lPort), selector);
     }
     public void startListening(DataHandler dataHandler) throws IOException {
         // Infinite loop..
@@ -34,7 +34,7 @@ public class Server {
                     SocketChannel client = serverSocket.accept();
                     client.configureBlocking(false);
                     client.register(selector, SelectionKey.OP_READ);
-                    System.out.println("Connection Accepted: " + client.getLocalAddress() + "\n");
+                    HelperFunctions.print(WoCoServer.class, "Connection Accepted: ", client.getLocalAddress().toString(), "\n");
 
                 } else if (key.isReadable()) {
                     bb.rewind();
@@ -50,12 +50,11 @@ public class Server {
 
     }
 
-    private static ServerSocketChannel openSocket(InetSocketAddress myAddr, Selector selector) throws IOException {
-        ServerSocketChannel serverSocket = ServerSocketChannel.open();
+    private void openSocket(InetSocketAddress myAddr, Selector selector) throws IOException {
+        serverSocket = ServerSocketChannel.open();
         serverSocket.bind(myAddr);
         serverSocket.configureBlocking(false);
         int ops = serverSocket.validOps();
         serverSocket.register(selector, ops, null);
-        return serverSocket;
     }
 }
