@@ -1,15 +1,26 @@
 package org.simple.software;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DataHandler {
-    private HashMap<Integer, StringBuilder> buffer              = new HashMap<>();
-    private HashMap<Integer, HashMap<String, Integer>> results  = new HashMap<>();
+    private static final HashMap<Integer, StringBuilder> buffer              = new HashMap<>();
+    private static final HashMap<Integer, HashMap<String, Integer>> results  = new HashMap<>();
+    private static final ArrayList<LineStorage> linesToCount                 = new ArrayList<>();
 
     public DataHandler() {
     }
-
+    public static void countLine () {
+        while (!linesToCount.isEmpty()) {
+            LineStorage ls = linesToCount.remove(0);
+            HashMap<String, Integer> wc = results.getOrDefault(ls.clientId, new HashMap<>());
+            ls.doWordCount(wc);
+        }
+    }
+    public static void addLineToCount(String line, int clientId) {
+        linesToCount.add(new LineStorage(line, clientId));
+    }
 
     /**
      * This function handles data received from a specific client (TCP connection).
@@ -65,9 +76,8 @@ public class DataHandler {
 
 
             //word count in line
-            HashMap<String, Integer> wc = results.get(clientId);
-            var ls = new LineStorage(line, clientId);
-            ls.doWordCount(wc);
+            addLineToCount(line, clientId);
+            countLine();
 
 
             return true;
