@@ -66,7 +66,8 @@ public class DataHandler {
 
             //word count in line
             HashMap<String, Integer> wc = results.get(clientId);
-            WoCoServer.doWordCount(line, wc);
+            var ls = new LineStorage(line, clientId);
+            ls.doWordCount(wc);
 
 
             return true;
@@ -100,4 +101,46 @@ public class DataHandler {
         }
     }
 
+}
+class LineStorage {
+    public String line;
+    public int clientId;
+
+    public LineStorage(String line, int clientId) {
+        this.line = line;
+        this.clientId = clientId;
+    }
+
+    /**
+     * Performs the word count on a document. It first converts the document to
+     * lower case characters and then extracts words by considering "a-z" english characters
+     * only (e.g., "alpha-beta" become "alphabeta"). The code breaks the text up into
+     * words based on spaces.
+     *
+     * @param wc   A HashMap to store the results in.
+     */
+    public void doWordCount(HashMap<String, Integer> wc) {
+        String ucLine = line.toLowerCase();
+        StringBuilder asciiLine = new StringBuilder();
+
+        char lastAdded = ' ';
+        for (int i = 0; i < line.length(); i++) {
+            char cc = ucLine.charAt(i);
+            if ((cc >= 'a' && cc <= 'z') || (cc == ' ' && lastAdded != ' ')) {
+                asciiLine.append(cc);
+                lastAdded = cc;
+            }
+        }
+
+        String[] words = asciiLine.toString().split(" ");
+        for (String s : words) {
+
+
+            if (wc.containsKey(s)) {
+                wc.put(s, wc.get(s) + 1);
+            } else {
+                wc.put(s, 1);
+            }
+        }
+    }
 }

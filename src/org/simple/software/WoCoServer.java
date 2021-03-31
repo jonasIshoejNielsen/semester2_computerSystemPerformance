@@ -20,39 +20,7 @@ import java.util.Set;
 public class WoCoServer {
 	
 	public static final char SEPARATOR = '$';
-	
-	/**
-	 * Performs the word count on a document. It first converts the document to 
-	 * lower case characters and then extracts words by considering "a-z" english characters
-	 * only (e.g., "alpha-beta" become "alphabeta"). The code breaks the text up into
-	 * words based on spaces.
-	 * @param line The document encoded as a string.
-	 * @param wc A HashMap to store the results in.
-	 */
-	public static void doWordCount(String line, HashMap<String, Integer> wc) {
-		String ucLine = line.toLowerCase();
-		StringBuilder asciiLine = new StringBuilder();
-		
-		char lastAdded = ' ';
-		for (int i=0; i<line.length(); i++) {
-			char cc = ucLine.charAt(i);
-			if ((cc>='a' && cc<='z') || (cc==' ' && lastAdded!=' ')) {
-				asciiLine.append(cc);
-				lastAdded = cc;
-			}
-		}
-		
-		String[] words = asciiLine.toString().split(" ");
-		for (String s : words) {
-			
-			
-			if (wc.containsKey(s)) {
-				wc.put(s, wc.get(s)+1);
-			} else {
-				wc.put(s, 1);
-			}
-		}
-	}
+
 
 
 
