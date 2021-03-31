@@ -199,7 +199,6 @@ public class WoCoClient {
 	
 
 	public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {
-		
 		//reading in parameters
 		if (args.length<5) {
 			System.out.println("Usage: <servername> <serverport> <documentsize(KiB)> <opcount(x1000)> <filesuffix> [<seed>]");

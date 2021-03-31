@@ -3,7 +3,9 @@ For building and running the programs, please use the ANT build script provided 
 
 As dependencies, you need java and ant. You can install them on an Ubuntu machine as follows:
  * sudo apt-get update
- * sudo apt-get install openjdk-8-jdk openjdk-8-doc openjdk-8-jre-lib
+ * sudo apt-get install openjdk-8-jdk
+ * sudo apt-get install openjdk-8-doc
+ * sudo apt-get install openjdk-8-jre-lib
  * sudo apt-get install ant
 
 To build the project, run `ant` in the same folder where the build.xml is. 
