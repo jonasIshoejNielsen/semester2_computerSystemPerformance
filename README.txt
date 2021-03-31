@@ -12,7 +12,7 @@ To build the project, run `ant` in the same folder where the build.xml is.
 
 
 To start the server on the "local machine", you can execute
- * java -jar ./jars/WoCoServer.jar 127.0.0.1 12345 false 1 
+ * java -jar ./jars/WoCoServer.jar 127.0.0.1 12345 true 1 
 
 After starting the server in one terminal, you can start a client on the same machine by executing:
  * java -jar ./jars/WoCoClient.jar 127.0.0.1 12345 10 1 1 

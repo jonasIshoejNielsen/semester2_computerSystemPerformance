@@ -96,11 +96,13 @@ public class WoCoClient {
 	 * @return
 	 * @throws IOException
 	 */
+	int i = 0;
 	private String sendToServer(String doc) throws IOException {
 		long startTime = System.nanoTime();    
 		sOutput.write(doc);
 		sOutput.write(WoCoServer.SEPARATOR);
 		sOutput.flush();
+		System.out.println(i++);
 	
 		
 		String response = null;
@@ -217,7 +219,8 @@ public class WoCoClient {
     	String docu = WoCoClient.generateDocument((int) (dSize), file, seed);
 		WoCoClient client = new WoCoClient(sName, sPort);    	
     	
-    	//send requests to the server in a loop.    	
+    	//send requests to the server in a loop.
+		System.out.println(ops);
 		for (int rep=0; rep<ops; rep++) {
 			HashMap<String, Integer> result = client.getWordCount(docu);
 			

@@ -26,7 +26,7 @@ public class TestLineStorage {
     }
 
     @Test
-    void testDoWordCountLink() {
+    void testDoWordCountMultipleLinks() {
         String inputString = "<a href='xyz' title='FooBar'>foo<a title='foo' href='xyz' > foo</a> bar</a>";
         Map<String, Integer> inputMap    = new HashMap<>();
 
@@ -35,6 +35,32 @@ public class TestLineStorage {
         Assertions.assertEquals(3, inputMap.get("foo"));
         Assertions.assertEquals(1, inputMap.get("bar"));
         Assertions.assertEquals(1, inputMap.get("FooBar"));
+    }
+
+    @Test
+    void testDoWordCountLinkMultipleTitles() {
+        String inputString = "<a title='FooBar' title='FooBar' href='xyz' title='FooBar'>foo</a>";
+        Map<String, Integer> inputMap    = new HashMap<>();
+
+        LineStorage ls  = new LineStorage(inputString, new Random().nextInt());
+        ls.doWordCount(inputMap, true);
+        Assertions.assertEquals(1, inputMap.get("foo"));
+        Assertions.assertEquals(3, inputMap.get("FooBar"));
+    }
+
+    @Test
+    void testDoWordCountLinkWithOutQuetes() {
+        String inputString = "<a href=\"/w/index.php?title=Distributed_computing&amp;action=edit&amp;section=3\" title=\"Edit section: History\">edit</a>";
+        Map<String, Integer> inputMap    = new HashMap<>();
+
+        LineStorage ls  = new LineStorage(inputString, new Random().nextInt());
+        ls.doWordCount(inputMap, true);
+        Assertions.assertEquals(1, inputMap.get("Distributed"));
+        Assertions.assertEquals(1, inputMap.get("computing"));
+        Assertions.assertEquals(1, inputMap.get("Edit"));
+        Assertions.assertEquals(1, inputMap.get("section"));
+        Assertions.assertEquals(1, inputMap.get("History"));
+        Assertions.assertEquals(1, inputMap.get("edit"));
     }
 
 }

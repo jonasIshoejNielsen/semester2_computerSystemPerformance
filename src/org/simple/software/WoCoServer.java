@@ -14,9 +14,9 @@ public class WoCoServer {
 			System.exit(0);
 		}
 		
-		String lAddr = args[0];
-		int lPort = Integer.parseInt(args[1]);
-		boolean cMode = Boolean.parseBoolean(args[2]);
+		String lAddr 	= args[0];
+		int lPort 		= Integer.parseInt(args[1]);
+		boolean cMode 	= Boolean.parseBoolean(args[2]);
 		int threadCount = Integer.parseInt(args[3]);
 		System.out.println(cMode? "Clean tags": "Don't clean tags");
 		System.out.println(threadCount + " number of threads");

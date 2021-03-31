@@ -27,6 +27,7 @@ public class LineStorage {
      */
     public void doWordCount(Map<String, Integer> wc, boolean cMode) {
         String ucLine = line;       //todo: .toLowerCase();
+        ucLine = ucLine.replace('_', ' ');
         String cleanedLine = (cMode) ? removeTags(ucLine) : ucLine;
         String[] words = getWordsFromString(cleanedLine);
         addWordsToMap(words, wc);
@@ -40,14 +41,26 @@ public class LineStorage {
                 continue;
             }
 
-            int index = split[1].toLowerCase().indexOf("title");
-            if(index == -1) {
-                continue;
+
+            String remainingString = split[1];
+            int index = remainingString.toLowerCase().indexOf("title");
+            while (index != -1) {
+                String fromTitle    = remainingString.substring(index + 6);
+                int indexEndTitle   = fromTitle.toLowerCase().indexOf("&amp");
+                String titleValue;
+                if (indexEndTitle == -1) {
+                    indexEndTitle = fromTitle.indexOf(fromTitle.charAt(0), 1);
+                    if (fromTitle.length() == 0 || fromTitle.length() - 1 < indexEndTitle || indexEndTitle == -1) {
+                        System.out.println("error");
+                    }
+                    titleValue = fromTitle.substring(1, indexEndTitle);
+                } else {
+                    titleValue = fromTitle.substring(0, indexEndTitle);
+                }
+                sb.append(" ").append(titleValue).append(" ");
+                remainingString = fromTitle.substring(indexEndTitle);
+                index = remainingString.toLowerCase().indexOf("title");
             }
-            String fromTitle    = split[1].substring(index+6);
-            int indexEndTitle   = fromTitle.indexOf(fromTitle.charAt(0), 1);
-            String titleValue   = fromTitle.substring(1, indexEndTitle);
-            sb.append(" ").append(titleValue).append(" ");
         }
         return sb.toString();
     }
