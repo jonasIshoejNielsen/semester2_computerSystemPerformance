@@ -21,6 +21,9 @@ public class WoCoServer {
 		System.out.println(cMode? "Clean tags": "Don't clean tags");
 		System.out.println(threadCount + " number of threads");
 
+		Logging.createFolder();
+
+
 		if (threadCount>1) {
 			//TODO: will have to implement multithreading
 			HelperFunctions.print(WoCoServer.class, "FEATURE NOT IMPLEMENTED");

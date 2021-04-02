@@ -27,10 +27,19 @@ public class LineStorage {
      */
     public void doWordCount(Map<String, Integer> wc, boolean cMode) {
         String ucLine = line;       //todo: .toLowerCase();
+
+        long beginCleaning = System.nanoTime();
         ucLine = ucLine.replace('_', ' ');
         String cleanedLine = (cMode) ? removeTags(ucLine) : ucLine;
+        long endCleaning = System.nanoTime();
+        Logging.writeCleaningTags(endCleaning - beginCleaning);
+
+        long beginWordCount = System.nanoTime();
         String[] words = getWordsFromString(cleanedLine);
         addWordsToMap(words, wc);
+        long endWordCount = System.nanoTime();
+        Logging.writeWordCount(endWordCount - beginWordCount);
+
     }
     private static String removeTags(String line){
         StringBuilder sb = new StringBuilder();

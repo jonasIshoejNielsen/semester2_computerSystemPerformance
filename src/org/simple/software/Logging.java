@@ -10,15 +10,27 @@ public class Logging {
     private static FileWriter writerWordCount;
     private static FileWriter writerSerializing;
 
-    public static void test() {
+    public static void createFolder() {
         File file = new File("Logs/");
         if (!file.exists()){
             while (!file.mkdir()){}
         }
-        writerReceiving     = createFileWriter("Receiving");
-        writerCleaningTags  = createFileWriter("CleaningTags");
-        writerWordCount     = createFileWriter("WordCount");
-        writerSerializing   = createFileWriter("Serializing");
+    }
+    public static void writeReceiving (long msg) {
+        writerReceiving     = (writerReceiving==null)?      createFileWriter("Receiving") : writerReceiving;
+        writeToFile(writerReceiving, msg);
+    }
+    public static void writeCleaningTags (long msg) {
+        writerCleaningTags  = (writerCleaningTags==null)?   createFileWriter("CleaningTags") : writerCleaningTags;
+        writeToFile(writerCleaningTags, msg);
+    }
+    public static void writeWordCount (long msg) {
+        writerWordCount     = (writerWordCount==null)?      createFileWriter("WordCount") : writerWordCount;
+        writeToFile(writerWordCount, msg);
+    }
+    public static void writeSerializing (long msg) {
+        writerSerializing   = (writerSerializing==null)?    createFileWriter("Serializing") : writerSerializing;
+        writeToFile(writerSerializing, msg);
     }
 
 
@@ -34,6 +46,15 @@ public class Logging {
             e.printStackTrace();
         }
         return writer;
+    }
+    private static void writeToFile(FileWriter fw, long msg) {
+        try {
+            fw.write(String.valueOf(msg));
+            fw.write("\n");
+            fw.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
