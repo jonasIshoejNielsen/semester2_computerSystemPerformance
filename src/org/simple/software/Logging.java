@@ -9,6 +9,7 @@ public class Logging {
     private static FileWriter writerCleaningTags;
     private static FileWriter writerWordCount;
     private static FileWriter writerSerializing;
+    private static FileWriter writerResponseTime;
 
     public static void createFolder() {
         File file = new File("Logs/");
@@ -17,18 +18,27 @@ public class Logging {
         }
     }
     public static void writeReceiving (long msg) {
+        if(!Config.writeReceiving) return;
         writerReceiving     = (writerReceiving==null)?      createFileWriter("Receiving") : writerReceiving;
         writeToFile(writerReceiving, msg);
     }
     public static void writeCleaningTags (long msg) {
+        if(!Config.writeCleaningTags) return;
         writerCleaningTags  = (writerCleaningTags==null)?   createFileWriter("CleaningTags") : writerCleaningTags;
         writeToFile(writerCleaningTags, msg);
     }
     public static void writeWordCount (long msg) {
+        if(!Config.writeWordCount) return;
+        writerResponseTime  = (writerResponseTime==null)?   createFileWriter("ResponseTime") : writerResponseTime;
+        writeToFile(writerResponseTime, msg);
+    }
+    public static void writeResponseTime (long msg) {
+        if(!Config.writeResponseTime) return;
         writerWordCount     = (writerWordCount==null)?      createFileWriter("WordCount") : writerWordCount;
         writeToFile(writerWordCount, msg);
     }
     public static void writeSerializing (long msg) {
+        if(!Config.writeSerializing) return;
         writerSerializing   = (writerSerializing==null)?    createFileWriter("Serializing") : writerSerializing;
         writeToFile(writerSerializing, msg);
     }

@@ -40,7 +40,10 @@ public class DataHandler {
         boolean hasResult = receiveData(clientId, result);
 
         if (hasResult) {
-            byte[] returnMessage = serializeResultForClient(clientId).getBytes();
+            long beginSerializing   = System.nanoTime();
+            byte[] returnMessage    = serializeResultForClient(clientId).getBytes();
+            long endSerializing     = System.nanoTime();
+            Logging.writeSerializing(beginSerializing - endSerializing);
             ByteBuffer ba = ByteBuffer.wrap(returnMessage);
             client.write(ba);
         }

@@ -222,7 +222,10 @@ public class WoCoClient {
     	//send requests to the server in a loop.
 		System.out.println(ops);
 		for (int rep=0; rep<ops; rep++) {
+			long beginResponseTime 			= System.nanoTime();
 			HashMap<String, Integer> result = client.getWordCount(docu);
+			long endResponseTime 			= System.nanoTime();
+			Logging.writeResponseTime(endResponseTime - beginResponseTime);
 			
 			if (DEBUG==true) {
 				System.out.println(result);
