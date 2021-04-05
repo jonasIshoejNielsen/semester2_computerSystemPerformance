@@ -10,6 +10,7 @@ import java.util.Map;
 public class DataHandler {
     private static final HashMap<Integer, StringBuilder> buffer              = new HashMap<>();
     private static final HashMap<Integer, HashMap<String, Integer>> results  = new HashMap<>();
+    private static final HashMap<Integer, Long> timesFromStart               = new HashMap<>();
     private static final ArrayList<LineStorage> linesToCount                 = new ArrayList<>();
     private final boolean cMode;
 
@@ -46,6 +47,9 @@ public class DataHandler {
             Logging.writeSerializing(beginSerializing - endSerializing);
             ByteBuffer ba = ByteBuffer.wrap(returnMessage);
             client.write(ba);
+            long endFromStart     = System.nanoTime();
+            Logging.writeTimeInServer(timesFromStart.get(clientId) - endFromStart);
+            
         }
         return true;
     }
@@ -60,8 +64,11 @@ public class DataHandler {
      * @return A document has been processed or not.
      */
     public boolean receiveData(int clientId, String dataChunk) {
-        results.putIfAbsent(clientId, new HashMap<>());
-        buffer.putIfAbsent( clientId, new StringBuilder());
+        if(!results.containsKey(clientId)) {
+            results.put(clientId, new HashMap<>());
+            buffer.put(clientId, new StringBuilder());
+            timesFromStart.put(clientId, System.nanoTime());
+        }
 
         StringBuilder sb = buffer.get(clientId);
         sb.append(dataChunk);

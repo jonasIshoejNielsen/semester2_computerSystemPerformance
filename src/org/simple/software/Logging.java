@@ -10,6 +10,7 @@ public class Logging {
     private static FileWriter writerWordCount;
     private static FileWriter writerSerializing;
     private static FileWriter writerResponseTime;
+    private static FileWriter writerTimeInServer;
 
     public static void createFolder() {
         File file = new File("Logs/");
@@ -41,6 +42,11 @@ public class Logging {
         if(!Config.writeSerializing) return;
         writerSerializing   = (writerSerializing==null)?    createFileWriter("Serializing") : writerSerializing;
         writeToFile(writerSerializing, msg);
+    }
+    public static void writeTimeInServer (long msg) {
+        if(!Config.writeTimeInServer) return;
+        writerTimeInServer  = (writerTimeInServer==null)?    createFileWriter("TimeInServer") : writerTimeInServer;
+        writeToFile(writerTimeInServer, msg);
     }
 
 

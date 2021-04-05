@@ -6,5 +6,6 @@ public class Config {
     public final static boolean writeWordCount     = true;
     public final static boolean writeSerializing   = true;
     public final static boolean writeResponseTime  = true;
+    public final static boolean writeTimeInServer  = true;
 
 }
