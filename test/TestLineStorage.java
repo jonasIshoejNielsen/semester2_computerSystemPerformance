@@ -72,4 +72,15 @@ public class TestLineStorage {
         Assertions.assertEquals(1, inputMap.get("edit"));
     }
 
+    @Test
+    void testDoWordCountLinkEndInTile() {
+        init();
+        String inputString = "<a href=\"/wiki/Distributed database\" title=\"Di";
+        Map<String, Integer> inputMap    = new HashMap<>();
+
+        LineStorage ls  = new LineStorage(inputString, new Random().nextInt());
+        ls.doWordCount(inputMap, true);
+        Assertions.assertEquals(1, inputMap.get("Di"));
+    }
+
 }
