@@ -122,8 +122,10 @@ public class WoCoClient {
 	 * @throws IOException
 	 */
 	public HashMap<String,Integer> getWordCount(String doc) throws IOException {
-		
+		long beginResponseTime 			= System.nanoTime();
 		String response = sendToServer(doc);
+		long endResponseTime 			= System.nanoTime();
+		Logging.writeResponseTime(endResponseTime - beginResponseTime);
 
 		// Parsing this text into a data structure takes time, we only do it 
 		// if we are in debug mode. Otherwise we'll assume that everything went
@@ -222,10 +224,7 @@ public class WoCoClient {
     	//send requests to the server in a loop.
 		System.out.println(ops);
 		for (int rep=0; rep<ops; rep++) {
-			long beginResponseTime 			= System.nanoTime();
 			HashMap<String, Integer> result = client.getWordCount(docu);
-			long endResponseTime 			= System.nanoTime();
-			Logging.writeResponseTime(endResponseTime - beginResponseTime);
 			
 			if (DEBUG==true) {
 				System.out.println(result);
