@@ -88,7 +88,7 @@ public class WoCoClient {
 		response = sInput.readLine();
 
 		long endResponseTime 			= System.nanoTime();
-		Logging.writeResponseTime(endResponseTime - beginResponseTime);
+		Logging.writeResponseTime(endResponseTime - beginResponseTime, clientIndex);
 		return response;
 	}
 	

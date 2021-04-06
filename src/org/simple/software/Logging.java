@@ -24,12 +24,12 @@ public class Logging {
     }
     public static void writeWordCount (long msg) {
         if(!Config.writeWordCount) return;
-        writerResponseTime  = (writerResponseTime==null)?   createFileWriter("ResponseTime") : writerResponseTime;
+        writerResponseTime  = (writerResponseTime==null)?   createFileWriter("WordCount") : writerResponseTime;
         writeToFile(writerResponseTime, msg);
     }
-    public static void writeResponseTime (long msg) {
+    public static void writeResponseTime(long msg, int clientIndex) {
         if(!Config.writeResponseTime) return;
-        writerWordCount     = (writerWordCount==null)?      createFileWriter("WordCount") : writerWordCount;
+        writerWordCount     = (writerWordCount==null)?      createFileWriter("ResponseTime"+clientIndex) : writerWordCount;
         writeToFile(writerWordCount, msg);
     }
     public static void writeSerializing (long msg) {
