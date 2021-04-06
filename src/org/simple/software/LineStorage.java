@@ -1,6 +1,4 @@
 package org.simple.software;
-
-import java.util.Arrays;
 import java.util.Map;
 
 public class LineStorage {

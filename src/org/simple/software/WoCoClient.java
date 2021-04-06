@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class WoCoClient {
@@ -17,6 +18,7 @@ public class WoCoClient {
 	private BufferedWriter sOutput;
 	private static boolean DEBUG = false;
 	private int clientIndex;
+	private ArrayList<Long> respTime;
 
 	
 	/**
@@ -68,6 +70,14 @@ public class WoCoClient {
         this.sInput 	= new BufferedReader(new InputStreamReader(sHandle.getInputStream()));
         this.sOutput 	= new BufferedWriter(new OutputStreamWriter(sHandle.getOutputStream()));
         this.clientIndex = index;
+        this.respTime = new ArrayList<>();
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			public void run() {
+				for (Long resp: respTime) {
+					Logging.writeResponseTime(resp, clientIndex);
+				}
+			}
+		});
 	}
 
 	/**
@@ -88,7 +98,7 @@ public class WoCoClient {
 		response = sInput.readLine();
 
 		long endResponseTime 			= System.nanoTime();
-		Logging.writeResponseTime(endResponseTime - beginResponseTime, clientIndex);
+		respTime.add(endResponseTime - beginResponseTime);
 		return response;
 	}
 	
