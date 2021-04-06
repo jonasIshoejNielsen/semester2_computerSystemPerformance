@@ -88,7 +88,7 @@ public class WoCoClient {
 		response = sInput.readLine();
 
 		long endResponseTime 			= System.nanoTime();
-		Logging.writeResponseTime(endResponseTime - beginResponseTime);
+		Logging.writeResponseTime(endResponseTime - beginResponseTime, clientIndex);
 		return response;
 	}
 	
@@ -148,8 +148,8 @@ public class WoCoClient {
 
 	public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {
 		//reading in parameters
-		if (args.length<5) {
-			System.out.println("Usage: <servername> <serverport> <documentsize(KiB)> <opcount(x1000)> <filesuffix> [<seed>]");
+		if (args.length<6) {
+			System.out.println("Usage: <servername> <serverport> <documentsize(KiB)> <opcount(x1000)> <filesuffix> <clientID> [<seed>]");
 			System.exit(0);
 		}
 		
@@ -158,12 +158,13 @@ public class WoCoClient {
 		float dSize = Float.parseFloat(args[2])*1024;
 		int ops = Integer.parseInt(args[3])*1000;
 		int file = Integer.parseInt(args[4]);
-		int seed = (args.length==6) ? Integer.parseInt(args[5]) : (int) (Math.random()*10000);
+		int clientID = Integer.parseInt(args[5]);
+		int seed = (args.length==7) ? Integer.parseInt(args[7]) : (int) (Math.random()*10000);
 		
 		//We generate one document for the entire runtime of this client
 		//Otherwise the client would spend too much time generating new inputs.
     	String docu = WoCoClient.generateDocument((int) (dSize), file, seed);
-		WoCoClient client = new WoCoClient(sName, sPort, 0);
+		WoCoClient client = new WoCoClient(sName, sPort, clientID);
     	client.sendDocu(ops, docu);
 
 		Thread.sleep(2000);

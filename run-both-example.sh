@@ -20,7 +20,6 @@ sleep 1
 
 for x in `seq 2 $1`
 do
-	 
 	 (java -jar ./jars/WoCoClient.jar $SERVER_HOST $SERVER_PORT $DOC_SIZE $REPEAT $FILE_SUFF > ./client$x.log) &
 done
 java -jar ./jars/WoCoClient.jar $SERVER_HOST $SERVER_PORT $DOC_SIZE $REPEAT $FILE_SUFF > ./client1.log

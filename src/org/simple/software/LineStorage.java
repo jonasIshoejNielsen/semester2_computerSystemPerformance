@@ -26,49 +26,53 @@ public class LineStorage {
      * @param cMode
      */
     public void doWordCount(Map<String, Integer> wc, boolean cMode) {
-        String ucLine = line;       //todo: .toLowerCase();
+        try {
+            String ucLine = line;       //todo: .toLowerCase();
 
-        long beginCleaning = System.nanoTime();
-        ucLine = ucLine.replace('_', ' ');
-        String cleanedLine = (cMode) ? removeTags(ucLine) : ucLine;
-        long endCleaning = System.nanoTime();
-        Logging.writeCleaningTags(endCleaning - beginCleaning);
+            long beginCleaning = System.nanoTime();
+            ucLine = ucLine.replace('_', ' ');
+            String cleanedLine = (cMode) ? removeTags(ucLine) : ucLine;
+            long endCleaning = System.nanoTime();
+            Logging.writeCleaningTags(endCleaning - beginCleaning);
 
-        long beginWordCount = System.nanoTime();
-        String[] words = getWordsFromString(cleanedLine);
-        addWordsToMap(words, wc);
-        long endWordCount = System.nanoTime();
-        Logging.writeWordCount(endWordCount - beginWordCount);
+            long beginWordCount = System.nanoTime();
+            String[] words = getWordsFromString(cleanedLine);
+            addWordsToMap(words, wc);
+            long endWordCount = System.nanoTime();
+            Logging.writeWordCount(endWordCount - beginWordCount);
 
+        } catch (Exception e) {
+            System.out.println(line);
+        }
     }
     private static String removeTags(String line){
         StringBuilder sb = new StringBuilder();
         for (String v : line.split(">")) {
-            String[] split = v.split("<");
-            sb.append(split[0]);
-            if (split.length < 2) {
-                continue;
-            }
-
-
-            String remainingString = split[1];
-            int index = remainingString.toLowerCase().indexOf("title");
-            while (index != -1) {
-                String fromTitle    = remainingString.substring(index + 6);
-                int indexEndTitle   = fromTitle.toLowerCase().indexOf("&amp");
-                String titleValue;
-                if (indexEndTitle == -1) {
-                    indexEndTitle = fromTitle.indexOf(fromTitle.charAt(0), 1);
-                    if (fromTitle.length() == 0 || fromTitle.length() - 1 < indexEndTitle || indexEndTitle == -1) {
-                        System.out.println("error");
-                    }
-                    titleValue = fromTitle.substring(1, indexEndTitle);
-                } else {
-                    titleValue = fromTitle.substring(0, indexEndTitle);
+            try {
+                String[] split = v.split("<");
+                sb.append(split[0]);
+                if (split.length < 2) {
+                    continue;
                 }
-                sb.append(" ").append(titleValue).append(" ");
-                remainingString = fromTitle.substring(indexEndTitle);
-                index = remainingString.toLowerCase().indexOf("title");
+                String remainingString = split[1];
+                int index = remainingString.toLowerCase().indexOf("title");
+                while (index != -1) {
+                    String fromTitle = remainingString.substring(index + 6);
+                    int indexEndTitle = fromTitle.toLowerCase().indexOf("&amp");
+                    String titleValue;
+                    if (indexEndTitle == -1) {
+                        indexEndTitle = fromTitle.indexOf(fromTitle.charAt(0), 1);
+                        indexEndTitle = (indexEndTitle != -1)? indexEndTitle : fromTitle.length();
+                        titleValue = fromTitle.substring(1, indexEndTitle);
+                    } else {
+                        titleValue = fromTitle.substring(0, indexEndTitle);
+                    }
+                    sb.append(" ").append(titleValue).append(" ");
+                    remainingString = fromTitle.substring(indexEndTitle);
+                    index = remainingString.toLowerCase().indexOf("title");
+                }
+            }catch (Exception e) {
+                System.out.println(v);
             }
         }
         return sb.toString();
