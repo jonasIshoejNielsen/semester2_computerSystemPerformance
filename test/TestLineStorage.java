@@ -1,6 +1,7 @@
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.simple.software.Config;
 import org.simple.software.LineStorage;
 
 import java.util.HashMap;
@@ -8,8 +9,13 @@ import java.util.Map;
 import java.util.Random;
 
 public class TestLineStorage {
+    public void init() {
+        Config.setAllToFalse();
+    }
+
     @Test
     void testDoWordCountInputMap() {
+        init();
         String inputString = "<p><b>Foo hEj</br> hej</p> </b>";
         Map<String, Integer> inputMap    = new HashMap<>();
         inputMap.put("Foo", 4);
@@ -27,6 +33,7 @@ public class TestLineStorage {
 
     @Test
     void testDoWordCountMultipleLinks() {
+        init();
         String inputString = "<a href='xyz' title='FooBar'>foo<a title='foo' href='xyz' > foo</a> bar</a>";
         Map<String, Integer> inputMap    = new HashMap<>();
 
@@ -39,6 +46,7 @@ public class TestLineStorage {
 
     @Test
     void testDoWordCountLinkMultipleTitles() {
+        init();
         String inputString = "<a title='FooBar' title='FooBar' href='xyz' title='FooBar'>foo</a>";
         Map<String, Integer> inputMap    = new HashMap<>();
 
@@ -50,6 +58,7 @@ public class TestLineStorage {
 
     @Test
     void testDoWordCountLinkWithOutQuetes() {
+        init();
         String inputString = "<a href=\"/w/index.php?title=Distributed_computing&amp;action=edit&amp;section=3\" title=\"Edit section: History\">edit</a>";
         Map<String, Integer> inputMap    = new HashMap<>();
 

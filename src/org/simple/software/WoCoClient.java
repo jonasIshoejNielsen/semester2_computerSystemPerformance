@@ -2,32 +2,22 @@ package org.simple.software;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import javax.swing.plaf.SliderUI;
 
 public class WoCoClient {
 	
 	private Socket sHandle;
 	private BufferedReader sInput;
 	private BufferedWriter sOutput;
-	private ArrayList<Float> respTime;
-	private int cntSincePrint;
-	private long timeLastPrint;
-	private long timeCreate;
 	private static boolean DEBUG = false;
+	private int clientIndex;
+
 	
 	/**
 	 * Function to generate a document based on the hardcoded example file. 
@@ -69,26 +59,17 @@ public class WoCoClient {
 	 * Instantiates the client.
 	 * @param serverAddress IP address or hostname of the WoCoServer.
 	 * @param serverPort Port number of the server.
+	 * @param index
 	 * @throws UnknownHostException
 	 * @throws IOException
 	 */
-	public WoCoClient(String serverAddress, int serverPort) throws UnknownHostException, IOException {
-        this.sHandle = new Socket(serverAddress, serverPort);
-        this.sInput = new BufferedReader(new InputStreamReader(sHandle.getInputStream()));
-        this.sOutput = new BufferedWriter(new OutputStreamWriter(sHandle.getOutputStream()));
-        this.initStats();
+	public WoCoClient(String serverAddress, int serverPort, int index) throws UnknownHostException, IOException {
+        this.sHandle 	= new Socket(serverAddress, serverPort);
+        this.sInput 	= new BufferedReader(new InputStreamReader(sHandle.getInputStream()));
+        this.sOutput 	= new BufferedWriter(new OutputStreamWriter(sHandle.getOutputStream()));
+        this.clientIndex = index;
 	}
-	
-	/**
-	 * Initializes the data structure that holds statistical information on requests. 
-	 */
-	private void initStats(){
-		respTime = new ArrayList<Float>();
-        cntSincePrint = 0;
-        timeLastPrint = System.nanoTime();
-        timeCreate = timeLastPrint;
-	}
-	
+
 	/**
 	 * Sends a document to the server and waits for a response. The response is an
 	 * ASCII serialized version of the <word, count> map.
@@ -96,21 +77,18 @@ public class WoCoClient {
 	 * @return
 	 * @throws IOException
 	 */
-	int i = 0;
 	private String sendToServer(String doc) throws IOException {
-		long startTime = System.nanoTime();    
+		long beginResponseTime 			= System.nanoTime();
+
 		sOutput.write(doc);
 		sOutput.write(WoCoServer.SEPARATOR);
 		sOutput.flush();
-		System.out.println(i++);
-	
-		
+
 		String response = null;
 		response = sInput.readLine();
 
-		long endTime = System.nanoTime();
-		respTime.add((float) ((endTime-startTime)/1000000.0));
-		cntSincePrint ++;
+		long endResponseTime 			= System.nanoTime();
+		Logging.writeResponseTime(endResponseTime - beginResponseTime);
 		return response;
 	}
 	
@@ -122,7 +100,6 @@ public class WoCoClient {
 	 * @throws IOException
 	 */
 	public HashMap<String,Integer> getWordCount(String doc) throws IOException {
-		
 		String response = sendToServer(doc);
 
 		// Parsing this text into a data structure takes time, we only do it 
@@ -139,53 +116,7 @@ public class WoCoClient {
 			return new HashMap<String,Integer>();
 		}				
 	}
-	
-	
-	/**
-	 * Prints out statistical information since the last printStats invocation. 
-	 * If called multiple times in a quick succession, if will only print out values
-	 * if at least a second has passed since the last call.
-	 * @param withPercentiles if true, not only averages of response time are printed
-	 * but also the percentiles.
-	 */
-	public void printStats(boolean withPercentiles) {
-		long currTime = System.nanoTime();
-		
-		float elapsedSeconds = (float) ((currTime-timeLastPrint)/1000000000.0);
-		
-		if (elapsedSeconds<1 && withPercentiles==false) {
-			return;
-		}
-		
-		float tput = cntSincePrint/elapsedSeconds;
-		System.out.println("Interval time [s], Throughput [ops/s]: "+elapsedSeconds + ", "+ tput);
-		timeLastPrint = currTime;
-		cntSincePrint = 0;
-		
-		
-		if (withPercentiles) {
-			//sorting for pctiles
-			Collections.sort(respTime);
-			
-			System.out.println("-----");
-			
-			elapsedSeconds = (float) ((currTime-timeCreate)/1000000000.0);
-			tput = respTime.size()/elapsedSeconds;
-			System.out.println("Total time [s], Throughput [ops/s]: "+elapsedSeconds + ", "+ tput);
-			
-			System.out.print("Response time percentiles [ms]: ");
-			System.out.print("\n");
-			for (int p=1; p<=100; p++) {
-				System.out.print(p+","+respTime.get(respTime.size()*p/100-1));
-				if (p!=100) {
-					System.out.print("\n");
-				}
-			}
-			System.out.println();
-		}
-		
-	}
-	
+
 	/**
 	 * Closes the connection to the server gracefully.
 	 */
@@ -197,7 +128,22 @@ public class WoCoClient {
 			e.printStackTrace();
 		}
 	}
-	
+
+
+	public void sendDocu(int ops, String docu) throws IOException {
+		//send requests to the server in a loop.
+		System.out.println("ops="+ops);
+		for (int rep=0; rep<ops; rep++) {
+			HashMap<String, Integer> result = this.getWordCount(docu);
+
+			if (DEBUG==true) {
+				System.out.println("result="+result);
+			}
+			if(rep%25 == 0) {
+				System.out.println("client:"+ clientIndex +", rep="+rep+"/"+ops);
+			}
+		}
+	}
 	
 
 	public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {
@@ -217,31 +163,13 @@ public class WoCoClient {
 		//We generate one document for the entire runtime of this client
 		//Otherwise the client would spend too much time generating new inputs.
     	String docu = WoCoClient.generateDocument((int) (dSize), file, seed);
-		WoCoClient client = new WoCoClient(sName, sPort);    	
-    	
-    	//send requests to the server in a loop.
-		System.out.println(ops);
-		for (int rep=0; rep<ops; rep++) {
-			HashMap<String, Integer> result = client.getWordCount(docu);
-			
-			if (DEBUG==true) {
-				System.out.println(result);
-			}
-			
-			if (rep%25 == 0) {
-				//reduce the overhead of printing statistics by calling this less often
-				client.printStats(false);
-			}
-		}
-				
-		//final printout with percentiles
-		client.printStats(true);
+		WoCoClient client = new WoCoClient(sName, sPort, 0);
+    	client.sendDocu(ops, docu);
+
 		Thread.sleep(2000);
 		client.shutDown();
 
         System.exit(0);
-
-
 	}
 
 }
