@@ -5,7 +5,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class Logging {
-    private static FileWriter writerReceiving;
     private static FileWriter writerCleaningTags;
     private static FileWriter writerWordCount;
     private static FileWriter writerSerializing;
@@ -17,11 +16,6 @@ public class Logging {
         if (!file.exists()){
             while (!file.mkdir()){}
         }
-    }
-    public static void writeReceiving (long msg) {
-        if(!Config.writeReceiving) return;
-        writerReceiving     = (writerReceiving==null)?      createFileWriter("Receiving") : writerReceiving;
-        writeToFile(writerReceiving, msg);
     }
     public static void writeCleaningTags (long msg) {
         if(!Config.writeCleaningTags) return;
