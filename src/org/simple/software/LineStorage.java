@@ -1,9 +1,13 @@
 package org.simple.software;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class LineStorage {
     public final String line;
     public final int clientId;
+    private final List<Long> timeCleaning = new ArrayList<>();
+    private final List<Long> timeWordCount = new ArrayList<>();
 
     public LineStorage(String line, int clientId) {
         this.line = line;
@@ -31,13 +35,13 @@ public class LineStorage {
             ucLine = ucLine.replace('_', ' ');
             String cleanedLine = (cMode) ? removeTags(ucLine) : ucLine;
             long endCleaning = System.nanoTime();
-            Logging.writeCleaningTags(endCleaning - beginCleaning);
+            timeCleaning.add(endCleaning - beginCleaning);
 
             long beginWordCount = System.nanoTime();
             String[] words = getWordsFromString(cleanedLine);
             addWordsToMap(words, wc);
             long endWordCount = System.nanoTime();
-            Logging.writeWordCount(endWordCount - beginWordCount);
+            timeWordCount.add(endWordCount - beginWordCount);
 
         } catch (Exception e) {
             System.out.println(line);
@@ -91,5 +95,13 @@ public class LineStorage {
         for (String s : words) {
             wc.put(s, wc.getOrDefault(s, 0) + 1);
         }
+    }
+
+    public List<Long> getTimeCleaning() {
+        return timeCleaning;
+    }
+
+    public List<Long> getTimeWordCount() {
+        return timeWordCount;
     }
 }
