@@ -5,13 +5,19 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 public class DataHandler {
     private static final HashMap<Integer, StringBuilder> buffer              = new HashMap<>();
     private static final HashMap<Integer, HashMap<String, Integer>> results  = new HashMap<>();
     private static final HashMap<Integer, Long> timesFromStart               = new HashMap<>();
     private static final ArrayList<LineStorage> linesToCount                 = new ArrayList<>();
+    private static final ArrayList<List<Long>> timesCleaning                 = new ArrayList<>();
+    private static final ArrayList<List<Long>> timesWordCount                = new ArrayList<>();
+    private static final List<Long> timesSerializing                         = new ArrayList<>();
+    private static final List<Long> timesInServer                            = new ArrayList<>();
     private final boolean cMode;
 
     public static void addLineToCount(String line, int clientId) {
@@ -20,6 +26,26 @@ public class DataHandler {
 
     public DataHandler(boolean cMode) {
         this.cMode = cMode;
+
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                System.out.println("Writing to logs");
+                logListOfTimes(timesCleaning,  Logging::writeCleaningTags);
+                logListOfTimes(timesWordCount, Logging::writeWordCount);
+                logTimes(timesSerializing,     Logging::writeSerializing);
+                logTimes(timesInServer,        Logging::writeTimeInServer);
+            }
+        });
+    }
+    private void logTimes(List<Long> times, Consumer<Long> writeToLog) {
+        for (Long time: times) {
+            writeToLog.accept(time);
+        }
+    }
+    private void logListOfTimes(List<List<Long>> times, Consumer<Long> writeToLog) {
+        for (List<Long> lst: times) {
+            logTimes(lst, writeToLog);
+        }
     }
 
     public void countLine () {
@@ -27,6 +53,8 @@ public class DataHandler {
             LineStorage ls = linesToCount.remove(0);
             HashMap<String, Integer> wc = results.getOrDefault(ls.getClientId(), new HashMap<>());
             ls.doWordCount(wc, cMode);
+            timesCleaning.add(ls.getTimeCleaning());
+            timesWordCount.add(ls.getTimeWordCount());
         }
     }
 
@@ -44,11 +72,11 @@ public class DataHandler {
             long beginSerializing   = System.nanoTime();
             byte[] returnMessage    = serializeResultForClient(clientId).getBytes();
             long endSerializing     = System.nanoTime();
-            Logging.writeSerializing(beginSerializing - endSerializing);
+            timesSerializing.add(beginSerializing - endSerializing);
             ByteBuffer ba = ByteBuffer.wrap(returnMessage);
             client.write(ba);
             long endFromStart     = System.nanoTime();
-            Logging.writeTimeInServer(timesFromStart.get(clientId) - endFromStart);
+            timesInServer.add(timesFromStart.get(clientId) - endFromStart);
             
         }
         return true;

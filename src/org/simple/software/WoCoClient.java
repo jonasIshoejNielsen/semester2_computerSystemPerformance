@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class WoCoClient {
@@ -17,43 +18,8 @@ public class WoCoClient {
 	private BufferedWriter sOutput;
 	private static boolean DEBUG = false;
 	private int clientIndex;
+	private ArrayList<Long> respTime;
 
-	
-	/**
-	 * Function to generate a document based on the hardcoded example file. 
-	 * @param length Length of the document in bytes.
-	 * @param seed This random seed is used to start reading from different offsets
-	 * in the file every time a new document is generated. Could be useful for debugging
-	 * to return to a problematic seed.
-	 * @return Returns the document which is encoded as a String 
-	 * @throws IOException
-	 */
-	private static String generateDocument(int length, int file, int seed) throws IOException {
-		
-        String fileName = "input"+file+".html";
-        String line = null;
-        StringBuilder sb = new StringBuilder();
-        BufferedReader br = new BufferedReader(new FileReader(fileName));
-
-        while((line = br.readLine()) != null) {
-            sb.append(line.trim()+" ");
-        }   
-
-        br.close();
-                
-        String ref = sb.toString();
-		
-		sb = new StringBuilder(length);
-		int i;
-		
-		for (i=0; i<length; i++) {
-			sb.append(ref.charAt((i+seed)%ref.length()));								
-		}
-		
-		//we need to remove all occurences of this special character! 
-		return sb.substring(0).replace(WoCoServer.SEPARATOR, '.');
-		
-	}
 	
 	/**
 	 * Instantiates the client.
@@ -68,6 +34,14 @@ public class WoCoClient {
         this.sInput 	= new BufferedReader(new InputStreamReader(sHandle.getInputStream()));
         this.sOutput 	= new BufferedWriter(new OutputStreamWriter(sHandle.getOutputStream()));
         this.clientIndex = index;
+        this.respTime = new ArrayList<>();
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			public void run() {
+				for (Long resp: respTime) {
+					Logging.writeResponseTime(resp, clientIndex);
+				}
+			}
+		});
 	}
 
 	/**
@@ -88,7 +62,7 @@ public class WoCoClient {
 		response = sInput.readLine();
 
 		long endResponseTime 			= System.nanoTime();
-		Logging.writeResponseTime(endResponseTime - beginResponseTime, clientIndex);
+		respTime.add(endResponseTime - beginResponseTime);
 		return response;
 	}
 	
@@ -163,7 +137,7 @@ public class WoCoClient {
 		
 		//We generate one document for the entire runtime of this client
 		//Otherwise the client would spend too much time generating new inputs.
-    	String docu = WoCoClient.generateDocument((int) (dSize), file, seed);
+    	String docu = DocumentGenerator.generateDocument((int) (dSize), file, seed);
 		WoCoClient client = new WoCoClient(sName, sPort, clientID);
     	client.sendDocu(ops, docu);
 
