@@ -29,6 +29,7 @@ public class DataHandler {
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
+                System.out.println("Writing to logs");
                 logListOfTimes(timesCleaning,  Logging::writeCleaningTags);
                 logListOfTimes(timesWordCount, Logging::writeWordCount);
                 logTimes(timesSerializing,     Logging::writeSerializing);
