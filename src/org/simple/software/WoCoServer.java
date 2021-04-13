@@ -2,13 +2,14 @@ package org.simple.software;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 public class WoCoServer {
-	
+
 	public static final char SEPARATOR = '$';
 
 	public static void main(String[] args) throws IOException {
-		
+
 		if (args.length!=5) {
 			HelperFunctions.print(WoCoServer.class, "Usage: <listenaddress> <listenport> <numberOfClients> <cleaning> <threadcount>");
 			System.exit(0);
@@ -31,11 +32,9 @@ public class WoCoServer {
 
 		}
 
-		DataHandler dataHandler = new DataHandler(cMode, 3);
-
 		Server server = new Server(lAddr, lPort);
-		server.startListening(dataHandler);
+		List<DataHandler> dataHandlerList = server.setUpDataHandlers(cMode, threadCount);
+		server.startListening();
 	}
-
 }
 

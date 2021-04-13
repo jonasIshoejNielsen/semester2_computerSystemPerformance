@@ -46,8 +46,12 @@ public class Server {
         }
     }
 
-    public void startListening(DataHandler dataHandler) throws IOException {
-        dataHandlerList.add(dataHandler);
+    public List<DataHandler> setUpDataHandlers(boolean cMode, int threadCount) { //todo: threadCOunt
+        dataHandlerList.add(new DataHandlerSynchronized(cMode, 3));
+        return dataHandlerList;
+    }
+
+    public void startListening() throws IOException {
         // Infinite loop..
         // Keep server running
         ByteBuffer bb = ByteBuffer.allocate(1024*1024);
@@ -55,10 +59,9 @@ public class Server {
             selector.select();
             Set<SelectionKey> readyKeys = selector.selectedKeys();
             Iterator<SelectionKey> iterator = readyKeys.iterator();
-
             while (iterator.hasNext()) {
                 SelectionKey key = iterator.next();
-
+                //todo: iterator.remove();
                 if (key.isAcceptable()) {
                     SocketChannel client = serverSocket.accept();
                     client.configureBlocking(false);
@@ -68,7 +71,7 @@ public class Server {
                 } else if (key.isReadable()) {
                     bb.rewind();
                     SocketChannel client = (SocketChannel) key.channel();
-                    Boolean readFromChannel = dataHandler.readFromChanel(bb, client);
+                    Boolean readFromChannel = dataHandlerList.get(0).readFromChanel(bb, client);    //todo change
                     if (readFromChannel.equals(false)) {
                         key.cancel();
                     }
