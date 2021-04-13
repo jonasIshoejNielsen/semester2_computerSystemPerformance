@@ -20,7 +20,7 @@ public class DataHandlerSynchronized implements DataHandler {
     private int clientId;
     private final boolean cMode;
 
-    public static void addLineToCount(String line, int clientId) {
+    public static synchronized void addLineToCount(String line, int clientId) {
         linesToCount.add(new LineStorage(line, clientId));
     }
 
@@ -29,26 +29,26 @@ public class DataHandlerSynchronized implements DataHandler {
         this.clientId = clientId;
     }
 
-    public ArrayList<List<Long>> getTimesCleaning() {
+    public synchronized ArrayList<List<Long>> getTimesCleaning() {
         return timesCleaning;
     }
 
-    public ArrayList<List<Long>> getTimesWordCount() {
+    public synchronized ArrayList<List<Long>> getTimesWordCount() {
         return timesWordCount;
     }
 
-    public List<Long> getTimesSerializing() {
+    public synchronized List<Long> getTimesSerializing() {
         return timesSerializing;
     }
 
-    public List<Long> getTimesInServer() {
+    public synchronized List<Long> getTimesInServer() {
         return timesInServer;
     }
-    public int getClientId() {
+    public synchronized int getClientId() {
         return clientId;
     }
 
-    public void countLine () {
+    public synchronized void countLine () {
         while (!linesToCount.isEmpty()) {
             LineStorage ls = linesToCount.remove(0);
             HashMap<String, Integer> wc = results.getOrDefault(ls.getClientId(), new HashMap<>());
@@ -58,7 +58,7 @@ public class DataHandlerSynchronized implements DataHandler {
         }
     }
 
-    public boolean readFromChanel(ByteBuffer bb, SocketChannel client) throws IOException {
+    public synchronized boolean readFromChanel(ByteBuffer bb, SocketChannel client) throws IOException {
         int readCnt = client.read(bb);
         if (readCnt<=0) {
             return false;
@@ -82,7 +82,7 @@ public class DataHandlerSynchronized implements DataHandler {
         return true;
     }
 
-    public boolean receiveData(int clientId, String dataChunk) {
+    public synchronized boolean receiveData(int clientId, String dataChunk) {
         if(!results.containsKey(clientId)) {
             results.put(clientId, new HashMap<>());
             buffer.put(clientId, new StringBuilder());
@@ -125,7 +125,7 @@ public class DataHandlerSynchronized implements DataHandler {
 
     }
 
-    public String serializeResultForClient(int clientId) {
+    public synchronized String serializeResultForClient(int clientId) {
         if (results.containsKey(clientId)) {
             StringBuilder sb = new StringBuilder();
             HashMap<String, Integer> hm = results.get(clientId);
