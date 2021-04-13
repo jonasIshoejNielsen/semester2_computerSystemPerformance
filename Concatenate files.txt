@@ -1,0 +1,7 @@
+cat ResponseTime-*.txt > ResponseTimeAll.txt
+
+
+cat CleaningTags-*.txt > CleaningTagsAll.txt
+cat Serializing-*.txt > SerializingAll.txt
+cat TimeInServer-*.txt > TimeInServerAll.txt
+cat WordCount-*.txt > WordCountAll.txt

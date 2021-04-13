@@ -14,38 +14,39 @@ public class DataHandler {
     private static final HashMap<Integer, HashMap<String, Integer>> results  = new HashMap<>();
     private static final HashMap<Integer, Long> timesFromStart               = new HashMap<>();
     private static final ArrayList<LineStorage> linesToCount                 = new ArrayList<>();
-    private static final ArrayList<List<Long>> timesCleaning                 = new ArrayList<>();
-    private static final ArrayList<List<Long>> timesWordCount                = new ArrayList<>();
-    private static final List<Long> timesSerializing                         = new ArrayList<>();
-    private static final List<Long> timesInServer                            = new ArrayList<>();
+    private final ArrayList<List<Long>> timesCleaning                 = new ArrayList<>();
+    private final ArrayList<List<Long>> timesWordCount                = new ArrayList<>();
+    private final List<Long> timesSerializing                         = new ArrayList<>();
+    private final List<Long> timesInServer                            = new ArrayList<>();
+    private int clientId;
     private final boolean cMode;
 
     public static void addLineToCount(String line, int clientId) {
         linesToCount.add(new LineStorage(line, clientId));
     }
 
-    public DataHandler(boolean cMode) {
+    public DataHandler(boolean cMode, int clientId) {
         this.cMode = cMode;
+        this.clientId = clientId;
+    }
 
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() {
-                System.out.println("Writing to logs");
-                logListOfTimes(timesCleaning,  Logging::writeCleaningTags);
-                logListOfTimes(timesWordCount, Logging::writeWordCount);
-                logTimes(timesSerializing,     Logging::writeSerializing);
-                logTimes(timesInServer,        Logging::writeTimeInServer);
-            }
-        });
+    public ArrayList<List<Long>> getTimesCleaning() {
+        return timesCleaning;
     }
-    private void logTimes(List<Long> times, Consumer<Long> writeToLog) {
-        for (Long time: times) {
-            writeToLog.accept(time);
-        }
+
+    public ArrayList<List<Long>> getTimesWordCount() {
+        return timesWordCount;
     }
-    private void logListOfTimes(List<List<Long>> times, Consumer<Long> writeToLog) {
-        for (List<Long> lst: times) {
-            logTimes(lst, writeToLog);
-        }
+
+    public List<Long> getTimesSerializing() {
+        return timesSerializing;
+    }
+
+    public List<Long> getTimesInServer() {
+        return timesInServer;
+    }
+    public int getClientId() {
+        return clientId;
     }
 
     public void countLine () {

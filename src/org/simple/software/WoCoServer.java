@@ -1,6 +1,7 @@
 package org.simple.software;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public class WoCoServer {
 	
@@ -8,19 +9,19 @@ public class WoCoServer {
 
 	public static void main(String[] args) throws IOException {
 		
-		if (args.length!=4) {
-			HelperFunctions.print(WoCoServer.class, "Usage: <listenaddress> <listenport> <cleaning> <threadcount>");
+		if (args.length!=5) {
+			HelperFunctions.print(WoCoServer.class, "Usage: <listenaddress> <listenport> <numberOfClients> <cleaning> <threadcount>");
 			System.exit(0);
 		}
-		
-		String lAddr 	= args[0];
-		int lPort 		= Integer.parseInt(args[1]);
-		boolean cMode 	= Boolean.parseBoolean(args[2]);
-		int threadCount = Integer.parseInt(args[3]);
+		String lAddr 			= args[0];
+		int lPort 				= Integer.parseInt(args[1].replaceAll("[^\\d.]", ""));
+		int numberOfClients 	= Integer.valueOf(args[2].replaceAll("[^\\d.]", ""));
+		boolean cMode 			= Boolean.parseBoolean(args[3]);
+		int threadCount 		= Integer.valueOf(args[4].replaceAll("[^\\d.]", ""));
 		System.out.println(cMode? "Clean tags": "Don't clean tags");
 		System.out.println(threadCount + " number of threads");
 
-		Logging.createFolder();
+		Logging.createFolder(new StringBuilder("server_-clients-").append(numberOfClients).append("-threads-").append(args[3]).append("-clean-").append(args[2]).toString());
 
 
 		if (threadCount>1) {
@@ -30,7 +31,7 @@ public class WoCoServer {
 
 		}
 
-		DataHandler dataHandler = new DataHandler(cMode);
+		DataHandler dataHandler = new DataHandler(cMode, 3);
 
 		Server server = new Server(lAddr, lPort);
 		server.startListening(dataHandler);

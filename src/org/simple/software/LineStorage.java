@@ -45,6 +45,7 @@ public class LineStorage {
 
         } catch (Exception e) {
             System.out.println(line);
+            throw e;
         }
     }
     private static String removeTags(String line){
@@ -63,6 +64,9 @@ public class LineStorage {
                     int indexEndTitle = fromTitle.toLowerCase().indexOf("&amp");
                     String titleValue;
                     if (indexEndTitle == -1) {
+                        if(fromTitle.length() == 0) {
+                            break;
+                        }
                         indexEndTitle = fromTitle.indexOf(fromTitle.charAt(0), 1);
                         indexEndTitle = (indexEndTitle != -1)? indexEndTitle : fromTitle.length();
                         titleValue = fromTitle.substring(1, indexEndTitle);
