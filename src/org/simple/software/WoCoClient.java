@@ -134,7 +134,7 @@ public class WoCoClient {
 		clientID 			= Integer.parseInt(args[5]);
 		numberOfClients 	= Integer.parseInt(args[6]);
 		int seed = (args.length==8) ? Integer.parseInt(args[7]) : (int) (Math.random()*10000);
-		Logging.createFolder("clients-"+args[6]);
+		Logging.createFolder("client_clients-"+args[6]);
 		//We generate one document for the entire runtime of this client
 		//Otherwise the client would spend too much time generating new inputs.
     	String docu = DocumentGenerator.generateDocument((int) (dSize), file, seed);

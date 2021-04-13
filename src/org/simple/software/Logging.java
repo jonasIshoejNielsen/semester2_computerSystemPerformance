@@ -21,35 +21,35 @@ public class Logging {
             }
         }
     }
-    public static void writeCleaningTags (long msg) {
+    public static void writeCleaningTags (long msg, int clientId) {
         if(!Config.writeCleaningTags) return;
-        writerCleaningTags  = (writerCleaningTags==null)?   createFileWriter("CleaningTags") : writerCleaningTags;
+        writerCleaningTags  = (writerCleaningTags==null)?   createFileWriter("CleaningTags", clientId) : writerCleaningTags;
         writeToFile(writerCleaningTags, msg);
     }
-    public static void writeWordCount (long msg) {
+    public static void writeWordCount (long msg, int clientId) {
         if(!Config.writeWordCount) return;
-        writerResponseTime  = (writerResponseTime==null)?   createFileWriter("WordCount") : writerResponseTime;
+        writerResponseTime  = (writerResponseTime==null)?   createFileWriter("WordCount", clientId) : writerResponseTime;
         writeToFile(writerResponseTime, msg);
     }
-    public static void writeResponseTime(long msg, int clientIndex) {
-        if(!Config.writeResponseTime) return;
-        writerWordCount     = (writerWordCount==null)?      createFileWriter("ResponseTime"+clientIndex) : writerWordCount;
-        writeToFile(writerWordCount, msg);
-    }
-    public static void writeSerializing (long msg) {
+    public static void writeSerializing (long msg, int clientId) {
         if(!Config.writeSerializing) return;
-        writerSerializing   = (writerSerializing==null)?    createFileWriter("Serializing") : writerSerializing;
+        writerSerializing   = (writerSerializing==null)?    createFileWriter("Serializing", clientId) : writerSerializing;
         writeToFile(writerSerializing, msg);
     }
-    public static void writeTimeInServer (long msg) {
+    public static void writeTimeInServer (long msg, int clientId) {
         if(!Config.writeTimeInServer) return;
-        writerTimeInServer  = (writerTimeInServer==null)?    createFileWriter("TimeInServer") : writerTimeInServer;
+        writerTimeInServer  = (writerTimeInServer==null)?    createFileWriter("TimeInServer", clientId) : writerTimeInServer;
         writeToFile(writerTimeInServer, msg);
     }
 
+    public static void writeResponseTime(long msg, int clientId) {
+        if(!Config.writeResponseTime) return;
+        writerWordCount     = (writerWordCount==null)?      createFileWriter("ResponseTime", clientId) : writerWordCount;
+        writeToFile(writerWordCount, msg);
+    }
 
-    private static FileWriter createFileWriter(String name) {
-        String path = new StringBuilder(FileName).append(name).append(".txt").toString();
+    private static FileWriter createFileWriter(String name, int clientId) {
+        String path = new StringBuilder(FileName).append(name).append("-").append(clientId).append(".txt").toString();
         FileWriter writer = null;
         try {
             writer = new FileWriter(path, false);
