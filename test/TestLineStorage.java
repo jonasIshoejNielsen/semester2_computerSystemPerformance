@@ -82,5 +82,16 @@ public class TestLineStorage {
         ls.doWordCount(inputMap, true);
         Assertions.assertEquals(1, inputMap.get("Di"));
     }
+    @Test
+    void testDoWordCountLinkEndInEmptyTile() {
+        init();
+        String inputString = "<a href=\"/w/index.php?title=Distributed computing&amp;action=edit&amp;section=8\" title=";
+        Map<String, Integer> inputMap    = new HashMap<>();
+
+        LineStorage ls  = new LineStorage(inputString, new Random().nextInt());
+        ls.doWordCount(inputMap, true);
+        Assertions.assertEquals(1, inputMap.get("Distributed"));
+        Assertions.assertEquals(1, inputMap.get("computing"));
+    }
 
 }

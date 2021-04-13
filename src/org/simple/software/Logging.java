@@ -10,13 +10,15 @@ public class Logging {
     private static FileWriter writerSerializing;
     private static FileWriter writerResponseTime;
     private static FileWriter writerTimeInServer;
-    private static String FileName = "Logs";
+    private static String FileName = "Logs/Logs";
 
     public static void createFolder(String prefix) {
         FileName = new StringBuilder(FileName).append(prefix).append("/").toString();
         File file = new File(FileName);
         if (!file.exists()){
-            while (!file.mkdir()){}
+            while (!file.mkdirs()){
+                System.out.println(FileName);
+            }
         }
     }
     public static void writeCleaningTags (long msg) {
