@@ -10,9 +10,11 @@ public class Logging {
     private static FileWriter writerSerializing;
     private static FileWriter writerResponseTime;
     private static FileWriter writerTimeInServer;
+    private static String FileName = "Logs";
 
-    public static void createFolder() {
-        File file = new File("Logs/");
+    public static void createFolder(String prefix) {
+        FileName = new StringBuilder(FileName).append(prefix).append("/").toString();
+        File file = new File(FileName);
         if (!file.exists()){
             while (!file.mkdir()){}
         }
@@ -45,7 +47,7 @@ public class Logging {
 
 
     private static FileWriter createFileWriter(String name) {
-        String path = new StringBuilder("Logs/").append(name).append(".txt").toString();
+        String path = new StringBuilder(FileName).append(name).append(".txt").toString();
         FileWriter writer = null;
         try {
             writer = new FileWriter(path, false);

@@ -20,7 +20,7 @@ public class WoCoServer {
 		System.out.println(cMode? "Clean tags": "Don't clean tags");
 		System.out.println(threadCount + " number of threads");
 
-		Logging.createFolder();
+		Logging.createFolder(new StringBuilder("-threads-").append(args[3]).append("-clean-").append(args[2]).toString());
 
 
 		if (threadCount>1) {
