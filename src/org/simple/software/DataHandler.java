@@ -9,5 +9,5 @@ public interface DataHandler {
     List<Long> getTimesSerializing();
     List<Long> getTimesInServer();
     int getDataHandlerId();
-    void startPipeLine ();
+    void startPipeLine (boolean repeat);
 }

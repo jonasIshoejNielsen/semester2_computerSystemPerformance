@@ -40,30 +40,37 @@ public class DataHandlerSynchronized implements DataHandler {
         return dataHandlerId;
     }
 
-    private synchronized LineStorage getNextLineStorage () {
-        while (!Server.linesToCount.isEmpty()) {
-            return Server.linesToCount.remove(0);
-        }
-        return null;
+    private synchronized LineStorage getNextLineStorage () throws InterruptedException {
+        Server.removed++;
+        return Server.linesToCount.take();
     }
 
-    public void startPipeLine () {
-        LineStorage ls = getNextLineStorage();
-        ls.doWordCount(cMode);
-        long beginSerializing   = System.nanoTime();
-        byte[] returnMessage    = serializeResultForClient(ls).getBytes();
-        long endSerializing     = System.nanoTime();
-        ByteBuffer ba = ByteBuffer.wrap(returnMessage);
-        try {
-            ls.getClient().write(ba);
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void startPipeLine (boolean repeat) {
+        while (repeat) {
+            LineStorage ls = null;
+            try {
+                ls = getNextLineStorage();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                continue;
+            }
+            ls.doWordCount(cMode);
+            long beginSerializing = System.nanoTime();
+            byte[] returnMessage = serializeResultForClient(ls).getBytes();
+            long endSerializing = System.nanoTime();
+            ByteBuffer ba = ByteBuffer.wrap(returnMessage);
+            try {
+                ls.getClient().write(ba);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            long endFromStart = System.nanoTime();
+
+            timesCleaning.add(ls.getTimeCleaning());
+            timesWordCount.add(ls.getTimeWordCount());
+            timesSerializing.add(beginSerializing - endSerializing);
+            timesInServer.add(ls.getTimeFromEnteringServer() - endFromStart);
         }
-        long endFromStart     = System.nanoTime();
-        timesCleaning.add(ls.getTimeCleaning());
-        timesWordCount.add(ls.getTimeWordCount());
-        timesSerializing.add(beginSerializing - endSerializing);
-        timesInServer.add(Server.timesFromStart.get(ls.getClientId()) - endFromStart);
     }
 
     /**
