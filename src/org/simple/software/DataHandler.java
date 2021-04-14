@@ -12,7 +12,7 @@ public interface DataHandler {
     List<Long> getTimesSerializing();
     List<Long> getTimesInServer();
     int getClientId();
-    void countLine ();
+    LineStorage countLine ();
     boolean readFromChanel(ByteBuffer bb, SocketChannel client) throws IOException;
 
     /**
@@ -24,14 +24,14 @@ public interface DataHandler {
     * @param dataChunk
     * @return A document has been processed or not.
     */
-    boolean receiveData(int clientId, String dataChunk);
+    LineStorage receiveData(int clientId, String dataChunk);
 
     /**
     * Returns a serialized version of the word count associated with the last
     * processed document for a given client. If not called before processing a new
     * document, the result is overwritten by the new one.
-    * @param clientId
+    * @param ls
     * @return
     */
-    String serializeResultForClient(int clientId);
+    String serializeResultForClient(LineStorage ls);
 }

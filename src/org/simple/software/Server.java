@@ -69,17 +69,19 @@ public class Server {
                     HelperFunctions.print(WoCoServer.class, "Connection Accepted: ", client.getLocalAddress().toString(), "\n");
 
                 } else if (key.isReadable()) {
-                    bb.rewind();
-                    SocketChannel client = (SocketChannel) key.channel();
-                    Boolean readFromChannel = dataHandlerList.get(0).readFromChanel(bb, client);    //todo change
-                    if (readFromChannel.equals(false)) {
-                        key.cancel();
-                    }
+                    handleRead(bb, key);
                 }
                 iterator.remove();
             }
         }
-
+    }
+    private void handleRead(ByteBuffer bb, SelectionKey key) throws IOException {
+        bb.rewind();
+        SocketChannel client = (SocketChannel) key.channel();
+        Boolean readFromChannel = dataHandlerList.get(0).readFromChanel(bb, client);    //todo change
+        if (readFromChannel.equals(false)) {
+            key.cancel();
+        }
     }
 
     private void openSocket(InetSocketAddress myAddr, Selector selector) throws IOException {

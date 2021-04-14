@@ -10,7 +10,6 @@ import java.util.Map;
 
 public class DataHandlerSynchronized implements DataHandler {
     private static final HashMap<Integer, StringBuilder> buffer              = new HashMap<>();
-    private static final HashMap<Integer, HashMap<String, Integer>> results  = new HashMap<>();
     private static final HashMap<Integer, Long> timesFromStart               = new HashMap<>();
     private static final ArrayList<LineStorage> linesToCount                 = new ArrayList<>();
     private final ArrayList<List<Long>> timesCleaning                 = new ArrayList<>();
@@ -19,10 +18,6 @@ public class DataHandlerSynchronized implements DataHandler {
     private final List<Long> timesInServer                            = new ArrayList<>();
     private int clientId;
     private final boolean cMode;
-
-    public static synchronized void addLineToCount(String line, int clientId) {
-        linesToCount.add(new LineStorage(line, clientId));
-    }
 
     public DataHandlerSynchronized(boolean cMode, int clientId) {
         this.cMode = cMode;
@@ -48,14 +43,15 @@ public class DataHandlerSynchronized implements DataHandler {
         return clientId;
     }
 
-    public synchronized void countLine () {
+    public synchronized LineStorage countLine () {
         while (!linesToCount.isEmpty()) {
             LineStorage ls = linesToCount.remove(0);
-            HashMap<String, Integer> wc = results.getOrDefault(ls.getClientId(), new HashMap<>());
-            ls.doWordCount(wc, cMode);
+            ls.doWordCount(cMode);
             timesCleaning.add(ls.getTimeCleaning());
             timesWordCount.add(ls.getTimeWordCount());
+            return ls;
         }
+        return null;
     }
 
     public synchronized boolean readFromChanel(ByteBuffer bb, SocketChannel client) throws IOException {
@@ -66,11 +62,11 @@ public class DataHandlerSynchronized implements DataHandler {
         int clientId = client.hashCode();
         String result = new String(bb.array(),0, readCnt);
 
-        boolean hasResult = receiveData(clientId, result);
+        LineStorage ls = receiveData(clientId, result);
 
-        if (hasResult) {
+        if (ls != null) {
             long beginSerializing   = System.nanoTime();
-            byte[] returnMessage    = serializeResultForClient(clientId).getBytes();
+            byte[] returnMessage    = serializeResultForClient(ls).getBytes();
             long endSerializing     = System.nanoTime();
             timesSerializing.add(beginSerializing - endSerializing);
             ByteBuffer ba = ByteBuffer.wrap(returnMessage);
@@ -82,9 +78,8 @@ public class DataHandlerSynchronized implements DataHandler {
         return true;
     }
 
-    public synchronized boolean receiveData(int clientId, String dataChunk) {
-        if(!results.containsKey(clientId)) {
-            results.put(clientId, new HashMap<>());
+    public synchronized LineStorage receiveData(int clientId, String dataChunk) {
+        if(!buffer.containsKey(clientId)) {
             buffer.put(clientId, new StringBuilder());
             timesFromStart.put(clientId, System.nanoTime());
         }
@@ -93,7 +88,7 @@ public class DataHandlerSynchronized implements DataHandler {
         sb.append(dataChunk);
 
         if (dataChunk.indexOf(WoCoServer.SEPARATOR)==-1) {
-            return false;
+            return null;
         }
 
         String bufData = sb.toString();
@@ -119,25 +114,19 @@ public class DataHandlerSynchronized implements DataHandler {
         }
 
         //word count in line
-        addLineToCount(line, clientId);
-        countLine();
-        return true;
+        linesToCount.add(new LineStorage(line, clientId));
+        LineStorage ls = countLine();
+        return ls;
 
     }
 
-    public synchronized String serializeResultForClient(int clientId) {
-        if (results.containsKey(clientId)) {
-            StringBuilder sb = new StringBuilder();
-            HashMap<String, Integer> hm = results.get(clientId);
-            for (Map.Entry<String, Integer> entry : hm.entrySet()) {
-                sb.append(entry.getKey()).append(",");
-                sb.append(entry.getValue()).append(",");
-            }
-            results.remove(clientId);
-            sb.append("\n");
-            return sb.substring(0);
-        } else {
-            return "";
+    public synchronized String serializeResultForClient(LineStorage ls) {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<String, Integer> entry : ls.getResults().entrySet()) {
+            sb.append(entry.getKey()).append(",");
+            sb.append(entry.getValue()).append(",");
         }
+        sb.append("\n");
+        return sb.substring(0);
     }
 }

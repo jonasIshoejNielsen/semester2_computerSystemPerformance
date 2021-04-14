@@ -1,5 +1,6 @@
 package org.simple.software;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -8,6 +9,7 @@ public class LineStorage {
     public final int clientId;
     private final List<Long> timeCleaning = new ArrayList<>();
     private final List<Long> timeWordCount = new ArrayList<>();
+    private final HashMap<String, Integer> results = new HashMap<>();
 
     public LineStorage(String line, int clientId) {
         this.line = line;
@@ -27,7 +29,7 @@ public class LineStorage {
      * @param wc   A HashMap to store the results in.
      * @param cMode
      */
-    public void doWordCount(Map<String, Integer> wc, boolean cMode) {
+    public void doWordCount(boolean cMode) {
         try {
             String ucLine = line;       //todo: .toLowerCase();
 
@@ -39,7 +41,7 @@ public class LineStorage {
 
             long beginWordCount = System.nanoTime();
             String[] words = getWordsFromString(cleanedLine);
-            addWordsToMap(words, wc);
+            addWordsToMap(words, results);
             long endWordCount = System.nanoTime();
             timeWordCount.add(endWordCount - beginWordCount);
 
@@ -107,5 +109,13 @@ public class LineStorage {
 
     public List<Long> getTimeWordCount() {
         return timeWordCount;
+    }
+
+    public HashMap<String, Integer> getResults() {
+        return results;
+    }
+
+    public void putResultValue(String key, Integer value) {
+        results.put(key, value);
     }
 }
