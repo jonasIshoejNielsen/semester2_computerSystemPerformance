@@ -41,34 +41,35 @@ public class DataHandlerSynchronized implements DataHandler {
     }
 
     private synchronized LineStorage getNextLineStorage () throws InterruptedException {
+        Server.removed++;
         return Server.linesToCount.take();
     }
 
     public void startPipeLine (boolean repeat) {
-        LineStorage ls = null;
-        try {
-            ls = getNextLineStorage();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            return;
-        }
-        ls.doWordCount(cMode);
-        long beginSerializing   = System.nanoTime();
-        byte[] returnMessage    = serializeResultForClient(ls).getBytes();
-        long endSerializing     = System.nanoTime();
-        ByteBuffer ba = ByteBuffer.wrap(returnMessage);
-        try {
-            ls.getClient().write(ba);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        long endFromStart     = System.nanoTime();
-        timesCleaning.add(ls.getTimeCleaning());
-        timesWordCount.add(ls.getTimeWordCount());
-        timesSerializing.add(beginSerializing - endSerializing);
-        timesInServer.add(ls.getTimeFromEnteringServer() - endFromStart);
-        if (repeat) {
-            startPipeLine(repeat);
+        while (repeat) {
+            LineStorage ls = null;
+            try {
+                ls = getNextLineStorage();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                continue;
+            }
+            ls.doWordCount(cMode);
+            long beginSerializing = System.nanoTime();
+            byte[] returnMessage = serializeResultForClient(ls).getBytes();
+            long endSerializing = System.nanoTime();
+            ByteBuffer ba = ByteBuffer.wrap(returnMessage);
+            try {
+                ls.getClient().write(ba);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            long endFromStart = System.nanoTime();
+
+            timesCleaning.add(ls.getTimeCleaning());
+            timesWordCount.add(ls.getTimeWordCount());
+            timesSerializing.add(beginSerializing - endSerializing);
+            timesInServer.add(ls.getTimeFromEnteringServer() - endFromStart);
         }
     }
 

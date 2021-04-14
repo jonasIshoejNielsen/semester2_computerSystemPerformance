@@ -88,5 +88,14 @@ public class TestLineStorage {
         Assertions.assertEquals(1, ls.getResults().get("Distributed"));
         Assertions.assertEquals(1, ls.getResults().get("computing"));
     }
+    @Test
+    void testDoWordCountLinkEndInEmptyTileNoEquals() {
+        init();
+        String inputString = "hi<a href=\"/wiki/Client%E2%80%93server model\" title";
+
+        LineStorage ls  = makeLineStorage(inputString);
+        ls.doWordCount(true);
+        Assertions.assertEquals(1, ls.getResults().get("hi"));
+    }
 
 }

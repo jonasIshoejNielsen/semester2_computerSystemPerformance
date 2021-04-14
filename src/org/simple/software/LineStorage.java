@@ -31,13 +31,11 @@ public class LineStorage {
      * only (e.g., "alpha-beta" become "alphabeta"). The code breaks the text up into
      * words based on spaces.
      *
-     * @param wc   A HashMap to store the results in.
      * @param cMode
      */
     public void doWordCount(boolean cMode) {
         try {
             String ucLine = line;       //todo: .toLowerCase();
-
             long beginCleaning = System.nanoTime();
             ucLine = ucLine.replace('_', ' ');
             String cleanedLine = (cMode) ? removeTags(ucLine) : ucLine;
@@ -67,6 +65,9 @@ public class LineStorage {
                 String remainingString = split[1];
                 int index = remainingString.toLowerCase().indexOf("title");
                 while (index != -1) {
+                    if(index + 6>=remainingString.length()) {
+                        break;
+                    }
                     String fromTitle = remainingString.substring(index + 6);
                     int indexEndTitle = fromTitle.toLowerCase().indexOf("&amp");
                     String titleValue;
@@ -86,6 +87,7 @@ public class LineStorage {
                 }
             }catch (Exception e) {
                 System.out.println(v);
+                throw e;
             }
         }
         return sb.toString();

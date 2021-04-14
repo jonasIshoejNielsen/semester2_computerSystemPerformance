@@ -31,23 +31,14 @@ public class WoCoServer {
 
 		Server server = new Server(lAddr, lPort, threadCount==1);
 		List<DataHandler> dataHandlerList = server.setUpDataHandlers(cMode, threadCount);
+		final ExecutorService exec = Executors.newFixedThreadPool(threadCount);
 		if (threadCount>1) {
-			ExecutorService exec = Executors.newFixedThreadPool(threadCount);
 			for (DataHandler dh: dataHandlerList ) {
-				exec.submit(() -> dh.startPipeLine(true));
+				exec.submit(() ->dh.startPipeLine(true));
 			}
 		}
 
-		ScheduledExecutorService executorService;
-		executorService = Executors.newSingleThreadScheduledExecutor();
-		executorService.scheduleAtFixedRate(() -> {
-			System.out.println(Server.buffer.size());
-			System.out.println(Server.linesToCount.size());
-			System.out.println();
-			}, 0, 2, TimeUnit.SECONDS);
-
 		server.startListening();
-
 	}
 }
 

@@ -15,7 +15,8 @@ public class Server {
     public static final HashMap<Integer, StringBuilder> buffer = new HashMap<>();
     public static final HashMap<Integer, Long> timesFromEnteringServer = new HashMap<>();
     public static final LinkedBlockingQueue<LineStorage> linesToCount         = new LinkedBlockingQueue<>();
-
+    public static int added = 0;
+    public static int removed = 0;
     private Selector selector;
     private ServerSocketChannel serverSocket;
     private List<DataHandler> dataHandlerList = new ArrayList<>();
@@ -51,8 +52,8 @@ public class Server {
     }
 
     public List<DataHandler> setUpDataHandlers(boolean cMode, int threadCount) {
-        for (int i = 1; i <= threadCount; i++) {
-            dataHandlerList.add(new DataHandlerSynchronized(cMode, 3));
+        for (int i = 1; i <= 1; i++) {    //todo
+            dataHandlerList.add(new DataHandlerSynchronized(cMode, i));
         }
         return dataHandlerList;
     }
@@ -159,6 +160,7 @@ public class Server {
 
         //word count in line
         linesToCount.add(new LineStorage(line, clientId, client, timeFromEnteringServer));
+        added++;
         return true;
     }
 
