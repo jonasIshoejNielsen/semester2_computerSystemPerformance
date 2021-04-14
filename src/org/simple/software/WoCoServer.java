@@ -32,7 +32,7 @@ public class WoCoServer {
 
 		}
 
-		Server server = new Server(lAddr, lPort);
+		Server server = new Server(lAddr, lPort, threadCount==1);
 		List<DataHandler> dataHandlerList = server.setUpDataHandlers(cMode, threadCount);
 		server.startListening();
 	}
