@@ -9,14 +9,16 @@ public class LineStorage {
     public final String line;
     private final int clientId;
     private final SocketChannel client;
+    private final long timeFromEnteringServer;
     private final List<Long> timeCleaning = new ArrayList<>();
     private final List<Long> timeWordCount = new ArrayList<>();
     private final HashMap<String, Integer> results = new HashMap<>();
 
-    public LineStorage(String line, int clientId, SocketChannel client) {
+    public LineStorage(String line, int clientId, SocketChannel client, long timeFromEnteringServer) {
         this.line     = line;
         this.clientId = clientId;
         this.client   = client;
+        this.timeFromEnteringServer = timeFromEnteringServer;
     }
 
     public int getClientId() {
@@ -119,6 +121,10 @@ public class LineStorage {
     }
     public SocketChannel getClient() {
         return client;
+    }
+
+    public long getTimeFromEnteringServer() {
+        return timeFromEnteringServer;
     }
 
     public void putResultValue(String key, Integer value) {

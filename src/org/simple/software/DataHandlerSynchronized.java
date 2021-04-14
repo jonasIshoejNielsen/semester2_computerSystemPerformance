@@ -40,15 +40,18 @@ public class DataHandlerSynchronized implements DataHandler {
         return dataHandlerId;
     }
 
-    private synchronized LineStorage getNextLineStorage () {
-        while (!Server.linesToCount.isEmpty()) {
-            return Server.linesToCount.remove(0);
-        }
-        return null;
+    private synchronized LineStorage getNextLineStorage () throws InterruptedException {
+        return Server.linesToCount.take();
     }
 
-    public void startPipeLine () {
-        LineStorage ls = getNextLineStorage();
+    public void startPipeLine (boolean repeat) {
+        LineStorage ls = null;
+        try {
+            ls = getNextLineStorage();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return;
+        }
         ls.doWordCount(cMode);
         long beginSerializing   = System.nanoTime();
         byte[] returnMessage    = serializeResultForClient(ls).getBytes();
@@ -63,7 +66,10 @@ public class DataHandlerSynchronized implements DataHandler {
         timesCleaning.add(ls.getTimeCleaning());
         timesWordCount.add(ls.getTimeWordCount());
         timesSerializing.add(beginSerializing - endSerializing);
-        timesInServer.add(Server.timesFromStart.get(ls.getClientId()) - endFromStart);
+        timesInServer.add(ls.getTimeFromEnteringServer() - endFromStart);
+        if (repeat) {
+            startPipeLine(repeat);
+        }
     }
 
     /**

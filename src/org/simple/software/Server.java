@@ -8,12 +8,13 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.BiConsumer;
 
 public class Server {
-    private static final HashMap<Integer, StringBuilder> buffer = new HashMap<>();
-    public static final HashMap<Integer, Long> timesFromStart   = new HashMap<>();
-    public static final ArrayList<LineStorage> linesToCount     = new ArrayList<>();
+    public static final HashMap<Integer, StringBuilder> buffer = new HashMap<>();
+    public static final HashMap<Integer, Long> timesFromEnteringServer = new HashMap<>();
+    public static final LinkedBlockingQueue<LineStorage> linesToCount         = new LinkedBlockingQueue<>();
 
     private Selector selector;
     private ServerSocketChannel serverSocket;
@@ -49,8 +50,10 @@ public class Server {
         }
     }
 
-    public List<DataHandler> setUpDataHandlers(boolean cMode, int threadCount) { //todo: threadCOunt
-        dataHandlerList.add(new DataHandlerSynchronized(cMode, 3));
+    public List<DataHandler> setUpDataHandlers(boolean cMode, int threadCount) {
+        for (int i = 1; i <= threadCount; i++) {
+            dataHandlerList.add(new DataHandlerSynchronized(cMode, 3));
+        }
         return dataHandlerList;
     }
 
@@ -106,11 +109,11 @@ public class Server {
 
         if (receivedAllData) {
             if (onlyOneThread) {
-                dataHandlerList.get(0).startPipeLine();
+                dataHandlerList.get(0).startPipeLine(false);
             }
         }
         else {
-            System.out.println("check !receivedAllData");
+            //todo: System.out.println("check !receivedAllData");
         }
         return true;
     }
@@ -127,8 +130,7 @@ public class Server {
     public synchronized Boolean putIntoBuffer(int clientId, SocketChannel client, String dataChunk) {
         if(!buffer.containsKey(clientId)) {
             buffer.put(clientId, new StringBuilder());
-            System.out.println("put"+clientId);
-            timesFromStart.put(clientId, System.nanoTime());
+            timesFromEnteringServer.put(clientId, System.nanoTime());
         }
 
         StringBuilder sb = buffer.get(clientId);
@@ -153,9 +155,10 @@ public class Server {
         } else {
             handleMultipleLines(clientId, rest);
         }
+        long timeFromEnteringServer = timesFromEnteringServer.get(clientId);
 
         //word count in line
-        linesToCount.add(new LineStorage(line, clientId, client));
+        linesToCount.add(new LineStorage(line, clientId, client, timeFromEnteringServer));
         return true;
     }
 
