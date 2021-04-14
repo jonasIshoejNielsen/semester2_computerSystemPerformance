@@ -16,12 +16,12 @@ public class DataHandlerSynchronized implements DataHandler {
     private final ArrayList<List<Long>> timesWordCount                = new ArrayList<>();
     private final List<Long> timesSerializing                         = new ArrayList<>();
     private final List<Long> timesInServer                            = new ArrayList<>();
-    private int clientId;
+    private int dataHandlerId;
     private final boolean cMode;
 
-    public DataHandlerSynchronized(boolean cMode, int clientId) {
+    public DataHandlerSynchronized(boolean cMode, int dataHandlerId) {
         this.cMode = cMode;
-        this.clientId = clientId;
+        this.dataHandlerId = dataHandlerId;
     }
 
     public synchronized ArrayList<List<Long>> getTimesCleaning() {
@@ -39,17 +39,13 @@ public class DataHandlerSynchronized implements DataHandler {
     public synchronized List<Long> getTimesInServer() {
         return timesInServer;
     }
-    public synchronized int getClientId() {
-        return clientId;
+    public synchronized int getDataHandlerId() {
+        return dataHandlerId;
     }
 
-    public synchronized LineStorage countLine () {
+    private synchronized LineStorage getNextLineStorage () {
         while (!linesToCount.isEmpty()) {
-            LineStorage ls = linesToCount.remove(0);
-            ls.doWordCount(cMode);
-            timesCleaning.add(ls.getTimeCleaning());
-            timesWordCount.add(ls.getTimeWordCount());
-            return ls;
+            return linesToCount.remove(0);
         }
         return null;
     }
@@ -60,27 +56,47 @@ public class DataHandlerSynchronized implements DataHandler {
             return false;
         }
         int clientId = client.hashCode();
-        String result = new String(bb.array(),0, readCnt);
+        String dataChunkToAdd = new String(bb.array(),0, readCnt);
 
-        LineStorage ls = receiveData(clientId, result);
+        boolean receivedAllData = receiveData(clientId, client, dataChunkToAdd);
 
-        if (ls != null) {
-            long beginSerializing   = System.nanoTime();
-            byte[] returnMessage    = serializeResultForClient(ls).getBytes();
-            long endSerializing     = System.nanoTime();
-            timesSerializing.add(beginSerializing - endSerializing);
-            ByteBuffer ba = ByteBuffer.wrap(returnMessage);
-            client.write(ba);
-            long endFromStart     = System.nanoTime();
-            timesInServer.add(timesFromStart.get(clientId) - endFromStart);
-            
+        if (receivedAllData) {
+            startPipeLine();
         }
         return true;
     }
+    private void startPipeLine () {
+        LineStorage ls = getNextLineStorage();
+        ls.doWordCount(cMode);
+        long beginSerializing   = System.nanoTime();
+        byte[] returnMessage    = serializeResultForClient(ls).getBytes();
+        long endSerializing     = System.nanoTime();
+        ByteBuffer ba = ByteBuffer.wrap(returnMessage);
+        try {
+            ls.getClient().write(ba);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        long endFromStart     = System.nanoTime();
+        timesCleaning.add(ls.getTimeCleaning());
+        timesWordCount.add(ls.getTimeWordCount());
+        timesSerializing.add(beginSerializing - endSerializing);
+        timesInServer.add(timesFromStart.get(ls.getClientId()) - endFromStart);
+    }
 
-    public synchronized LineStorage receiveData(int clientId, String dataChunk) {
+    /**
+     * This function handles data received from a specific client (TCP connection).
+     * Internally it will check if the buffer associated with the client has a full
+     * document in it (based on the SEPARATOR). If yes, it will process the document and
+     * return true, otherwise it will add the data to the buffer and return false
+     * @param clientId
+     * @param dataChunk
+     * @return A document has been processed or not.
+     */
+    public synchronized Boolean receiveData(int clientId, SocketChannel client, String dataChunk) {
         if(!buffer.containsKey(clientId)) {
             buffer.put(clientId, new StringBuilder());
+            System.out.println("put"+clientId);
             timesFromStart.put(clientId, System.nanoTime());
         }
 
@@ -88,7 +104,7 @@ public class DataHandlerSynchronized implements DataHandler {
         sb.append(dataChunk);
 
         if (dataChunk.indexOf(WoCoServer.SEPARATOR)==-1) {
-            return null;
+            return false;
         }
 
         String bufData = sb.toString();
@@ -114,12 +130,17 @@ public class DataHandlerSynchronized implements DataHandler {
         }
 
         //word count in line
-        linesToCount.add(new LineStorage(line, clientId));
-        LineStorage ls = countLine();
-        return ls;
+        linesToCount.add(new LineStorage(line, clientId, client));
+        return true;
 
     }
-
+    /**
+     * Returns a serialized version of the word count associated with the last
+     * processed document for a given client. If not called before processing a new
+     * document, the result is overwritten by the new one.
+     * @param ls
+     * @return
+     */
     public synchronized String serializeResultForClient(LineStorage ls) {
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, Integer> entry : ls.getResults().entrySet()) {

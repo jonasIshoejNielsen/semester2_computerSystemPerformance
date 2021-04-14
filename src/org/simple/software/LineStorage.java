@@ -1,4 +1,5 @@
 package org.simple.software;
+import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -6,14 +7,16 @@ import java.util.Map;
 
 public class LineStorage {
     public final String line;
-    public final int clientId;
+    private final int clientId;
+    private final SocketChannel client;
     private final List<Long> timeCleaning = new ArrayList<>();
     private final List<Long> timeWordCount = new ArrayList<>();
     private final HashMap<String, Integer> results = new HashMap<>();
 
-    public LineStorage(String line, int clientId) {
-        this.line = line;
+    public LineStorage(String line, int clientId, SocketChannel client) {
+        this.line     = line;
         this.clientId = clientId;
+        this.client   = client;
     }
 
     public int getClientId() {
@@ -113,6 +116,9 @@ public class LineStorage {
 
     public HashMap<String, Integer> getResults() {
         return results;
+    }
+    public SocketChannel getClient() {
+        return client;
     }
 
     public void putResultValue(String key, Integer value) {

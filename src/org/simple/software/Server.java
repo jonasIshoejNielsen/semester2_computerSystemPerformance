@@ -25,11 +25,11 @@ public class Server {
             public void run() {
                 System.out.println("Writing to logs");
                 for (DataHandler dh: dataHandlerList) {
-                    System.out.println("Writing to logs" + dh.getClientId());
-                    logListOfTimes(dh.getClientId(), dh.getTimesCleaning(),  Logging::writeCleaningTags);
-                    logListOfTimes(dh.getClientId(), dh.getTimesWordCount(), Logging::writeWordCount);
-                    logTimes(dh.getClientId(), dh.getTimesSerializing(),     Logging::writeSerializing);
-                    logTimes(dh.getClientId(), dh.getTimesInServer(),        Logging::writeTimeInServer);
+                    System.out.println("Writing to logs" + dh.getDataHandlerId());
+                    logListOfTimes(dh.getDataHandlerId(), dh.getTimesCleaning(),  Logging::writeCleaningTags);
+                    logListOfTimes(dh.getDataHandlerId(), dh.getTimesWordCount(), Logging::writeWordCount);
+                    logTimes(dh.getDataHandlerId(), dh.getTimesSerializing(),     Logging::writeSerializing);
+                    logTimes(dh.getDataHandlerId(), dh.getTimesInServer(),        Logging::writeTimeInServer);
 
                 }
             }
