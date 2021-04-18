@@ -34,7 +34,7 @@ public class WoCoServer {
 		final ExecutorService exec = Executors.newFixedThreadPool(threadCount);
 		if (threadCount>1) {
 			for (DataHandler dh: dataHandlerList ) {
-				exec.submit(() ->dh.startPipeLine(true));
+				exec.submit(() ->dh.startPipeLine(true, true));
 			}
 		}
 

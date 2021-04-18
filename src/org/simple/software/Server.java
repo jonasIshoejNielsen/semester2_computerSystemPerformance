@@ -110,7 +110,7 @@ public class Server {
 
         if (receivedAllData) {
             if (onlyOneThread) {
-                dataHandlerList.get(0).startPipeLine(false);
+                dataHandlerList.get(0).startPipeLine(false, true);
             }
         }
         else {
