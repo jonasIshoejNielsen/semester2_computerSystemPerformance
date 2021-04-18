@@ -1,6 +1,7 @@
 package org.simple.software;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -28,17 +29,25 @@ public class WoCoServer {
 
 		Logging.createFolder(new StringBuilder("server_-clients-").append(numberOfClients).append("-threads-").append(args[3]).append("-clean-").append(args[2]).toString());
 
+		List<DataHandler> dataHandlerList = setUpDataHandlers(cMode, threadCount, true);
+		Server server = new Server(lAddr, lPort, threadCount==1, dataHandlerList);
 
-		Server server = new Server(lAddr, lPort, threadCount==1);
-		List<DataHandler> dataHandlerList = server.setUpDataHandlers(cMode, threadCount);
+		server.startListening();
+	}
+
+
+	public static List<DataHandler> setUpDataHandlers(boolean cMode, int threadCount, boolean sendToCLient) {
+		List<DataHandler> dataHandlerList = new ArrayList<>();
+		for (int i = 1; i <= threadCount; i++) {
+			dataHandlerList.add(new DataHandlerSynchronized(cMode, i));
+		}
 		final ExecutorService exec = Executors.newFixedThreadPool(threadCount);
 		if (threadCount>1) {
 			for (DataHandler dh: dataHandlerList ) {
-				exec.submit(() ->dh.startPipeLine(true, true));
+				exec.submit(() ->dh.startPipeLine(true, sendToCLient));
 			}
 		}
-
-		server.startListening();
+		return dataHandlerList;
 	}
 }
 

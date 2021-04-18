@@ -63,7 +63,17 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/test/TestDocumentGeneration.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/test/TestLineStorage.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/test/TestThreading.java">
           <value>
             <set />
           </value>
