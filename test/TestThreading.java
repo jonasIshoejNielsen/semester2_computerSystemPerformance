@@ -10,29 +10,25 @@ import java.util.Random;
 
 public class TestThreading {
 
-
-    @Test
-    void testDoWordCountInputMap() throws IOException {
-        Config.setAllToFalse();
+    String genDocument () throws IOException {
         Random rand = new Random();
         int length  = rand.nextInt(50);
         int file    = rand.nextInt(2) + 1;
         int seed    = (int) (Math.random()*10000);
-        String docu1 = DocumentGenerator.generateDocument(length, file, seed);
-
-        long numberOfLineStorageLists = 1_000_000;
-        int threadCount = 16;
+        return DocumentGenerator.generateDocument(length, file, seed);
+    }
+    List<LineStorage> genListOfLineStorage(String docu, long numberOfLineStorageLists, int threadCount) {
         List<LineStorage> lineStorageList = new ArrayList<>();
         for (long i = 0; i < numberOfLineStorageLists; i++) {
-            lineStorageList.add(new LineStorage(docu1, 0, null, 0));
+            lineStorageList.add(new LineStorage(docu, 0, null, 0));
         }
 
         for (LineStorage ls: lineStorageList) {
             Server.linesToCount.add(ls);
         }
-
-        WoCoServer.setUpDataHandlers(true, threadCount, false);
-
+        return lineStorageList;
+    }
+    void waitForAllToBeDone () {
         while (! Server.linesToCount.isEmpty()) {
             try {
                 Thread.sleep(200);
@@ -46,11 +42,39 @@ public class TestThreading {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+    void asserAllLineStoragesAreCorrect (List<LineStorage> lineStorageList) {
         String res = Arrays.toString(lineStorageList.get(0).returnMessage);
         for (LineStorage ls: lineStorageList) {
             Assertions.assertEquals(res, Arrays.toString(ls.returnMessage));
         }
+    }
 
+    @Test
+    void testThreaddingDataHandlerSynchronized() throws IOException {
+        Config.setAllToFalse();
+        String docu = genDocument();
+
+        long numberOfLineStorageLists = 1_000_000;
+        int threadCount = 16;
+        List<LineStorage> lineStorageList = genListOfLineStorage(docu, numberOfLineStorageLists, threadCount);
+        WoCoServer.setUpDataHandlers(threadCount, false, i -> new DataHandlerSynchronized(true, i));
+
+        waitForAllToBeDone ();
+        asserAllLineStoragesAreCorrect (lineStorageList);
+    }
+    @Test
+    void testThreaddingDataHandlerPrimary() throws IOException {
+        Config.setAllToFalse();
+        String docu = genDocument();
+
+        long numberOfLineStorageLists = 1_000_000;
+        int threadCount = 16;
+        List<LineStorage> lineStorageList = genListOfLineStorage(docu, numberOfLineStorageLists, threadCount);
+        WoCoServer.setUpDataHandlers(threadCount, false, i -> new DataHandlerPrimary(true, i));
+
+        waitForAllToBeDone ();
+        asserAllLineStoragesAreCorrect (lineStorageList);
     }
 }
 

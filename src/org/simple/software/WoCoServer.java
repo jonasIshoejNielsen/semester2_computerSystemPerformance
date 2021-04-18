@@ -1,5 +1,6 @@
 package org.simple.software;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,6 +9,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class WoCoServer {
 
@@ -29,17 +33,17 @@ public class WoCoServer {
 
 		Logging.createFolder(new StringBuilder("server_-clients-").append(numberOfClients).append("-threads-").append(args[3]).append("-clean-").append(args[2]).toString());
 
-		List<DataHandler> dataHandlerList = setUpDataHandlers(cMode, threadCount, true);
+		List<DataHandler> dataHandlerList = setUpDataHandlers(threadCount, true, i -> new DataHandlerPrimary(cMode, i));
 		Server server = new Server(lAddr, lPort, threadCount==1, dataHandlerList);
 
 		server.startListening();
 	}
 
 
-	public static List<DataHandler> setUpDataHandlers(boolean cMode, int threadCount, boolean sendToCLient) {
+	public static List<DataHandler> setUpDataHandlers(int threadCount, boolean sendToCLient, Function<Integer, DataHandler> dataHandlerConstructor) {
 		List<DataHandler> dataHandlerList = new ArrayList<>();
 		for (int i = 1; i <= threadCount; i++) {
-			dataHandlerList.add(new DataHandlerSynchronized(cMode, i));
+			dataHandlerList.add(dataHandlerConstructor.apply(i));
 		}
 		final ExecutorService exec = Executors.newFixedThreadPool(threadCount);
 		if (threadCount>1) {
