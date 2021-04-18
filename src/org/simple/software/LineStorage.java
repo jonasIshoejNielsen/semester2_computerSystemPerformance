@@ -1,4 +1,6 @@
 package org.simple.software;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,6 +15,7 @@ public class LineStorage {
     private final List<Long> timeCleaning = new ArrayList<>();
     private final List<Long> timeWordCount = new ArrayList<>();
     private final HashMap<String, Integer> results = new HashMap<>();
+    public byte[] returnMessage;
 
     public LineStorage(String line, int clientId, SocketChannel client, long timeFromEnteringServer) {
         this.line     = line;
@@ -57,41 +60,45 @@ public class LineStorage {
         StringBuilder sb = new StringBuilder();
         for (String v : line.split(">")) {
             try {
-                String[] split = v.split("<");
-                sb.append(split[0]);
-                if (split.length < 2) {
-                    continue;
-                }
-                String remainingString = split[1];
-                int index = remainingString.toLowerCase().indexOf("title");
-                while (index != -1) {
-                    if(index + 6>=remainingString.length()) {
-                        break;
-                    }
-                    String fromTitle = remainingString.substring(index + 6);
-                    int indexEndTitle = fromTitle.toLowerCase().indexOf("&amp");
-                    String titleValue;
-                    if (indexEndTitle == -1) {
-                        if(fromTitle.length() == 0) {
-                            break;
-                        }
-                        indexEndTitle = fromTitle.indexOf(fromTitle.charAt(0), 1);
-                        indexEndTitle = (indexEndTitle != -1)? indexEndTitle : fromTitle.length();
-                        titleValue = fromTitle.substring(1, indexEndTitle);
-                    } else {
-                        titleValue = fromTitle.substring(0, indexEndTitle);
-                    }
-                    sb.append(" ").append(titleValue).append(" ");
-                    remainingString = fromTitle.substring(indexEndTitle);
-                    index = remainingString.toLowerCase().indexOf("title");
-                }
-            }catch (Exception e) {
+                removeTagsFromLine(sb, v);
+            } catch (Exception e) {
                 System.out.println(v);
                 throw e;
             }
         }
         return sb.toString();
     }
+    private static void removeTagsFromLine(StringBuilder sb, String line) {
+        String[] split = line.split("<");
+        sb.append(split[0]);
+        if (split.length < 2) {
+            return;
+        }
+        String remainingString = split[1];
+        int index = remainingString.toLowerCase().indexOf("title");
+        while (index != -1) {
+            if (index + 6 >= remainingString.length()) {
+                break;
+            }
+            String fromTitle = remainingString.substring(index + 6);
+            int indexEndTitle = fromTitle.toLowerCase().indexOf("&amp");
+            String titleValue;
+            if (indexEndTitle == -1) {
+                if (fromTitle.length() == 0) {
+                    break;
+                }
+                indexEndTitle = fromTitle.indexOf(fromTitle.charAt(0), 1);
+                indexEndTitle = (indexEndTitle != -1) ? indexEndTitle : fromTitle.length();
+                titleValue = fromTitle.substring(1, indexEndTitle);
+            } else {
+                titleValue = fromTitle.substring(0, indexEndTitle);
+            }
+            sb.append(" ").append(titleValue).append(" ");
+            remainingString = fromTitle.substring(indexEndTitle);
+            index = remainingString.toLowerCase().indexOf("title");
+        }
+    }
+
     private static String[] getWordsFromString(String line) {
         StringBuilder asciiLine = new StringBuilder();
         char lastAdded = ' ';
@@ -110,6 +117,19 @@ public class LineStorage {
         }
     }
 
+    public void sendToClient(byte[] returnMessage, boolean sendToClient) {
+        if (sendToClient) {
+            ByteBuffer ba = ByteBuffer.wrap(returnMessage);
+            try {
+                getClient().write(ba);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            this.returnMessage = returnMessage;
+        }
+    }
+
     public List<Long> getTimeCleaning() {
         return timeCleaning;
     }
@@ -118,7 +138,7 @@ public class LineStorage {
         return timeWordCount;
     }
 
-    public HashMap<String, Integer> getResults() {
+    public Map<String, Integer> getResults() {
         return results;
     }
     public SocketChannel getClient() {
@@ -132,4 +152,5 @@ public class LineStorage {
     public void putResultValue(String key, Integer value) {
         results.put(key, value);
     }
+
 }

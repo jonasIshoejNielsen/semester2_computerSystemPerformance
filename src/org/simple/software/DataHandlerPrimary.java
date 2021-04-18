@@ -1,12 +1,10 @@
 package org.simple.software;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class DataHandlerSynchronized implements DataHandler {
+public class DataHandlerPrimary implements DataHandler {
     private final ArrayList<List<Long>> timesCleaning                 = new ArrayList<>();
     private final ArrayList<List<Long>> timesWordCount                = new ArrayList<>();
     private final List<Long> timesSerializing                         = new ArrayList<>();
@@ -14,31 +12,31 @@ public class DataHandlerSynchronized implements DataHandler {
     private int dataHandlerId;
     private final boolean cMode;
 
-    public DataHandlerSynchronized(boolean cMode, int dataHandlerId) {
+    public DataHandlerPrimary(boolean cMode, int dataHandlerId) {
         this.cMode = cMode;
         this.dataHandlerId = dataHandlerId;
     }
 
-    public synchronized ArrayList<List<Long>> getTimesCleaning() {
+    public ArrayList<List<Long>> getTimesCleaning() {
         return timesCleaning;
     }
 
-    public synchronized ArrayList<List<Long>> getTimesWordCount() {
+    public ArrayList<List<Long>> getTimesWordCount() {
         return timesWordCount;
     }
 
-    public synchronized List<Long> getTimesSerializing() {
+    public List<Long> getTimesSerializing() {
         return timesSerializing;
     }
 
-    public synchronized List<Long> getTimesInServer() {
+    public List<Long> getTimesInServer() {
         return timesInServer;
     }
-    public synchronized int getDataHandlerId() {
+    public int getDataHandlerId() {
         return dataHandlerId;
     }
 
-    private synchronized LineStorage getNextLineStorage () throws InterruptedException {
+    private LineStorage getNextLineStorage () throws InterruptedException {
         Server.removed++;
         return Server.linesToCount.take();
     }
@@ -73,7 +71,7 @@ public class DataHandlerSynchronized implements DataHandler {
      * @param ls
      * @return
      */
-    public synchronized String serializeResultForClient(LineStorage ls) {
+    public String serializeResultForClient(LineStorage ls) {
         StringBuilder sb = new StringBuilder();
         for (Map.Entry<String, Integer> entry : ls.getResults().entrySet()) {
             sb.append(entry.getKey()).append(",");

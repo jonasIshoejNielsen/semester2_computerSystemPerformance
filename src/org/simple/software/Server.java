@@ -8,6 +8,8 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.BiConsumer;
 
@@ -17,13 +19,14 @@ public class Server {
     public static final LinkedBlockingQueue<LineStorage> linesToCount         = new LinkedBlockingQueue<>();
     public static int added = 0;
     public static int removed = 0;
+    private final List<DataHandler> dataHandlerList;
     private Selector selector;
     private ServerSocketChannel serverSocket;
-    private List<DataHandler> dataHandlerList = new ArrayList<>();
     private final boolean onlyOneThread;
 
-    public Server(String lAddr, int lPort, boolean onlyOneThread) throws IOException {
+    public Server(String lAddr, int lPort, boolean onlyOneThread, List<DataHandler> dataHandlerList) throws IOException {
         this.onlyOneThread = onlyOneThread;
+        this.dataHandlerList = dataHandlerList;
         selector = Selector.open();
         openSocket(new InetSocketAddress(lAddr, lPort), selector);
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -49,13 +52,6 @@ public class Server {
         for (List<Long> lst: times) {
             logTimes(clientId, lst, writeToLog);
         }
-    }
-
-    public List<DataHandler> setUpDataHandlers(boolean cMode, int threadCount) {
-        for (int i = 1; i <= 1; i++) {    //todo
-            dataHandlerList.add(new DataHandlerSynchronized(cMode, i));
-        }
-        return dataHandlerList;
     }
 
     public void startListening() throws IOException {
@@ -110,7 +106,7 @@ public class Server {
 
         if (receivedAllData) {
             if (onlyOneThread) {
-                dataHandlerList.get(0).startPipeLine(false);
+                dataHandlerList.get(0).startPipeLine(false, true);
             }
         }
         else {
