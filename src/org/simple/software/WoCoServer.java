@@ -12,16 +12,15 @@ public class WoCoServer {
 	public static final char SEPARATOR = '$';
 
 	public static void main(String[] args) throws IOException {
-
-		if (args.length!=5) {
-			HelperFunctions.print(WoCoServer.class, "Usage: <listenaddress> <listenport> <numberOfClients> <cleaning> <threadcount>");
+		if (args.length<4) {
+			HelperFunctions.print(WoCoServer.class, "Usage: <listenaddress> <listenport> <cleaning> <threadcount> [<numberOfClients>]");
 			System.exit(0);
 		}
 		String lAddr 			= args[0];
 		int lPort 				= Integer.parseInt(args[1].replaceAll("[^\\d.]", ""));
-		int numberOfClients 	= Integer.valueOf(args[2].replaceAll("[^\\d.]", ""));
-		boolean cMode 			= Boolean.parseBoolean(args[3]);
-		int threadCount 		= Integer.valueOf(args[4].replaceAll("[^\\d.]", ""));
+		boolean cMode 			= Boolean.parseBoolean(args[2]);
+		int threadCount 		= Integer.valueOf(args[3].replaceAll("[^\\d.]", ""));
+		int numberOfClients 	= (args.length>=5)? Integer.valueOf(args[4].replaceAll("[^\\d.]", "")) : 1;
 		System.out.println(cMode? "Clean tags": "Don't clean tags");
 		System.out.println(threadCount + " number of threads");
 

@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class WoCoClient {
-
-	private static final int DEFAULT_EXPERIMENT_LENGTH = 60;
 	private Socket sHandle;
 	private BufferedReader sInput;
 	private BufferedWriter sOutput;
@@ -97,17 +95,12 @@ public class WoCoClient {
 	}
 
 
-	public void sendDocu(int milisecondsToRun, String docu) throws IOException {
+	public void sendDocu(int ops, String docu) throws IOException {
 		//send requests to the server in a loop.
-		long start = System.currentTimeMillis();
-		long dif = 0L;
-		int prints = 0;
-		while (dif < milisecondsToRun) {
+		for (int i=0; i<ops; i++) {
 			HashMap<String, Integer> result = this.getWordCount(docu);
-			dif = System.currentTimeMillis() - start;
-			if(dif > prints*1000) {
-				System.out.println("client"+clientID+", "+dif+"/"+milisecondsToRun);
-				prints++;
+			if(i % 500 == 0) {
+				System.out.println("client"+clientID+", "+i+"/"+ops);
 			}
 		}
 	}
@@ -116,26 +109,27 @@ public class WoCoClient {
 	public static void main(String[] args) throws UnknownHostException, IOException, InterruptedException {
 		//reading in parameters
 
-		if (args.length<7) {
-			System.out.println("Usage: <servername> <serverport> <documentsize(KiB)> <seconds> <filesuffix> <clientID> <numberOfClients> [<seed>]");
+		if (args.length<5) {
+			System.out.println("Usage: <servername> <serverport> <documentsize(KiB)> <opcount(x1000)> <filesuffix> [<seed>] [<clientID>] [<numberOfClients>]");
 			System.exit(0);
 		}
-		
-		String sName = args[0];
+
+		String sName 		= args[0];
 		int sPort 			= Integer.parseInt(args[1]);
 		float dSize 		= Float.parseFloat(args[2])*1024;
-		int milisecondsToRun= Integer.parseInt(args[3])*DEFAULT_EXPERIMENT_LENGTH*1000;
+		int ops				= Integer.parseInt(args[3])*10000;
 		int file 			= Integer.parseInt(args[4]);
-		clientID 			= Integer.parseInt(args[5]);
-		numberOfClients 	= Integer.parseInt(args[6]);
-		int seed = (args.length==8) ? Integer.parseInt(args[7]) : (int) (Math.random()*10000);
-		Logging.createFolder("client_clients-"+args[6]+"-dSize-"+dSize);
+		int seed 			= (args.length==6) ? Integer.parseInt(args[5]) : (int) (Math.random()*10000);
+		seed				= (seed != -1)? seed : (int) (Math.random()*10000);
+		clientID 			= (args.length==7) ? Integer.parseInt(args[6]) : 1;
+		numberOfClients 	= (args.length==8) ? Integer.parseInt(args[7]) : 1;
+		Logging.createFolder("client_clients-"+clientID+"-dSize-"+dSize);
 		//We generate one document for the entire runtime of this client
 		//Otherwise the client would spend too much time generating new inputs.
 
 		String docu = DocumentGenerator.generateDocument((int) (dSize), file, seed);
 		WoCoClient client = new WoCoClient(sName, sPort);
-    	client.sendDocu(milisecondsToRun, docu);
+    	client.sendDocu(ops, docu);
 
 		Thread.sleep(2000);
 		client.shutDown();

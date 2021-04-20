@@ -4,9 +4,10 @@ SERVER_PORT="12345"
 DOC_SIZE=$1
 REPEAT=5
 FILE_SUFF="1"
-numberOfClients=$2
-for (( CLIENT_ID=1; CLIENT_ID<=$numberOfClients; CLIENT_ID++ ))
+SEED=-1
+NUMBER_OF_CLIENTS=$2
+for (( CLIENT_ID=1; CLIENT_ID<=$NUMBER_OF_CLIENTS; CLIENT_ID++ ))
 do
-  java -jar ./jars/WoCoClient.jar $SERVER_HOST $SERVER_PORT $DOC_SIZE $REPEAT $FILE_SUFF $CLIENT_ID $numberOfClients &
+  java -jar ./jars/WoCoClient.jar $SERVER_HOST $SERVER_PORT $DOC_SIZE $REPEAT $FILE_SUFF $SEED $CLIENT_ID $NUMBER_OF_CLIENTS &
 done
 wait
