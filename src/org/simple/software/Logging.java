@@ -3,6 +3,8 @@ package org.simple.software;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Logging {
     private static FileWriter writerCleaningTags;
@@ -21,31 +23,49 @@ public class Logging {
             }
         }
     }
-    public static void writeCleaningTags (long msg, int clientId) {
+    public static void writeCleaningTagsThoughput(List<Long> times, int clientId) {
         if(!Config.writeCleaningTags) return;
         writerCleaningTags  = (writerCleaningTags==null)?   createFileWriter("CleaningTags", clientId) : writerCleaningTags;
-        writeToFile(writerCleaningTags, msg);
+        writeTputs(createTputs(times), clientId, writerCleaningTags);
     }
-    public static void writeWordCount (long msg, int clientId) {
+    public static void writeWordCountThoughput(List<Long> times, int clientId) {
         if(!Config.writeWordCount) return;
         writerResponseTime  = (writerResponseTime==null)?   createFileWriter("WordCount", clientId) : writerResponseTime;
-        writeToFile(writerResponseTime, msg);
+        writeTputs(createTputs(times), clientId, writerResponseTime);
     }
-    public static void writeSerializing (long msg, int clientId) {
+    public static void writeSerializingThoughput (List<Long> times, int clientId) {
         if(!Config.writeSerializing) return;
         writerSerializing   = (writerSerializing==null)?    createFileWriter("Serializing", clientId) : writerSerializing;
-        writeToFile(writerSerializing, msg);
+        writeTputs(createTputs(times), clientId, writerSerializing);
     }
-    public static void writeTimeInServer (long msg, int clientId) {
+    public static void writeTimeInServerThoughput (List<Long> times, int clientId) {
         if(!Config.writeTimeInServer) return;
         writerTimeInServer  = (writerTimeInServer==null)?    createFileWriter("TimeInServer", clientId) : writerTimeInServer;
-        writeToFile(writerTimeInServer, msg);
+        writeTputs(createTputs(times), clientId, writerTimeInServer);
     }
 
-    public static void writeResponseTime(long msg, int clientId) {
+    public static void writeResponseThoughput(List<Long> times, int clientId) {
         if(!Config.writeResponseTime) return;
         writerWordCount     = (writerWordCount==null)?      createFileWriter("ResponseTime", clientId) : writerWordCount;
-        writeToFile(writerWordCount, msg);
+        writeTputs(createTputs(times), clientId, writerWordCount);
+    }
+
+    private static int[] createTputs(List<Long> times) {
+        long maxEllapsedTime_ns = times.stream().reduce(0L, (a, b) -> a + b);
+        int maxEllapsedTime_s =(int) TimeUnit.SECONDS.convert(maxEllapsedTime_ns, TimeUnit.NANOSECONDS);
+        int[] tputs = new int[maxEllapsedTime_s+1];
+        long ellapsedTime = 0L;
+        for (long t: times) {
+            ellapsedTime += t;
+            int t_sec = (int) TimeUnit.SECONDS.convert(ellapsedTime, TimeUnit.NANOSECONDS);
+            tputs[t_sec] ++;
+        }
+        return tputs;
+    }
+    private static void writeTputs (int[] tputs, int clientID, FileWriter fileWriter) {
+        for(int tput: tputs) {
+            writeToFile(writerWordCount, tput);
+        }
     }
 
     private static FileWriter createFileWriter(String name, int clientId) {

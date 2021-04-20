@@ -34,21 +34,19 @@ public class Server {
                 System.out.println("Writing to logs");
                 for (DataHandler dh: dataHandlerList) {
                     System.out.println("Writing to logs" + dh.getDataHandlerId());
-                    logListOfTimes(dh.getDataHandlerId(), dh.getTimesCleaning(),  Logging::writeCleaningTags);
-                    logListOfTimes(dh.getDataHandlerId(), dh.getTimesWordCount(), Logging::writeWordCount);
-                    logTimes(dh.getDataHandlerId(), dh.getTimesSerializing(),     Logging::writeSerializing);
-                    logTimes(dh.getDataHandlerId(), dh.getTimesInServer(),        Logging::writeTimeInServer);
+                    logListOfTimes(dh.getDataHandlerId(), dh.getTimesCleaning(),    Logging::writeCleaningTagsThoughput);
+                    logListOfTimes(dh.getDataHandlerId(), dh.getTimesWordCount(),   Logging::writeWordCountThoughput);
+                    logTimes(dh.getDataHandlerId(),       dh.getTimesSerializing(), Logging::writeSerializingThoughput);
+                    logTimes(dh.getDataHandlerId(),       dh.getTimesInServer(),    Logging::writeTimeInServerThoughput);
 
                 }
             }
         });
     }
-    private void logTimes(int clientId, List<Long> times, BiConsumer<Long, Integer> writeToLog) {
-        for (Long time: times) {
-            writeToLog.accept(time, clientId);
-        }
+    private void logTimes(int clientId, List<Long> times, BiConsumer<List<Long>, Integer> writeToLog) {
+        writeToLog.accept(times, clientId);
     }
-    private void logListOfTimes(int clientId, List<List<Long>> times, BiConsumer<Long, Integer> writeToLog) {
+    private void logListOfTimes(int clientId, List<List<Long>> times, BiConsumer<List<Long>, Integer> writeToLog) {
         for (List<Long> lst: times) {
             logTimes(clientId, lst, writeToLog);
         }
