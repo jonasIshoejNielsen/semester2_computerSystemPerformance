@@ -1,8 +1,11 @@
 package org.simple.software.meaurements;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Logging {
     public static String folderName;
@@ -12,27 +15,21 @@ public class Logging {
     private static WriterHolder writerHolder_InServer;
     private static WriterHolder writerHolder_Response;
 
-    public static void createFolder(String type, Boolean clean, int threads, int numberOfClients, int file, float dSize) {
+    public static void createFolder(String type, Boolean clean, int threads, int numberOfClients, int file, float dSize) throws IOException {
 
         String prefix = new StringBuilder(type)
                         .append("-clean-").append(clean)
                         .append("-threads-").append(threads)
                         .append("-clients-").append(numberOfClients)
                         .append("-file-").append(file)
-                        .append("-dSize-").append(dSize).toString();
+                        .append("-dSize-").append((long)dSize).toString();
 
 
         folderName = new StringBuilder("Logs/Logs").append(prefix).append("/").toString();
-        while (createDir(folderName)) {
-            System.out.println(folderName);
-        }
-    }
-    private static boolean createDir(String folderName) {
-        File folder = new File(folderName);
-        if (!folder.exists()){
-            return true;
-        }
-        return folder.mkdirs();
+        Path dir = Paths.get(folderName);
+        try {
+            Files.createDirectory(dir);
+        } catch (FileAlreadyExistsException e ) { }
     }
     public static void writeCleaningTagsThoughput(Measurements measurements, int clientId) {
         if(!Config.writeCleaningTags) return;
