@@ -1,5 +1,7 @@
 package org.simple.software;
 
+import org.simple.software.meaurements.Logging;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

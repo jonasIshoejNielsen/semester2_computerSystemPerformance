@@ -1,13 +1,13 @@
 package org.simple.software;
 
-import java.util.ArrayList;
+import org.simple.software.meaurements.Measurements;
 import java.util.List;
 
 public interface DataHandler {
-    ArrayList<List<Long>> getTimesCleaning();
-    ArrayList<List<Long>> getTimesWordCount();
-    List<Long> getTimesSerializing();
-    List<Long> getTimesInServer();
+    List<Measurements> getMeasurementsCleaning();
+    List<Measurements> getMeasurementsWordCount();
+    Measurements getMeasurementsSerializing();
+    Measurements getMeasurementsInServer();
     int getDataHandlerId();
     void startPipeLine (boolean repeat, boolean sendToClient);
 }

@@ -1,5 +1,8 @@
 package org.simple.software;
 
+import org.simple.software.meaurements.Logging;
+import org.simple.software.meaurements.Measurements;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -8,8 +11,6 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.BiConsumer;
 
@@ -34,21 +35,21 @@ public class Server {
                 System.out.println("Writing to logs");
                 for (DataHandler dh: dataHandlerList) {
                     System.out.println("Writing to logs" + dh.getDataHandlerId());
-                    logListOfTimes(dh.getDataHandlerId(), dh.getTimesCleaning(),    Logging::writeCleaningTagsThoughput);
-                    logListOfTimes(dh.getDataHandlerId(), dh.getTimesWordCount(),   Logging::writeWordCountThoughput);
-                    logTimes(dh.getDataHandlerId(),       dh.getTimesSerializing(), Logging::writeSerializingThoughput);
-                    logTimes(dh.getDataHandlerId(),       dh.getTimesInServer(),    Logging::writeTimeInServerThoughput);
+                    logListOfTimes(dh.getDataHandlerId(), dh.getMeasurementsCleaning(),    Logging::writeCleaningTagsThoughput);
+                    logListOfTimes(dh.getDataHandlerId(), dh.getMeasurementsWordCount(),   Logging::writeWordCountThoughput);
+                    logTimes(dh.getDataHandlerId(),       dh.getMeasurementsSerializing(), Logging::writeSerializingThoughput);
+                    logTimes(dh.getDataHandlerId(),       dh.getMeasurementsInServer(),    Logging::writeTimeInServerThoughput);
 
                 }
             }
         });
     }
-    private void logTimes(int clientId, List<Long> times, BiConsumer<List<Long>, Integer> writeToLog) {
-        writeToLog.accept(times, clientId);
+    private void logTimes(int dataHandlerId, Measurements measurements, BiConsumer<Measurements, Integer> writeToLog) {
+        writeToLog.accept(measurements, dataHandlerId);
     }
-    private void logListOfTimes(int clientId, List<List<Long>> times, BiConsumer<List<Long>, Integer> writeToLog) {
-        for (List<Long> lst: times) {
-            logTimes(clientId, lst, writeToLog);
+    private void logListOfTimes(int dataHandlerId, List<Measurements> measurementsList, BiConsumer<Measurements, Integer> writeToLog) {
+        for (Measurements measurements: measurementsList) {
+            logTimes(dataHandlerId, measurements, writeToLog);
         }
     }
 

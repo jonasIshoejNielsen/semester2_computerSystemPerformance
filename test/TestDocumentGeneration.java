@@ -1,6 +1,6 @@
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.simple.software.Config;
+import org.simple.software.meaurements.Config;
 import org.simple.software.DocumentGenerator;
 
 import java.io.IOException;

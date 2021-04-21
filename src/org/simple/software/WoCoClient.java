@@ -1,8 +1,10 @@
 package org.simple.software;
 
+import org.simple.software.meaurements.Logging;
+import org.simple.software.meaurements.Measurements;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -15,10 +17,10 @@ public class WoCoClient {
 	private Socket sHandle;
 	private BufferedReader sInput;
 	private BufferedWriter sOutput;
-	private ArrayList<Long> respTime;
 	private static boolean DEBUG = false;
 	private static int numberOfClients;
 	private static int clientID;
+	private Measurements measurements;
 
 	
 	/**
@@ -32,7 +34,7 @@ public class WoCoClient {
         this.sHandle 	= new Socket(serverAddress, serverPort);
         this.sInput 	= new BufferedReader(new InputStreamReader(sHandle.getInputStream()));
         this.sOutput 	= new BufferedWriter(new OutputStreamWriter(sHandle.getOutputStream()));
-        this.respTime = new ArrayList<>();
+        this.measurements = new Measurements();
 	}
 
 	/**
@@ -51,9 +53,7 @@ public class WoCoClient {
 
 		String response = null;
 		response = sInput.readLine();
-
-		long endResponseTime 			= System.nanoTime();
-		respTime.add(endResponseTime - beginResponseTime);
+		measurements.addMeasurement(beginResponseTime, System.nanoTime());
 		return response;
 	}
 	
@@ -134,7 +134,7 @@ public class WoCoClient {
 		Thread.sleep(2000);
 		client.shutDown();
 
-		Logging.writeResponseThoughput(client.respTime, clientID);
+		Logging.writeResponseThoughput(client.measurements, clientID);
 
         System.exit(0);
 	}

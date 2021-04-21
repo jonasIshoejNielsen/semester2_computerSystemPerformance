@@ -1,16 +1,16 @@
 package org.simple.software;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
+import org.simple.software.meaurements.Measurements;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class DataHandlerSynchronized implements DataHandler {
-    private final ArrayList<List<Long>> timesCleaning                 = new ArrayList<>();
-    private final ArrayList<List<Long>> timesWordCount                = new ArrayList<>();
-    private final List<Long> timesSerializing                         = new ArrayList<>();
-    private final List<Long> timesInServer                            = new ArrayList<>();
+    private final List<Measurements> measurementsCleaning   = new ArrayList<>();
+    private final List<Measurements> measurementsWordCount  = new ArrayList<>();
+    private final Measurements measurementsSerializing      = new Measurements();
+    private final Measurements measurementsInServer         = new Measurements();
     private int dataHandlerId;
     private final boolean cMode;
 
@@ -19,21 +19,22 @@ public class DataHandlerSynchronized implements DataHandler {
         this.dataHandlerId = dataHandlerId;
     }
 
-    public synchronized ArrayList<List<Long>> getTimesCleaning() {
-        return timesCleaning;
+    public List<Measurements> getMeasurementsCleaning() {
+        return measurementsCleaning;
     }
 
-    public synchronized ArrayList<List<Long>> getTimesWordCount() {
-        return timesWordCount;
+    public List<Measurements> getMeasurementsWordCount() {
+        return measurementsWordCount;
     }
 
-    public synchronized List<Long> getTimesSerializing() {
-        return timesSerializing;
+    public Measurements getMeasurementsSerializing() {
+        return measurementsSerializing;
     }
 
-    public synchronized List<Long> getTimesInServer() {
-        return timesInServer;
+    public Measurements getMeasurementsInServer() {
+        return measurementsInServer;
     }
+
     public synchronized int getDataHandlerId() {
         return dataHandlerId;
     }
@@ -59,10 +60,10 @@ public class DataHandlerSynchronized implements DataHandler {
             ls.sendToClient(returnMessage, sendToClient);
             long endFromStart = System.nanoTime();
 
-            timesCleaning.add(ls.getTimeCleaning());
-            timesWordCount.add(ls.getTimeWordCount());
-            timesSerializing.add(beginSerializing - endSerializing);
-            timesInServer.add(ls.getTimeFromEnteringServer() - endFromStart);
+            measurementsSerializing.addMeasurement(beginSerializing, endSerializing);
+            measurementsInServer.addMeasurement(ls.getTimeFromEnteringServer(), endFromStart);
+            measurementsCleaning.add(ls.getMeasurementsCleaning());
+            measurementsWordCount.add(ls.getMeasurementsWordCount());
         } while (repeat);
     }
 

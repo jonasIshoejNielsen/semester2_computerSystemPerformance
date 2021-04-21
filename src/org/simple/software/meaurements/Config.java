@@ -1,4 +1,4 @@
-package org.simple.software;
+package org.simple.software.meaurements;
 
 public class Config {
     public static boolean writeCleaningTags  = true;

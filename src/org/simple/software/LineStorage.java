@@ -1,4 +1,6 @@
 package org.simple.software;
+import org.simple.software.meaurements.Measurements;
+
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
@@ -12,8 +14,8 @@ public class LineStorage {
     private final int clientId;
     private final SocketChannel client;
     private final long timeFromEnteringServer;
-    private final List<Long> timeCleaning = new ArrayList<>();
-    private final List<Long> timeWordCount = new ArrayList<>();
+    private final Measurements measurementsCleaning  = new Measurements();
+    private final Measurements measurementsWordCount = new Measurements();
     private final HashMap<String, Integer> results = new HashMap<>();
     public byte[] returnMessage;
 
@@ -43,13 +45,13 @@ public class LineStorage {
             ucLine = ucLine.replace('_', ' ');
             String cleanedLine = (cMode) ? removeTags(ucLine) : ucLine;
             long endCleaning = System.nanoTime();
-            timeCleaning.add(endCleaning - beginCleaning);
+            measurementsCleaning.addMeasurement(beginCleaning, endCleaning);
 
             long beginWordCount = System.nanoTime();
             String[] words = getWordsFromString(cleanedLine);
             addWordsToMap(words, results);
             long endWordCount = System.nanoTime();
-            timeWordCount.add(endWordCount - beginWordCount);
+            measurementsWordCount.addMeasurement(beginWordCount, endWordCount);
 
         } catch (Exception e) {
             System.out.println(line);
@@ -130,12 +132,12 @@ public class LineStorage {
         }
     }
 
-    public List<Long> getTimeCleaning() {
-        return timeCleaning;
+    public Measurements getMeasurementsCleaning() {
+        return measurementsCleaning;
     }
 
-    public List<Long> getTimeWordCount() {
-        return timeWordCount;
+    public Measurements getMeasurementsWordCount() {
+        return measurementsWordCount;
     }
 
     public Map<String, Integer> getResults() {

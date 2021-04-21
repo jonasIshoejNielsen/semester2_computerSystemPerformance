@@ -1,6 +1,7 @@
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.simple.software.*;
+import org.simple.software.meaurements.Config;
 
 import java.io.IOException;
 import java.util.ArrayList;
