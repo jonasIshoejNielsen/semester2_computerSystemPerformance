@@ -1,0 +1,17 @@
+paste ResponseTime-*.txt > ResponseTimeAll.txt
+
+
+paste CleaningTags-*.txt > CleaningTagsAll.txt
+paste Serializing-*.txt > SerializingAll.txt
+paste TimeInServer-*.txt > TimeInServerAll.txt
+paste WordCount-*.txt > WordCountAll.txt
+
+
+#copy to clipboard
+paste ResponseTime-*.txt > ResponseTimeAll.txt
+cat ResponseTimeAll.txt | clip.exe
+
+
+xclip -selection c 
+alias xclip="xclip -selection c"
+echo -n test | xclip

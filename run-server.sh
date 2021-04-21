@@ -1,4 +1,7 @@
 #!/bin/bash
-numberOfClients=$1
-threads=$2
-java -jar ./jars/WoCoServer.jar 127.0.0.1 12345 "$numberOfClients" true "$threads"
+SERVER_HOST=$1
+SERVER_PORT="12345"
+CLEAN=$2    #true
+THREADS=$3
+NUMBER_OF_CLIENTS=$4
+java -jar ./jars/WoCoServer.jar $SERVER_HOST $SERVER_PORT $CLEAN "$THREADS" "$NUMBER_OF_CLIENTS"
