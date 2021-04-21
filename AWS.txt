@@ -1,0 +1,48 @@
+https://www.awseducate.com/signin/SiteLogin
+--> my classroom --> go to classroom --> AWS console --> EC2
+
+
+Ubuntu Server 20.04 LTS (HVM), SSD Volume Type
+two t2.2xlarge
+   Amazon Linux 2 AMI (HVM), SSD Volume Type
+	6. configure security group	--> add rule-->custom tcp: port range: 9000, source: anywhere
+	AWSubuntu20t2micro
+
+
+
+
+IP server:	34.238.85.74
+	ssh ubuntu@34.238.85.74 -i ~/AWSubuntu20t2micro.pem
+IP clint:	18.208.173.17
+	ssh ubuntu@18.208.173.17 -i ~/AWSubuntu20t2micro.pem
+
+
+Both:
+git clone https://github.com/jonasIshoejNielsen/semester2_computerSystemPerformance.git
+cd semester2_computerSystemPerformance/
+sudo apt-get update
+sudo apt-get install openjdk-8-jdk
+sudo apt-get install openjdk-8-doc
+sudo apt-get install openjdk-8-jre-lib
+sudo apt-get install ant
+ant
+
+
+
+
+Server:	172.31.88.90
+sudo chmod 777 ./run-server.sh
+./run-server.sh 172.31.88.90 false 0 1
+
+
+Client
+sudo chmod 777 ./run-server.sh
+./run-client.sh 172.31.88.90 12 1
+./run-client.sh 172.31.88.90 12 2
+./run-client.sh 172.31.88.90 12 4
+./run-client.sh 172.31.88.90 12 8
+./run-client.sh 172.31.88.90 12 16
+
+
+scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@18.208.173.17:./semester2_computerSystemPerformance/Logs ./logs-basic
+
