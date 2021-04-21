@@ -117,7 +117,7 @@ public class WoCoClient {
 		String sName 		= args[0];
 		int sPort 			= Integer.parseInt(args[1]);
 		float dSize 		= Float.parseFloat(args[2])*1024;
-		int ops				= Integer.parseInt(args[3])*10_000;
+		int ops				= Integer.parseInt(args[3])*2_000;
 		int file 			= Integer.parseInt(args[4]);
 		int seed 			= (args.length>=6) ? Integer.parseInt(args[5]) : (int) (Math.random()*10000);
 		seed				= (seed != -1)? seed : (int) (Math.random()*10000);
