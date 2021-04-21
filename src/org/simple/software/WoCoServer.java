@@ -27,7 +27,7 @@ public class WoCoServer {
 		Logging.createFolder(new StringBuilder("server_-clients-").append(numberOfClients).append("-threads-").append(args[3]).append("-clean-").append(args[2]).toString());
 
 		List<DataHandler> dataHandlerList = setUpDataHandlers(threadCount, true, i -> new DataHandlerPrimary(cMode, i));
-		Server server = new Server(lAddr, lPort, threadCount==1, dataHandlerList);
+		Server server = new Server(lAddr, lPort, threadCount==0, dataHandlerList);
 
 		server.startListening();
 	}
@@ -37,6 +37,10 @@ public class WoCoServer {
 		List<DataHandler> dataHandlerList = new ArrayList<>();
 		for (int i = 1; i <= threadCount; i++) {
 			dataHandlerList.add(dataHandlerConstructor.apply(i));
+		}
+		if(threadCount == 0) {
+			dataHandlerList.add(dataHandlerConstructor.apply(0));
+			return dataHandlerList;
 		}
 		final ExecutorService exec = Executors.newFixedThreadPool(threadCount);
 		if (threadCount>1) {
