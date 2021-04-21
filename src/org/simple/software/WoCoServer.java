@@ -15,7 +15,7 @@ public class WoCoServer {
 
 	public static void main(String[] args) throws IOException {
 		if (args.length<4) {
-			HelperFunctions.print(WoCoServer.class, "Usage: <listenaddress> <listenport> <cleaning> <threadcount> [<numberOfClients>]");
+			HelperFunctions.print(WoCoServer.class, "Usage: <listenaddress> <listenport> <cleaning> <threadcount> [<numberOfClients>] [<documentsize(KiB)>] [<filesuffix>]");
 			System.exit(0);
 		}
 		String lAddr 			= args[0];
@@ -23,10 +23,13 @@ public class WoCoServer {
 		boolean cMode 			= Boolean.parseBoolean(args[2]);
 		int threadCount 		= Integer.valueOf(args[3].replaceAll("[^\\d.]", ""));
 		int numberOfClients 	= (args.length>=5)? Integer.valueOf(args[4].replaceAll("[^\\d.]", "")) : 1;
+		int dSize 				= (args.length>=6)? Integer.valueOf(args[5].replaceAll("[^\\d.]", "")) : 1;
+		dSize *= 1024;
+		int file 				= (args.length>=7)? Integer.valueOf(args[6].replaceAll("[^\\d.]", "")) : 1;
 		System.out.println(cMode? "Clean tags": "Don't clean tags");
 		System.out.println(threadCount + " number of threads");
 
-		Logging.createFolder(new StringBuilder("server_-clients-").append(numberOfClients).append("-threads-").append(args[3]).append("-clean-").append(args[2]).toString());
+		Logging.createFolder("server", cMode, threadCount, numberOfClients, file, dSize);
 
 		List<DataHandler> dataHandlerList = setUpDataHandlers(threadCount, true, i -> new DataHandlerPrimary(cMode, i));
 		Server server = new Server(lAddr, lPort, threadCount==0, dataHandlerList);

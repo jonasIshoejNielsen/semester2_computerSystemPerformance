@@ -5,21 +5,34 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class Logging {
-    public static String FileName;
+    public static String folderName;
     private static WriterHolder writerHolder_CleaningTags;
     private static WriterHolder writerHolder_WordCount;
     private static WriterHolder writerHolder_Serializing;
     private static WriterHolder writerHolder_InServer;
     private static WriterHolder writerHolder_Response;
 
-    public static void createFolder(String prefix) {
-        FileName = new StringBuilder("Logs/Logs").append(prefix).append("/").toString();
-        File file = new File(FileName);
-        if (!file.exists()){
-            while (!file.mkdirs()){
-                System.out.println(FileName);
-            }
+    public static void createFolder(String type, Boolean clean, int threads, int numberOfClients, int file, float dSize) {
+
+        String prefix = new StringBuilder(type)
+                        .append("-clean-").append(clean)
+                        .append("-threads-").append(threads)
+                        .append("-clients-").append(numberOfClients)
+                        .append("-file-").append(file)
+                        .append("-dSize-").append(dSize).toString();
+
+
+        folderName = new StringBuilder("Logs/Logs").append(prefix).append("/").toString();
+        while (createDir(folderName)) {
+            System.out.println(folderName);
         }
+    }
+    private static boolean createDir(String folderName) {
+        File folder = new File(folderName);
+        if (!folder.exists()){
+            return true;
+        }
+        return folder.mkdirs();
     }
     public static void writeCleaningTagsThoughput(Measurements measurements, int clientId) {
         if(!Config.writeCleaningTags) return;

@@ -17,7 +17,7 @@ public class WriterHolder {
 
 
     private static FileWriter createFileWriter(String name, int clientId) {
-        String path = new StringBuilder(Logging.FileName).append(name).append("-").append(clientId).append(".txt").toString();
+        String path = new StringBuilder(Logging.folderName).append(name).append("-").append(clientId).append(".txt").toString();
         FileWriter writer = null;
         try {
             writer = new FileWriter(path, false);

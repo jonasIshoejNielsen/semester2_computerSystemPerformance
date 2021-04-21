@@ -110,20 +110,22 @@ public class WoCoClient {
 		//reading in parameters
 
 		if (args.length<5) {
-			System.out.println("Usage: <servername> <serverport> <documentsize(KiB)> <opcount(x1000)> <filesuffix> [<seed>] [<clientID>] [<numberOfClients>]");
+			System.out.println("Usage: <servername> <serverport> <documentsize(KiB)> <opcount(x1000)> <filesuffix> [<seed>] [<clientID>] [<numberOfClients>] [<cleaning>] [<threadcount>]");
 			System.exit(0);
 		}
 
 		String sName 		= args[0];
 		int sPort 			= Integer.parseInt(args[1]);
 		float dSize 		= Float.parseFloat(args[2])*1024;
-		int ops				= Integer.parseInt(args[3])*2_000;
+		int ops				= Integer.parseInt(args[3])*1_000;
 		int file 			= Integer.parseInt(args[4]);
-		int seed 			= (args.length>=6) ? Integer.parseInt(args[5]) : (int) (Math.random()*10000);
-		seed				= (seed != -1)? seed : (int) (Math.random()*10000);
-		clientID 			= (args.length>=7) ? Integer.parseInt(args[6]) : 1;
-		numberOfClients 	= (args.length>=8) ? Integer.parseInt(args[7]) : 1;
-		Logging.createFolder("client_clients-"+numberOfClients+"-dSize-"+dSize);
+		int seed 			= (args.length>=6)  ? Integer.parseInt(args[5]) : (int) (Math.random()*10000);
+		seed				= (seed != -1)      ? seed : (int) (Math.random()*10000);
+		clientID 			= (args.length>=7)  ? Integer.parseInt(args[6]) 		: 1;
+		numberOfClients 	= (args.length>=8)  ? Integer.parseInt(args[7]) 		: 1;
+		boolean cMode 		= (args.length>=9)  ? Boolean.parseBoolean(args[8]) 	: true;
+		int threadCount 	= (args.length>=10) ? Integer.valueOf(args[9].replaceAll("[^\\d.]", "")) : 0;
+		Logging.createFolder("client", cMode, threadCount, numberOfClients, file, dSize);
 		//We generate one document for the entire runtime of this client
 		//Otherwise the client would spend too much time generating new inputs.
 
