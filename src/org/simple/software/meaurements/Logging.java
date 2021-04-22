@@ -70,7 +70,7 @@ public class Logging {
 
     private static void writeToFile(FileWriter fw, double seconds) {
         try {
-            fw.write(String.valueOf(seconds));
+            fw.write(String.valueOf(seconds).replace('.', ','));
             fw.write("\n");
             fw.flush();
         } catch (IOException e) {
