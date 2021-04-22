@@ -1,5 +1,6 @@
 https://www.awseducate.com/signin/SiteLogin
 --> my classroom --> go to classroom --> AWS console --> EC2
+45.4$ estimate last time
 
 
 Ubuntu Server 20.04 LTS (HVM), SSD Volume Type
