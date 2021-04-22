@@ -11,10 +11,10 @@ two t2.2xlarge
 
 
 
-IP server:	34.238.85.74
-	ssh ubuntu@34.238.85.74 -i ~/AWSubuntu20t2micro.pem
-IP clint:	18.208.173.17
-	ssh ubuntu@18.208.173.17 -i ~/AWSubuntu20t2micro.pem
+IP server:	18.212.129.130
+	ssh ubuntu@18.212.129.130 -i ~/AWSubuntu20t2micro.pem
+IP clint:	34.230.15.109
+	ssh ubuntu@34.230.15.109 -i ~/AWSubuntu20t2micro.pem
 
 
 Both:
@@ -22,17 +22,17 @@ git clone https://github.com/jonasIshoejNielsen/semester2_computerSystemPerforma
 cd semester2_computerSystemPerformance/
 sudo apt-get update
 sudo apt-get install openjdk-8-jdk
+
 sudo apt-get install openjdk-8-doc
 sudo apt-get install openjdk-8-jre-lib
 sudo apt-get install ant
 ant
+IP="172.31.34.43"		#server
 
 
 
-
-Server:	172.31.88.90
+Server
 sudo chmod 777 ./run-server.sh
-IP="172.31.88.90"
 echo "<listenaddress> <cleaning> <threadcount> <number of clients> <doc_size> <file>"
 
 DOCUMENT_SIZE="12"
@@ -44,8 +44,7 @@ THREADCOUNT="0"
 
 
 Client
-sudo chmod 777 ./run-server.sh
-IP="172.31.88.90"
+sudo chmod 777 ./run-client.sh
 echo "<servername> <doc_size> <file> <number of clients> <cmode> <threads>"
 
 DOCUMENT_SIZE=12

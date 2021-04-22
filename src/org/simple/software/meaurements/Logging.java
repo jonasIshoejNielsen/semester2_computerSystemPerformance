@@ -23,10 +23,13 @@ public class Logging {
                         .append("-clients-").append(numberOfClients)
                         .append("-file-").append(file)
                         .append("-dSize-").append((long)dSize).toString();
-
+        Path dir = Paths.get("Logs/");
+        try {
+            Files.createDirectory(dir);
+        } catch (FileAlreadyExistsException e ) { }
 
         folderName = new StringBuilder("Logs/Logs").append(prefix).append("/").toString();
-        Path dir = Paths.get(folderName);
+        dir = Paths.get(folderName);
         try {
             Files.createDirectory(dir);
         } catch (FileAlreadyExistsException e ) { }
