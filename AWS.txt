@@ -14,8 +14,12 @@ two t2.2xlarge
 
 IP server:	18.212.129.130
 	ssh ubuntu@18.212.129.130 -i ~/AWSubuntu20t2micro.pem
+scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@18.212.129.130:./semester2_computerSystemPerformance/Logs ./Graphs/logs-server
+
 IP clint:	34.230.15.109
 	ssh ubuntu@34.230.15.109 -i ~/AWSubuntu20t2micro.pem
+scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@34.230.15.109:./semester2_computerSystemPerformance/Logs ./Graphs/logs-client
+
 
 
 Both:

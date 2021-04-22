@@ -1,4 +1,4 @@
-paste ResponseTime-*.txt > ResponseTimeAll.txt
+paste Response_Tput-*.txt > Response_TputAll.txt
 
 
 paste CleaningTags-*.txt > CleaningTagsAll.txt
@@ -8,8 +8,8 @@ paste WordCount-*.txt > WordCountAll.txt
 
 
 #copy to clipboard
-paste ResponseTime-*.txt > ResponseTimeAll.txt
-cat ResponseTimeAll.txt | clip.exe
+paste Response_Tput-*.txt > Response_TputAll.txt
+cat Response_TputAll.txt | clip.exe
 
 
 xclip -selection c 
