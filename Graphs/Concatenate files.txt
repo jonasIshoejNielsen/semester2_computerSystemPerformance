@@ -1,17 +1,14 @@
-paste Response_Tput-*.txt > Response_TputAll.txt
 
-
-paste CleaningTags-*.txt > CleaningTagsAll.txt
-paste Serializing-*.txt > SerializingAll.txt
-paste TimeInServer-*.txt > TimeInServerAll.txt
-paste WordCount-*.txt > WordCountAll.txt
-
-
-#copy to clipboard
+#copy to clipboard 
 paste Response_Tput-*.txt > Response_TputAll.txt
 cat Response_TputAll.txt | clip.exe
 
 
-xclip -selection c 
-alias xclip="xclip -selection c"
-echo -n test | xclip
+
+paste InServer_Time-*.txt > InServer_TimeAll.txt
+paste CleaningTags_Time-*.txt > CleaningTags_timeAll.txt
+paste WordCountTags_Time*.txt > WordCountTags_TimeAll.txt
+paste Serializing_Time-*.txt > Serializing_TimeAll.txt
+paste InServer_TimeAll.txt CleaningTags_timeAll.txt WordCountTags_TimeAll.txt Serializing_TimeAll.txt > combineAll.txt
+
+cat combineAll.txt | clip.exe

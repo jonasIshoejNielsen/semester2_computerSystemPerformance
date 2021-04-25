@@ -1,6 +1,7 @@
 https://www.awseducate.com/signin/SiteLogin
 --> my classroom --> go to classroom --> AWS console --> EC2
-44.57$ estimate last time
+44.57$
+41.94$
 
 
 Ubuntu Server 20.04 LTS (HVM), SSD Volume Type
@@ -12,13 +13,13 @@ two t2.2xlarge
 
 
 
-IP server:	18.207.243.80
-	ssh ubuntu@18.207.243.80 -i ~/AWSubuntu20t2micro.pem
-scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@18.207.243.80:./semester2_computerSystemPerformance/Logs ./Graphs/logs-server
+IP server:	54.152.59.251
+	ssh ubuntu@54.152.59.251 -i ~/AWSubuntu20t2micro.pem
+scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@54.152.59.251:./semester2_computerSystemPerformance/Logs ./Graphs/logs-server
 
-IP clint:	54.84.29.19
-	ssh ubuntu@54.84.29.19 -i ~/AWSubuntu20t2micro.pem
-scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@54.84.29.19:./semester2_computerSystemPerformance/Logs ./Graphs/logs-client
+IP clint:	3.93.9.55
+	ssh ubuntu@3.93.9.55 -i ~/AWSubuntu20t2micro.pem
+scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@3.93.9.55:./semester2_computerSystemPerformance/Logs ./Graphs/logs-client
 
 
 
@@ -34,22 +35,21 @@ sudo apt-get install ant
 ant
 
 #"127.0.0.1"		#server
-IP="127.0.0.1"
+IP="172.31.80.78"
 DOCUMENT_SIZE="12"
 FILESUFFIX="1"
 THREADCOUNT="8"
+sudo chmod 777 ./run-server.sh
+sudo chmod 777 ./run-client.sh
+sudo chmod 777 ./run-fixedNumberOf-clients.sh
 
 
 Server
-sudo chmod 777 ./run-server.sh
 echo "<listenaddress> <cleaning> <threadcount> <FIXED_NUMBER_OF_CLIENTS> <doc_size> <file>"
 ./run-server.sh $IP true $THREADCOUNT true $DOCUMENT_SIZE $FILESUFFIX
 
 
-
-
 Client
-sudo chmod 777 ./run-client.sh
 echo "<servername> <doc_size> <file> <number of clients> <cmode> <threads>"
 
 #./run-client.sh $IP $DOCUMENT_SIZE $FILESUFFIX 1 true $THREADCOUNT
