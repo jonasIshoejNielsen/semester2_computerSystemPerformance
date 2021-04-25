@@ -83,4 +83,11 @@ public class Logging {
         }
     }
 
+    public static void reset() {
+        writerHolder_CleaningTags = new HashMap<>();
+        writerHolder_Serializing  = new HashMap<>();
+        writerHolder_WordCount    = new HashMap<>();
+        writerHolder_InServer     = new HashMap<>();
+        writerHolder_Response     = new HashMap<>();
+    }
 }

@@ -33,6 +33,7 @@ public class Server {
     }
     public void logMessages() {
         System.out.println("Writing to logs");
+        Logging.reset();
         for (DataHandler dh: dataHandlerList) {
             System.out.println("Writing to logs" + dh.getDataHandlerId());
             logListOfTimes(dh.getDataHandlerId(), dh.getMeasurementsCleaning(),    Logging::writeCleaningTagsThoughput);
