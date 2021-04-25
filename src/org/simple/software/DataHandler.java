@@ -10,4 +10,5 @@ public interface DataHandler {
     Measurements getMeasurementsInServer();
     int getDataHandlerId();
     void startPipeLine (boolean repeat, boolean sendToClient);
+    void restartMessages();
 }

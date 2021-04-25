@@ -21,6 +21,8 @@ public class WoCoClient {
 	private static int numberOfClients;
 	private static int clientID;
 	private Measurements measurements;
+	public static final int PACKETS_PER_REPEAT 			= 1_000;
+	public static final int DEFAULT_NUMBER_OF_REPEATS 	= 3;
 
 	
 	/**
@@ -117,7 +119,7 @@ public class WoCoClient {
 		String sName 		= args[0];
 		int sPort 			= Integer.parseInt(args[1]);
 		float dSize 		= Float.parseFloat(args[2])*1024;
-		int ops				= Integer.parseInt(args[3])*1_000;
+		int ops				= Integer.parseInt(args[3])*PACKETS_PER_REPEAT;
 		int file 			= Integer.parseInt(args[4]);
 		int seed 			= (args.length>=6)  ? Integer.parseInt(args[5]) : (int) (Math.random()*10000);
 		seed				= (seed != -1)      ? seed : (int) (Math.random()*10000);

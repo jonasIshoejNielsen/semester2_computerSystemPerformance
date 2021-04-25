@@ -59,7 +59,7 @@ public class TestThreading {
         long numberOfLineStorageLists = 1_000_000;
         int threadCount = 16;
         List<LineStorage> lineStorageList = genListOfLineStorage(docu, numberOfLineStorageLists, threadCount);
-        WoCoServer.setUpDataHandlers(threadCount, false, i -> new DataHandlerSynchronized(true, i));
+        WoCoServer.setUpDataHandlers(threadCount, false, i -> new DataHandlerSynchronized(true, false, i));
 
         waitForAllToBeDone ();
         asserAllLineStoragesAreCorrect (lineStorageList);
@@ -72,7 +72,7 @@ public class TestThreading {
         long numberOfLineStorageLists = 1_000_000;
         int threadCount = 16;
         List<LineStorage> lineStorageList = genListOfLineStorage(docu, numberOfLineStorageLists, threadCount);
-        WoCoServer.setUpDataHandlers(threadCount, false, i -> new DataHandlerPrimary(true, i));
+        WoCoServer.setUpDataHandlers(threadCount, false, i -> new DataHandlerPrimary(true, false, i));
 
         waitForAllToBeDone ();
         asserAllLineStoragesAreCorrect (lineStorageList);

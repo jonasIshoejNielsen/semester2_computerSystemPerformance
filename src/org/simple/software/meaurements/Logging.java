@@ -6,14 +6,16 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Logging {
     public static String folderName;
-    private static WriterHolder writerHolder_CleaningTags;
-    private static WriterHolder writerHolder_WordCount;
-    private static WriterHolder writerHolder_Serializing;
-    private static WriterHolder writerHolder_InServer;
-    private static WriterHolder writerHolder_Response;
+    private static Map<Integer, WriterHolder> writerHolder_CleaningTags = new HashMap<>();
+    private static Map<Integer, WriterHolder> writerHolder_WordCount    = new HashMap<>();
+    private static Map<Integer, WriterHolder> writerHolder_Serializing  = new HashMap<>();
+    private static Map<Integer, WriterHolder> writerHolder_InServer     = new HashMap<>();
+    private static Map<Integer, WriterHolder> writerHolder_Response     = new HashMap<>();
 
     public static void createFolder(String type, Boolean clean, int threads, int numberOfClients, int file, float dSize) throws IOException {
 
@@ -36,28 +38,28 @@ public class Logging {
     }
     public static void writeCleaningTagsThoughput(Measurements measurements, int clientId) {
         if(!Config.writeCleaningTags) return;
-        writerHolder_CleaningTags   = (writerHolder_CleaningTags ==null)?   new WriterHolder("CleaningTags", clientId)      : writerHolder_CleaningTags;
-        writeMeasurements(measurements, clientId, writerHolder_CleaningTags);
+        WriterHolder wh = writerHolder_CleaningTags.computeIfAbsent(clientId, id -> new WriterHolder("CleaningTags", clientId));
+        writeMeasurements(measurements, clientId, wh);
     }
     public static void writeWordCountThoughput(Measurements measurements, int clientId) {
         if(!Config.writeWordCount) return;
-        writerHolder_WordCount      = (writerHolder_WordCount ==null)?      new WriterHolder("WordCountTags", clientId)     : writerHolder_WordCount;
-        writeMeasurements(measurements, clientId, writerHolder_WordCount);
+        WriterHolder wh = writerHolder_WordCount.computeIfAbsent(clientId, id -> new WriterHolder("WordCountTags", clientId));
+        writeMeasurements(measurements, clientId, wh);
     }
     public static void writeSerializingThoughput (Measurements measurements, int clientId) {
         if(!Config.writeSerializing) return;
-        writerHolder_Serializing    = (writerHolder_Serializing ==null)?    new WriterHolder("Serializing", clientId)       : writerHolder_Serializing;
-        writeMeasurements(measurements, clientId, writerHolder_Serializing);
+        WriterHolder wh = writerHolder_Serializing.computeIfAbsent(clientId, id -> new WriterHolder("Serializing", clientId));
+        writeMeasurements(measurements, clientId, wh);
     }
     public static void writeTimeInServerThoughput (Measurements measurements, int clientId) {
         if(!Config.writeTimeInServer) return;
-        writerHolder_InServer       = (writerHolder_InServer ==null)?       new WriterHolder("InServer", clientId)          : writerHolder_InServer;
-        writeMeasurements(measurements, clientId, writerHolder_InServer);
+        WriterHolder wh = writerHolder_InServer.computeIfAbsent(clientId, id -> new WriterHolder("InServer", clientId));
+        writeMeasurements(measurements, clientId, wh);
     }
     public static void writeResponseThoughput(Measurements measurements, int clientId) {
         if(!Config.writeResponseTime) return;
-        writerHolder_Response       = (writerHolder_Response ==null)?       new WriterHolder("Response", clientId)          : writerHolder_Response;
-        writeMeasurements(measurements, clientId, writerHolder_Response);
+        WriterHolder wh = writerHolder_Response.computeIfAbsent(clientId, id -> new WriterHolder("Response", clientId));
+        writeMeasurements(measurements, clientId, wh);
     }
 
     private static void writeMeasurements(Measurements measurements, int clientId, WriterHolder writerHolder) {

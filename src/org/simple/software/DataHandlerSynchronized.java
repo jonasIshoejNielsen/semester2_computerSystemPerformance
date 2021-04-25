@@ -7,16 +7,18 @@ import java.util.List;
 import java.util.Map;
 
 public class DataHandlerSynchronized implements DataHandler {
-    private final List<Measurements> measurementsCleaning   = new ArrayList<>();
-    private final List<Measurements> measurementsWordCount  = new ArrayList<>();
-    private final Measurements measurementsSerializing      = new Measurements();
-    private final Measurements measurementsInServer         = new Measurements();
+    private List<Measurements> measurementsCleaning   = new ArrayList<>();
+    private List<Measurements> measurementsWordCount  = new ArrayList<>();
+    private Measurements measurementsSerializing      = new Measurements();
+    private Measurements measurementsInServer         = new Measurements();
     private int dataHandlerId;
     private final boolean cMode;
+    private final boolean fixedNumberOfClients;
 
-    public DataHandlerSynchronized(boolean cMode, int dataHandlerId) {
-        this.cMode = cMode;
-        this.dataHandlerId = dataHandlerId;
+    public DataHandlerSynchronized(boolean cMode, boolean fixedNumberOfClients, int dataHandlerId) {
+        this.cMode                = cMode;
+        this.fixedNumberOfClients = fixedNumberOfClients;
+        this.dataHandlerId        = dataHandlerId;
     }
 
     public List<Measurements> getMeasurementsCleaning() {
@@ -64,6 +66,8 @@ public class DataHandlerSynchronized implements DataHandler {
             measurementsInServer.addMeasurement(ls.getTimeFromEnteringServer(), endFromStart);
             measurementsCleaning.add(ls.getMeasurementsCleaning());
             measurementsWordCount.add(ls.getMeasurementsWordCount());
+            if (fixedNumberOfClients)
+                WoCoServer.reportFinishedMessage();
         } while (repeat);
     }
 
@@ -82,5 +86,13 @@ public class DataHandlerSynchronized implements DataHandler {
         }
         sb.append("\n");
         return sb.substring(0);
+    }
+
+    @Override
+    public synchronized void restartMessages() {
+        measurementsCleaning        = new ArrayList<>();
+        measurementsWordCount       = new ArrayList<>();
+        measurementsSerializing     = new Measurements();
+        measurementsInServer        = new Measurements();
     }
 }
