@@ -30,19 +30,18 @@ public class Server {
         this.dataHandlerList = dataHandlerList;
         selector = Selector.open();
         openSocket(new InetSocketAddress(lAddr, lPort), selector);
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() {
-                System.out.println("Writing to logs");
-                for (DataHandler dh: dataHandlerList) {
-                    System.out.println("Writing to logs" + dh.getDataHandlerId());
-                    logListOfTimes(dh.getDataHandlerId(), dh.getMeasurementsCleaning(),    Logging::writeCleaningTagsThoughput);
-                    logListOfTimes(dh.getDataHandlerId(), dh.getMeasurementsWordCount(),   Logging::writeWordCountThoughput);
-                    logTimes(dh.getDataHandlerId(),       dh.getMeasurementsSerializing(), Logging::writeSerializingThoughput);
-                    logTimes(dh.getDataHandlerId(),       dh.getMeasurementsInServer(),    Logging::writeTimeInServerThoughput);
-
-                }
-            }
-        });
+    }
+    public void logMessages() {
+        System.out.println("Writing to logs");
+        Logging.reset();
+        for (DataHandler dh: dataHandlerList) {
+            System.out.println("Writing to logs" + dh.getDataHandlerId());
+            logListOfTimes(dh.getDataHandlerId(), dh.getMeasurementsCleaning(),    Logging::writeCleaningTagsThoughput);
+            logListOfTimes(dh.getDataHandlerId(), dh.getMeasurementsWordCount(),   Logging::writeWordCountThoughput);
+            logTimes(dh.getDataHandlerId(),       dh.getMeasurementsSerializing(), Logging::writeSerializingThoughput);
+            logTimes(dh.getDataHandlerId(),       dh.getMeasurementsInServer(),    Logging::writeTimeInServerThoughput);
+        }
+        System.out.println("Done loggign");
     }
     private void logTimes(int dataHandlerId, Measurements measurements, BiConsumer<Measurements, Integer> writeToLog) {
         writeToLog.accept(measurements, dataHandlerId);

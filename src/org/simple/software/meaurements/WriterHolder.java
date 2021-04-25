@@ -9,7 +9,6 @@ public class WriterHolder {
     public static FileWriter writerInterval;
 
     public WriterHolder(String wirterType, int clientId) {
-
         writerTime     = createFileWriter(wirterType+"_Time", clientId);
         writerTput     = createFileWriter(wirterType+"_Tput", clientId);
         writerInterval = createFileWriter(wirterType+"_Interval", clientId);
