@@ -15,64 +15,62 @@ public class WoCoServer {
 	public static final char SEPARATOR = '$';
 	private static final List<Worker> workerList = new ArrayList<>();
 	private static final AtomicInteger messagesLeftCounter = new AtomicInteger(0);
-	private static final Integer[] numberOfClients 			= new Integer[] {1,2,4,8,16};
-	private static final AtomicInteger indexNumberOfClients = new AtomicInteger(0);
 	private static boolean cMode;
 	private static Integer threadCount;
 	private static int dSize;
 	private static int file;
 	private static Server server;
+	private static int repeatCount;
+	private static int numberOfClients;
+	private static ExecutorService exec;
 
 	public static void main(String[] args) throws IOException {
 		if (args.length<4) {
-			HelperFunctions.print(WoCoServer.class, "Usage: <listenaddress> <listenport> <cleaning> <threadcount> [<numberOfClients>] [<documentsize(KiB)>] [<filesuffix>]");
+			HelperFunctions.print(WoCoServer.class, "Usage: <listenaddress> <listenport> <cleaning> <threadcount> [<numberOfClients>] [<documentsize(KiB)>] [<filesuffix>]  [<repeatCount>]");
 			System.exit(0);
 		}
 		String lAddr 			= args[0];
 		int lPort 				= Integer.parseInt(args[1].replaceAll("[^\\d.]", ""));
 		cMode 					= Boolean.parseBoolean(args[2]);
 		threadCount 			= Integer.valueOf(args[3].replaceAll("[^\\d.]", ""));
-		boolean fixedNumberOfClients = (args.length>=5)? Boolean.parseBoolean(args[2]) : false;
+		numberOfClients 		= (args.length>=5)? Integer.valueOf(args[4].replaceAll("[^\\d.]", "")) : -1;
 		dSize 					= (args.length>=6)? Integer.valueOf(args[5].replaceAll("[^\\d.]", "")) : 1;
 		dSize *= 1024;
 		file 					= (args.length>=7)? Integer.valueOf(args[6].replaceAll("[^\\d.]", "")) : 1;
-		System.out.println(cMode? "Clean tags": "Don't clean tags");
-		System.out.println(threadCount + " number of threads");
+		repeatCount 			= (args.length>=8) ? Integer.valueOf(args[7].replaceAll("[^\\d.]", "")) : 0;
+		StringBuilder sb = new StringBuilder()
+				.append(cMode? "Clean tags": "Don't clean tags, ")
+				.append(threadCount + " number of threads, ")
+				.append(numberOfClients+" number of threads, ")
+				.append(repeatCount +" repeat");
+		System.out.println(sb.toString());
 
 		setUpLogging();
 
-		setUpWorkers(threadCount, true, i -> new WorkerPrimary(cMode, fixedNumberOfClients, i));
-		server = new Server(lAddr, lPort, threadCount==0, workerList);
+		exec = setUpWorkers(threadCount, true, i -> new WorkerPrimary(cMode, numberOfClients>0, i));
+		server = new Server(lAddr, lPort, threadCount==0, repeatCount, workerList);
 
 		server.startListening();
 	}
 
-	public static void setUpWorkers(int threadCount, boolean sendToCLient, Function<Integer, Worker> workerConstructor) {
+	public static ExecutorService setUpWorkers(int threadCount, boolean sendToCLient, Function<Integer, Worker> workerConstructor) {
 		for (int i = 1; i <= threadCount; i++) {
 			workerList.add(workerConstructor.apply(i));
 		}
 		if(threadCount == 0) {
 			workerList.add(workerConstructor.apply(0));
-			return;
+			return null;
 		}
 		final ExecutorService exec = Executors.newFixedThreadPool(threadCount);
 		for (Worker dh: workerList ) {
 			exec.submit(() ->dh.startPipeLine(true, sendToCLient));
 		}
-		return;
+		return exec;
 	}
 
 	public static void setUpLogging() throws IOException {
-		int index = indexNumberOfClients.getAndIncrement();
-		if (index >= numberOfClients.length) {
-			System.out.println("Last client message handled");
-			System.exit(0);
-		}
-		int currNumberOfClients = numberOfClients[index];
-		messagesLeftCounter.set(currNumberOfClients*WoCoClient.PACKETS_PER_REPEAT*WoCoClient.DEFAULT_NUMBER_OF_REPEATS);
-		System.out.println("currNumberOfClients="+currNumberOfClients);
-		System.out.println("messagesLeftCounter="+messagesLeftCounter.get());
-		Logging.createFolder("server", cMode, threadCount, currNumberOfClients, file, dSize);
+		messagesLeftCounter.set(numberOfClients*WoCoClient.PACKETS_PER_REPEAT);
+		Logging.createFolder("server", cMode, threadCount, numberOfClients, file, dSize);
 	}
 
 
@@ -87,15 +85,10 @@ public class WoCoServer {
 			return;
 		}
 		server.logMessages();
-		for (Worker dh: workerList) {
-			dh.restartMessages();
-		}
-		try {
-			setUpLogging();
-		} catch (IOException e) {
-			e.printStackTrace();
-			System.exit(0);
-		}
+		if(exec != null)
+			exec.shutdown();
+		System.out.println("Exiting");
+		System.exit(0);
 	}
 }
 

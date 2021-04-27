@@ -66,6 +66,9 @@ public class LineStorage {
     }
     private static void removeTagsFromLine(StringBuilder sb, String line) {
         String[] split = line.split("<");
+        if(split.length<1) {
+            return;
+        }
         sb.append(split[0]);
         if (split.length < 2) {
             return;

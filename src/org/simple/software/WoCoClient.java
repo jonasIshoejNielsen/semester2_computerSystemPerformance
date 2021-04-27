@@ -20,9 +20,9 @@ public class WoCoClient {
 	private static boolean DEBUG = false;
 	private static int numberOfClients;
 	private static int clientID;
+	private static int repeatCount;
 	private Measurements measurements;
-	public static final int PACKETS_PER_REPEAT 			= 1_000;
-	public static final int DEFAULT_NUMBER_OF_REPEATS 	= 3;
+	public static final int PACKETS_PER_REPEAT 			= 100;
 
 	
 	/**
@@ -101,9 +101,6 @@ public class WoCoClient {
 		//send requests to the server in a loop.
 		for (int i=0; i<ops; i++) {
 			HashMap<String, Integer> result = this.getWordCount(docu);
-			if(i % 500 == 0) {
-				System.out.println("client"+clientID+", "+i+"/"+ops);
-			}
 		}
 	}
 	
@@ -119,7 +116,7 @@ public class WoCoClient {
 		String sName 		= args[0];
 		int sPort 			= Integer.parseInt(args[1]);
 		float dSize 		= Float.parseFloat(args[2])*1024;
-		int ops				= Integer.parseInt(args[3])*PACKETS_PER_REPEAT;
+		repeatCount			= Integer.valueOf(args[3].replaceAll("[^\\d.]", ""));
 		int file 			= Integer.parseInt(args[4]);
 		int seed 			= (args.length>=6)  ? Integer.parseInt(args[5]) : (int) (Math.random()*10000);
 		seed				= (seed != -1)      ? seed : (int) (Math.random()*10000);
@@ -133,12 +130,12 @@ public class WoCoClient {
 
 		String docu = HelperFunctions.generateDocument((int) (dSize), file, seed);
 		WoCoClient client = new WoCoClient(sName, sPort);
-    	client.sendDocu(ops, docu);
+    	client.sendDocu(PACKETS_PER_REPEAT, docu);
 
 		Thread.sleep(2000);
 		client.shutDown();
 
-		Logging.writeResponseThoughput(client.measurements, clientID);
+		Logging.writeResponseThoughput(client.measurements, clientID, repeatCount);
 
         System.exit(0);
 	}

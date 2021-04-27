@@ -11,14 +11,14 @@ public class WorkerPrimary implements Worker {
     private List<Measurements> measurementsWordCount  = new ArrayList<>();
     private Measurements measurementsSerializing      = new Measurements();
     private Measurements measurementsInServer         = new Measurements();
-    private int workerId;
     private final boolean cMode;
     private final boolean fixedNumberOfClients;
+    private final int workerId;
 
     public WorkerPrimary(boolean cMode, boolean fixedNumberOfClients, int workerId) {
         this.cMode                = cMode;
         this.fixedNumberOfClients = fixedNumberOfClients;
-        this.workerId = workerId;
+        this.workerId             = workerId;
     }
 
     public List<Measurements> getMeasurementsCleaning() {
@@ -42,7 +42,6 @@ public class WorkerPrimary implements Worker {
     }
 
     private LineStorage getNextLineStorage () throws InterruptedException {
-        Server.removed++;
         return Server.linesToCount.take();
     }
 
@@ -56,31 +55,28 @@ public class WorkerPrimary implements Worker {
                     e.printStackTrace();
                     continue;
                 }
-                ls.doWordCount(cMode);
-                long beginSerializing = System.nanoTime();
-                byte[] returnMessage = serializeResultForClient(ls).getBytes();
-                long endSerializing = System.nanoTime();
-                ls.sendToClient(returnMessage, sendToClient);
-                long endFromStart = System.nanoTime();
+                try {
+                    ls.doWordCount(cMode);
+                    long beginSerializing = System.nanoTime();
+                    byte[] returnMessage = serializeResultForClient(ls).getBytes();
+                    long endSerializing = System.nanoTime();
+                    ls.sendToClient(returnMessage, sendToClient);
+                    long endFromStart = System.nanoTime();
 
-                measurementsSerializing.addMeasurement(beginSerializing, endSerializing);
-                measurementsInServer.addMeasurement(ls.getTimeFromEnteringServer(), endFromStart);
-                measurementsCleaning.add(ls.getMeasurementsCleaning());
-                measurementsWordCount.add(ls.getMeasurementsWordCount());
+                    measurementsSerializing.addMeasurement(beginSerializing, endSerializing);
+                    measurementsInServer.addMeasurement(ls.getTimeFromEnteringServer(), endFromStart);
+                    measurementsCleaning.add(ls.getMeasurementsCleaning());
+                    measurementsWordCount.add(ls.getMeasurementsWordCount());
+                } catch (Exception e) {
+                    System.out.println(ls.line);
+                    System.out.println(e.getMessage());
+                }
                 if (fixedNumberOfClients)
                     WoCoServer.reportFinishedMessage();
             } catch (Exception e) {
                 System.out.println(e);
             }
         } while (repeat);
-    }
-
-    @Override
-    public void restartMessages() {
-        measurementsCleaning        = new ArrayList<>();
-        measurementsWordCount       = new ArrayList<>();
-        measurementsSerializing     = new Measurements();
-        measurementsInServer        = new Measurements();
     }
 
     /**
