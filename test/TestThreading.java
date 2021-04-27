@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
 
 public class TestThreading {
 
@@ -29,7 +30,7 @@ public class TestThreading {
         }
         return lineStorageList;
     }
-    void waitForAllToBeDone () {
+    void waitForAllToBeDone (ExecutorService es) {
         while (! Server.linesToCount.isEmpty()) {
             try {
                 Thread.sleep(200);
@@ -38,11 +39,7 @@ public class TestThreading {
             }
         }
         Assertions.assertEquals(0, Server.linesToCount.size());
-        try {
-            Thread.sleep(6000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        es.shutdown();
     }
     void asserAllLineStoragesAreCorrect (List<LineStorage> lineStorageList) {
         String res = Arrays.toString(lineStorageList.get(0).returnMessage);
@@ -62,9 +59,9 @@ public class TestThreading {
         long numberOfLineStorageLists = 1_000_000;
         int threadCount = 16;
         List<LineStorage> lineStorageList = genListOfLineStorage(docu, numberOfLineStorageLists, threadCount);
-        WoCoServer.setUpWorkers(threadCount, false, i -> new WorkerSynchronized(true, false, i));
+        ExecutorService es = WoCoServer.setUpWorkers(threadCount, false, i -> new WorkerSynchronized(true, false, i));
 
-        waitForAllToBeDone ();
+        waitForAllToBeDone (es);
         asserAllLineStoragesAreCorrect (lineStorageList);
     }
     @Test
@@ -75,9 +72,9 @@ public class TestThreading {
         long numberOfLineStorageLists = 1_000_000;
         int threadCount = 16;
         List<LineStorage> lineStorageList = genListOfLineStorage(docu, numberOfLineStorageLists, threadCount);
-        WoCoServer.setUpWorkers(threadCount, false, i -> new WorkerPrimary(true, false, i));
+        ExecutorService es = WoCoServer.setUpWorkers(threadCount, false, i -> new WorkerPrimary(true, false, i));
 
-        waitForAllToBeDone ();
+        waitForAllToBeDone (es);
         asserAllLineStoragesAreCorrect (lineStorageList);
     }
 }

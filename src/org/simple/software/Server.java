@@ -13,22 +13,23 @@ import java.nio.channels.SocketChannel;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class Server {
     public static final HashMap<Integer, StringBuilder> buffer = new HashMap<>();
     public static final HashMap<Integer, Long> timesFromEnteringServer = new HashMap<>();
     public static final LinkedBlockingQueue<LineStorage> linesToCount         = new LinkedBlockingQueue<>();
-    public static int added = 0;
-    public static int removed = 0;
     private final List<Worker> workersList;
+    private final int repretitionCount;
     private Selector selector;
     private ServerSocketChannel serverSocket;
     private final boolean onlyOneThread;
 
-    public Server(String lAddr, int lPort, boolean onlyOneThread, List<Worker>workersList) throws IOException {
-        this.onlyOneThread = onlyOneThread;
-        this.workersList = workersList;
-        selector = Selector.open();
+    public Server(String lAddr, int lPort, boolean onlyOneThread, int repretitionCount, List<Worker> workersList) throws IOException {
+        this.onlyOneThread      = onlyOneThread;
+        this.repretitionCount   = repretitionCount;
+        this.workersList        = workersList;
+        this.selector = Selector.open();
         openSocket(new InetSocketAddress(lAddr, lPort), selector);
     }
     public void logMessages() {
@@ -36,19 +37,19 @@ public class Server {
         Logging.reset();
         for (Worker dh: workersList) {
             System.out.println("Writing to logs" + dh.getWorkerId());
-            logListOfTimes(dh.getWorkerId(), dh.getMeasurementsCleaning(),    Logging::writeCleaningTagsThoughput);
-            logListOfTimes(dh.getWorkerId(), dh.getMeasurementsWordCount(),   Logging::writeWordCountThoughput);
-            logTimes(dh.getWorkerId(),       dh.getMeasurementsSerializing(), Logging::writeSerializingThoughput);
-            logTimes(dh.getWorkerId(),       dh.getMeasurementsInServer(),    Logging::writeTimeInServerThoughput);
+            logListOfTimes(dh.getMeasurementsCleaning(),    measurements-> Logging.writeCleaningTagsThoughput(measurements, dh.getWorkerId(), repretitionCount));
+            logListOfTimes(dh.getMeasurementsWordCount(),   measurements-> Logging.writeWordCountThoughput(measurements, dh.getWorkerId(), repretitionCount));
+            logTimes(dh.getMeasurementsSerializing(),       measurements-> Logging.writeSerializingThoughput(measurements, dh.getWorkerId(), repretitionCount));
+            logTimes(dh.getMeasurementsInServer(),          measurements-> Logging.writeTimeInServerThoughput(measurements, dh.getWorkerId(), repretitionCount));
         }
         System.out.println("Done loggign");
     }
-    private void logTimes(int workerId, Measurements measurements, BiConsumer<Measurements, Integer> writeToLog) {
-        writeToLog.accept(measurements, workerId);
+    private void logTimes(Measurements measurements, Consumer<Measurements> writeToLog) {
+        writeToLog.accept(measurements);
     }
-    private void logListOfTimes(int workerId, List<Measurements> measurementsList, BiConsumer<Measurements, Integer> writeToLog) {
+    private void logListOfTimes(List<Measurements> measurementsList, Consumer<Measurements> writeToLog) {
         for (Measurements measurements: measurementsList) {
-            logTimes(workerId, measurements, writeToLog);
+            logTimes(measurements, writeToLog);
         }
     }
 
@@ -154,7 +155,6 @@ public class Server {
 
         //word count in line
         linesToCount.add(new LineStorage(line, clientId, client, timeFromEnteringServer));
-        added++;
         return true;
     }
 

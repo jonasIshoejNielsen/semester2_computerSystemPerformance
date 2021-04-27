@@ -20,9 +20,9 @@ public class WoCoClient {
 	private static boolean DEBUG = false;
 	private static int numberOfClients;
 	private static int clientID;
+	private static int repretitionCount;
 	private Measurements measurements;
-	public static final int PACKETS_PER_REPEAT 			= 1_000;
-	public static final int DEFAULT_NUMBER_OF_REPEATS 	= 3;
+	public static final int PACKETS_PER_REPEAT 			= 100_000;
 
 	
 	/**
@@ -112,14 +112,14 @@ public class WoCoClient {
 		//reading in parameters
 
 		if (args.length<5) {
-			System.out.println("Usage: <servername> <serverport> <documentsize(KiB)> <opcount(x1000)> <filesuffix> [<seed>] [<clientID>] [<numberOfClients>] [<cleaning>] [<threadcount>]");
+			System.out.println("Usage: <servername> <serverport> <documentsize(KiB)> <opcount(x1000)> <filesuffix> [<seed>] [<clientID>] [<numberOfClients>] [<cleaning>] [<threadcount>] [<repretitionCount>]");
 			System.exit(0);
 		}
 
 		String sName 		= args[0];
 		int sPort 			= Integer.parseInt(args[1]);
 		float dSize 		= Float.parseFloat(args[2])*1024;
-		int ops				= Integer.parseInt(args[3])*PACKETS_PER_REPEAT;
+		int ops				= PACKETS_PER_REPEAT;	//Integer.parseInt(args[3])*PACKETS_PER_REPEAT;
 		int file 			= Integer.parseInt(args[4]);
 		int seed 			= (args.length>=6)  ? Integer.parseInt(args[5]) : (int) (Math.random()*10000);
 		seed				= (seed != -1)      ? seed : (int) (Math.random()*10000);
@@ -127,6 +127,7 @@ public class WoCoClient {
 		numberOfClients 	= (args.length>=8)  ? Integer.parseInt(args[7]) 		: 1;
 		boolean cMode 		= (args.length>=9)  ? Boolean.parseBoolean(args[8]) 	: true;
 		int threadCount 	= (args.length>=10) ? Integer.valueOf(args[9].replaceAll("[^\\d.]", "")) : 0;
+		repretitionCount 	= (args.length>=11) ? Integer.valueOf(args[10].replaceAll("[^\\d.]", "")) : 0;
 		Logging.createFolder("client", cMode, threadCount, numberOfClients, file, dSize);
 		//We generate one document for the entire runtime of this client
 		//Otherwise the client would spend too much time generating new inputs.
@@ -138,7 +139,7 @@ public class WoCoClient {
 		Thread.sleep(2000);
 		client.shutDown();
 
-		Logging.writeResponseThoughput(client.measurements, clientID);
+		Logging.writeResponseThoughput(client.measurements, clientID, repretitionCount);
 
         System.exit(0);
 	}

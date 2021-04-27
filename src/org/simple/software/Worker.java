@@ -10,5 +10,4 @@ public interface Worker {
     Measurements getMeasurementsInServer();
     int getWorkerId();
     void startPipeLine (boolean repeat, boolean sendToClient);
-    void restartMessages();
 }
