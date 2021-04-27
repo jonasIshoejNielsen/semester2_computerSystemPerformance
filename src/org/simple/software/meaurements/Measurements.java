@@ -2,12 +2,14 @@ package org.simple.software.meaurements;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Measurements {
     private long timeLastPrint = System.nanoTime();
     private int cntSincePrint = 0;
 
-    public List<TputHolder> tputs = new ArrayList<>();
+    public List<Float> tputs            = new ArrayList<>();
+    public List<Float> tputs_interval   = new ArrayList<>();
     public List<Long> timeMeasurements = new ArrayList<>();
 
 
@@ -19,8 +21,34 @@ public class Measurements {
             return;
         }
         float tput = cntSincePrint/elapsedSeconds;
-        tputs.add(new TputHolder(elapsedSeconds, tput));
+        tputs.add(tput);
+        tputs_interval.add(elapsedSeconds);
         timeLastPrint = endTimeCurrOps;
         cntSincePrint = 0;
+    }
+
+    public List<Long> computePercentilesTime() {
+        return computePercentilesLongs(timeMeasurements);
+    }
+    public List<Float> computePercentilesTput() {
+        return computePercentilesFloats(tputs);
+    }
+    private List<Long> computePercentilesLongs(List<Long> values) {
+        List<Long> sorted = values.stream().sorted().collect(Collectors.toList());
+        List<Long> percentiles = new ArrayList<>();
+        for (int p=1; p<=100; p++) {
+            Long valueForP = sorted.get(sorted.size() * p / 100 - 1);
+            percentiles.add(valueForP);
+        }
+        return percentiles;
+    }
+    private List<Float> computePercentilesFloats(List<Float> values) {
+        List<Float> sorted = values.stream().sorted().collect(Collectors.toList());
+        List<Float> percentiles = new ArrayList<>();
+        for (int p=1; p<=100; p++) {
+            Float valueForP = sorted.get(sorted.size() * p / 100 - 1);
+            percentiles.add(valueForP);
+        }
+        return percentiles;
     }
 }

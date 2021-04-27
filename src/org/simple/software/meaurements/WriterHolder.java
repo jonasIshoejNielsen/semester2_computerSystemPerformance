@@ -7,11 +7,15 @@ public class WriterHolder {
     public static FileWriter writerTime;
     public static FileWriter writerTput;
     public static FileWriter writerInterval;
+    public static FileWriter writerTimePercentile;
+    public static FileWriter writerTputPercentile;
 
     public WriterHolder(String wirterType, int clientId, int repeatCount) {
-        writerTime     = createFileWriter(wirterType+"_Time", clientId, repeatCount);
-        writerTput     = createFileWriter(wirterType+"_Tput", clientId, repeatCount);
-        writerInterval = createFileWriter(wirterType+"_Interval", clientId, repeatCount);
+        writerTime              = createFileWriter(wirterType+"_Time", clientId, repeatCount);
+        writerTimePercentile    = createFileWriter(wirterType+"_percentiles_Time", clientId, repeatCount);
+        writerTput              = createFileWriter(wirterType+"_Tput", clientId, repeatCount);
+        writerTputPercentile    = createFileWriter(wirterType+"_percentiles_Tput", clientId, repeatCount);
+        writerInterval          = createFileWriter(wirterType+"_Interval", clientId, repeatCount);
     }
 
 

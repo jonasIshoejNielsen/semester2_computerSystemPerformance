@@ -66,9 +66,17 @@ public class Logging {
         for (long time_ns : measurements.timeMeasurements) {
             writeToFile(writerHolder.writerTime, (double) time_ns / 1000000000.0);
         }
-        for (TputHolder tput : measurements.tputs) {
-            writeToFile(writerHolder.writerTput, tput.value);
-            writeToFile(writerHolder.writerInterval, tput.intervalTime);
+        for (float tput : measurements.tputs) {
+            writeToFile(writerHolder.writerTput, tput);
+        }
+        for (float interval : measurements.tputs_interval) {
+            writeToFile(writerHolder.writerInterval, interval);
+        }
+        for (long valueForP : measurements.computePercentilesTime()) {
+            writeToFile(writerHolder.writerTimePercentile, (double) valueForP / 1000000000.0);
+        }
+        for (float valueForP : measurements.computePercentilesTput()) {
+            writeToFile(writerHolder.writerTputPercentile, (double) valueForP / 1000000000.0);
         }
 
     }
