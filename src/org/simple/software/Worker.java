@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 public class Worker {
-    private Measurements measurementsInQueue          = new Measurements();
-    private List<Measurements> measurementsCleaning   = new ArrayList<>();
-    private List<Measurements> measurementsWordCount  = new ArrayList<>();
-    private Measurements measurementsSerializing      = new Measurements();
-    private Measurements measurementsInServer         = new Measurements();
+    private final Measurements measurementsInQueue          = new Measurements();
+    private final List<Measurements> measurementsCleaning   = new ArrayList<>();
+    private final List<Measurements> measurementsWordCount  = new ArrayList<>();
+    private final Measurements measurementsSerializing      = new Measurements();
+    private final Measurements measurementsInServer         = new Measurements();
     private final boolean cMode;
     private final boolean fixedNumberOfClients;
     private final int workerId;
