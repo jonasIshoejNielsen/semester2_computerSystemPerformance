@@ -33,10 +33,8 @@ public class Server {
         openSocket(new InetSocketAddress(lAddr, lPort), selector);
     }
     public void logMessages() {
-        System.out.println("Writing to logs");
         Logging.reset();
         for (Worker dh: workersList) {
-            System.out.println("Writing to logs" + dh.getWorkerId());
             logListOfTimes(dh.getMeasurementsCleaning(),    measurements-> Logging.writeCleaningTagsThoughput(measurements, dh.getWorkerId(), repretitionCount));
             logListOfTimes(dh.getMeasurementsWordCount(),   measurements-> Logging.writeWordCountThoughput(measurements, dh.getWorkerId(), repretitionCount));
             logTimes(dh.getMeasurementsSerializing(),       measurements-> Logging.writeSerializingThoughput(measurements, dh.getWorkerId(), repretitionCount));

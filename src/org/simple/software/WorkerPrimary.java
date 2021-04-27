@@ -58,9 +58,6 @@ public class WorkerPrimary implements Worker {
                 ls.doWordCount(cMode);
                 long beginSerializing = System.nanoTime();
                 byte[] returnMessage = serializeResultForClient(ls).getBytes();
-                if (returnMessage == null) {
-                    System.out.println("Error");
-                }
                 long endSerializing = System.nanoTime();
                 ls.sendToClient(returnMessage, sendToClient);
                 long endFromStart = System.nanoTime();

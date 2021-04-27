@@ -1,4 +1,0 @@
-if weird comment
-vi ./run-client.sh
-:set ff=unix
-:wq

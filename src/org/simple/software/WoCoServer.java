@@ -22,6 +22,7 @@ public class WoCoServer {
 	private static Server server;
 	private static int repretitionCount;
 	private static int numberOfClients;
+	private static ExecutorService exec;
 
 	public static void main(String[] args) throws IOException {
 		if (args.length<4) {
@@ -32,7 +33,7 @@ public class WoCoServer {
 		int lPort 				= Integer.parseInt(args[1].replaceAll("[^\\d.]", ""));
 		cMode 					= Boolean.parseBoolean(args[2]);
 		threadCount 			= Integer.valueOf(args[3].replaceAll("[^\\d.]", ""));
-		numberOfClients 		= (args.length>=5)? Integer.valueOf(args[5].replaceAll("[^\\d.]", "")) : -1;
+		numberOfClients 		= (args.length>=5)? Integer.valueOf(args[4].replaceAll("[^\\d.]", "")) : -1;
 		dSize 					= (args.length>=6)? Integer.valueOf(args[5].replaceAll("[^\\d.]", "")) : 1;
 		dSize *= 1024;
 		file 					= (args.length>=7)? Integer.valueOf(args[6].replaceAll("[^\\d.]", "")) : 1;
@@ -42,7 +43,7 @@ public class WoCoServer {
 
 		setUpLogging();
 
-		setUpWorkers(threadCount, true, i -> new WorkerPrimary(cMode, numberOfClients>0, i));
+		exec = setUpWorkers(threadCount, true, i -> new WorkerPrimary(cMode, numberOfClients>0, i));
 		server = new Server(lAddr, lPort, threadCount==0,repretitionCount, workerList);
 
 		server.startListening();
@@ -80,7 +81,8 @@ public class WoCoServer {
 			return;
 		}
 		server.logMessages();
-
+		exec.shutdown();
+		System.out.println("Exiting");
 		System.exit(0);
 	}
 }
