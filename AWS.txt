@@ -49,6 +49,7 @@ Server
 echo "<listenaddress> <cleaning> <threadcount> <FIXED_NUMBER_OF_CLIENTS> <doc_size> <file>"
 ./run-server.sh $IP true $THREADCOUNT $DOCUMENT_SIZE $FILESUFFIX
 ./experiment-threads-server.sh $IP 
+./experiment-documents-server.sh $IP 
 
 
 
@@ -58,6 +59,7 @@ echo "<servername> <doc_size> <file> <number of clients> <cmode> <threads>"
 #./run-client.sh $IP $DOCUMENT_SIZE $FILESUFFIX 1 true $THREADCOUNT
 ./run-client.sh $IP $DOCUMENT_SIZE $FILESUFFIX true $THREADCOUNT
 ./experiment-threads-client.sh $IP 
+./experiment-documents-client.sh $IP 
 
 
 
