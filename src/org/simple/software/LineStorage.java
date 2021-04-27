@@ -77,6 +77,9 @@ public class LineStorage {
             return;
         }
         String remainingString = split[1];
+        if (!remainingString.startsWith("a")) {
+            return;
+        }
         int index = remainingString.toLowerCase().indexOf("title");
         while (index != -1) {
             if (index + 6 >= remainingString.length()) {
