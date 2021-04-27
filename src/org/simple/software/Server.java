@@ -66,7 +66,7 @@ public class Server {
                     SocketChannel client = serverSocket.accept();
                     client.configureBlocking(false);
                     client.register(selector, SelectionKey.OP_READ);
-                    HelperFunctions.print(WoCoServer.class, "Connection Accepted: ", client.getLocalAddress().toString(), "\n");
+                    //HelperFunctions.print(WoCoServer.class, "Connection Accepted: ", client.getLocalAddress().toString(), "\n");
 
                 } else if (key.isReadable()) {
                     handleRead(bb, key);

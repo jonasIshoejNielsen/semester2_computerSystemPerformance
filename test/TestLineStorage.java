@@ -102,7 +102,7 @@ public class TestLineStorage {
     void testPBTDocumentGeneration() throws IOException {
         init();
         Random rand = new Random();
-        for (int i = 0; i < 100_000; i++) {
+        for (int i = 0; i < 10_000; i++) {
             int length      = rand.nextInt(50);
             int file        = rand.nextInt(2) + 1;
             int seed        = (int) (Math.random()*10000);

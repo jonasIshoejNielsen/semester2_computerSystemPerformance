@@ -38,8 +38,8 @@ public class WoCoServer {
 		dSize *= 1024;
 		file 					= (args.length>=7)? Integer.valueOf(args[6].replaceAll("[^\\d.]", "")) : 1;
 		repretitionCount 		= (args.length>=8) ? Integer.valueOf(args[7].replaceAll("[^\\d.]", "")) : 0;
-		System.out.println(cMode? "Clean tags": "Don't clean tags");
-		System.out.println(threadCount + " number of threads");
+		//System.out.println(cMode? "Clean tags": "Don't clean tags");
+		//System.out.println(threadCount + " number of threads");
 
 		setUpLogging();
 
