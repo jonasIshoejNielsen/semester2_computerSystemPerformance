@@ -16,7 +16,7 @@ do
       java -jar ./jars/WoCoClient.jar $SERVER_HOST $SERVER_PORT $DOC_SIZE $REPEAT $FILE_SUFF $SEED $CLIENT_ID $NUMBER_OF_CLIENTS $CLEANNING $THREADCOUNT &
     done
     wait
-    sleep 5
+    sleep 2
   done
   wait
 done

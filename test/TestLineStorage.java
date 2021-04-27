@@ -1,9 +1,11 @@
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.simple.software.HelperFunctions;
 import org.simple.software.meaurements.Config;
 import org.simple.software.LineStorage;
 
+import java.io.IOException;
 import java.util.Random;
 
 public class TestLineStorage {
@@ -95,6 +97,20 @@ public class TestLineStorage {
         LineStorage ls  = makeLineStorage(inputString);
         ls.doWordCount(true);
         Assertions.assertEquals(1, ls.getResults().get("hi"));
+    }
+    @Test
+    void testPBTDocumentGeneration() throws IOException {
+        init();
+        Random rand = new Random();
+        for (int i = 0; i < 100_000; i++) {
+            int length      = rand.nextInt(50);
+            int file        = rand.nextInt(2) + 1;
+            int seed        = (int) (Math.random()*10000);
+            String docu1    = HelperFunctions.generateDocument(length, file, seed);
+            LineStorage ls  = makeLineStorage(docu1);
+            ls.doWordCount(true);
+        }
+        Assertions.assertEquals(true, true);
     }
 
 }

@@ -55,17 +55,22 @@ public class WorkerSynchronized implements Worker {
                 e.printStackTrace();
                 continue;
             }
-            ls.doWordCount(cMode);
-            long beginSerializing = System.nanoTime();
-            byte[] returnMessage = serializeResultForClient(ls).getBytes();
-            long endSerializing = System.nanoTime();
-            ls.sendToClient(returnMessage, sendToClient);
-            long endFromStart = System.nanoTime();
+            try {
+                ls.doWordCount(cMode);
+                long beginSerializing = System.nanoTime();
+                byte[] returnMessage = serializeResultForClient(ls).getBytes();
+                long endSerializing = System.nanoTime();
+                ls.sendToClient(returnMessage, sendToClient);
+                long endFromStart = System.nanoTime();
+                measurementsSerializing.addMeasurement(beginSerializing, endSerializing);
+                measurementsInServer.addMeasurement(ls.getTimeFromEnteringServer(), endFromStart);
+                measurementsCleaning.add(ls.getMeasurementsCleaning());
+                measurementsWordCount.add(ls.getMeasurementsWordCount());
+            } catch (Exception e) {
+                System.out.println(ls.line);
+                System.out.println(e.getMessage());
+            }
 
-            measurementsSerializing.addMeasurement(beginSerializing, endSerializing);
-            measurementsInServer.addMeasurement(ls.getTimeFromEnteringServer(), endFromStart);
-            measurementsCleaning.add(ls.getMeasurementsCleaning());
-            measurementsWordCount.add(ls.getMeasurementsWordCount());
             if (fixedNumberOfClients)
                 WoCoServer.reportFinishedMessage();
         } while (repeat);
