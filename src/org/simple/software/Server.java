@@ -20,14 +20,14 @@ public class Server {
     public static final HashMap<Integer, Long> timesFromEnteringServer = new HashMap<>();
     public static final LinkedBlockingQueue<LineStorage> linesToCount         = new LinkedBlockingQueue<>();
     private final List<Worker> workersList;
-    private final int repretitionCount;
+    private final int repeatCount;
     private Selector selector;
     private ServerSocketChannel serverSocket;
     private final boolean onlyOneThread;
 
-    public Server(String lAddr, int lPort, boolean onlyOneThread, int repretitionCount, List<Worker> workersList) throws IOException {
+    public Server(String lAddr, int lPort, boolean onlyOneThread, int repeatCount, List<Worker> workersList) throws IOException {
         this.onlyOneThread      = onlyOneThread;
-        this.repretitionCount   = repretitionCount;
+        this.repeatCount   = repeatCount;
         this.workersList        = workersList;
         this.selector = Selector.open();
         openSocket(new InetSocketAddress(lAddr, lPort), selector);
@@ -35,10 +35,10 @@ public class Server {
     public void logMessages() {
         Logging.reset();
         for (Worker dh: workersList) {
-            logListOfTimes(dh.getMeasurementsCleaning(),    measurements-> Logging.writeCleaningTagsThoughput(measurements, dh.getWorkerId(), repretitionCount));
-            logListOfTimes(dh.getMeasurementsWordCount(),   measurements-> Logging.writeWordCountThoughput(measurements, dh.getWorkerId(), repretitionCount));
-            logTimes(dh.getMeasurementsSerializing(),       measurements-> Logging.writeSerializingThoughput(measurements, dh.getWorkerId(), repretitionCount));
-            logTimes(dh.getMeasurementsInServer(),          measurements-> Logging.writeTimeInServerThoughput(measurements, dh.getWorkerId(), repretitionCount));
+            logListOfTimes(dh.getMeasurementsCleaning(),    measurements-> Logging.writeCleaningTagsThoughput(measurements, dh.getWorkerId(), repeatCount));
+            logListOfTimes(dh.getMeasurementsWordCount(),   measurements-> Logging.writeWordCountThoughput(measurements,    dh.getWorkerId(), repeatCount));
+            logTimes(dh.getMeasurementsSerializing(),       measurements-> Logging.writeSerializingThoughput(measurements,  dh.getWorkerId(), repeatCount));
+            logTimes(dh.getMeasurementsInServer(),          measurements-> Logging.writeTimeInServerThoughput(measurements, dh.getWorkerId(), repeatCount));
         }
         System.out.println("Done loggign");
     }

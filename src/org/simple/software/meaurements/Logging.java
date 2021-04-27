@@ -36,29 +36,29 @@ public class Logging {
             Files.createDirectory(dir);
         } catch (FileAlreadyExistsException e ) { }
     }
-    public static void writeCleaningTagsThoughput(Measurements measurements, int clientId, int repretitionCount) {
+    public static void writeCleaningTagsThoughput(Measurements measurements, int clientId, int repeatCount) {
         if(!Config.writeCleaningTags) return;
-        WriterHolder wh = writerHolder_CleaningTags.computeIfAbsent(clientId, id -> new WriterHolder("CleaningTags", clientId, repretitionCount));
+        WriterHolder wh = writerHolder_CleaningTags.computeIfAbsent(clientId, id -> new WriterHolder("CleaningTags", clientId, repeatCount));
         writeMeasurements(measurements, clientId, wh);
     }
-    public static void writeWordCountThoughput(Measurements measurements, int clientId, int repretitionCount) {
+    public static void writeWordCountThoughput(Measurements measurements, int clientId, int repeatCount) {
         if(!Config.writeWordCount) return;
-        WriterHolder wh = writerHolder_WordCount.computeIfAbsent(clientId, id -> new WriterHolder("WordCountTags", clientId, repretitionCount));
+        WriterHolder wh = writerHolder_WordCount.computeIfAbsent(clientId, id -> new WriterHolder("WordCountTags", clientId, repeatCount));
         writeMeasurements(measurements, clientId, wh);
     }
-    public static void writeSerializingThoughput (Measurements measurements, int clientId, int repretitionCount) {
+    public static void writeSerializingThoughput (Measurements measurements, int clientId, int repeatCount) {
         if(!Config.writeSerializing) return;
-        WriterHolder wh = writerHolder_Serializing.computeIfAbsent(clientId, id -> new WriterHolder("Serializing", clientId, repretitionCount));
+        WriterHolder wh = writerHolder_Serializing.computeIfAbsent(clientId, id -> new WriterHolder("Serializing", clientId, repeatCount));
         writeMeasurements(measurements, clientId, wh);
     }
-    public static void writeTimeInServerThoughput (Measurements measurements, int clientId, int repretitionCount) {
+    public static void writeTimeInServerThoughput (Measurements measurements, int clientId, int repeatCount) {
         if(!Config.writeTimeInServer) return;
-        WriterHolder wh = writerHolder_InServer.computeIfAbsent(clientId, id -> new WriterHolder("InServer", clientId, repretitionCount));
+        WriterHolder wh = writerHolder_InServer.computeIfAbsent(clientId, id -> new WriterHolder("InServer", clientId, repeatCount));
         writeMeasurements(measurements, clientId, wh);
     }
-    public static void writeResponseThoughput(Measurements measurements, int clientId, int repretitionCount) {
+    public static void writeResponseThoughput(Measurements measurements, int clientId, int repeatCount) {
         if(!Config.writeResponseTime) return;
-        WriterHolder wh = writerHolder_Response.computeIfAbsent(clientId, id -> new WriterHolder("Response", clientId, repretitionCount));
+        WriterHolder wh = writerHolder_Response.computeIfAbsent(clientId, id -> new WriterHolder("Response", clientId, repeatCount));
         writeMeasurements(measurements, clientId, wh);
     }
 

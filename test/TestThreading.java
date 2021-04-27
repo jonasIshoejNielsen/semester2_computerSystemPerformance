@@ -40,6 +40,7 @@ public class TestThreading {
         }
         Assertions.assertEquals(0, Server.linesToCount.size());
         es.shutdown();
+        Assertions.assertEquals(true, es.isShutdown());
     }
     void asserAllLineStoragesAreCorrect (List<LineStorage> lineStorageList) {
         String res = Arrays.toString(lineStorageList.get(0).returnMessage);

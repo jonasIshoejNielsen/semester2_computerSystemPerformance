@@ -20,13 +20,13 @@ public class WoCoServer {
 	private static int dSize;
 	private static int file;
 	private static Server server;
-	private static int repretitionCount;
+	private static int repeatCount;
 	private static int numberOfClients;
 	private static ExecutorService exec;
 
 	public static void main(String[] args) throws IOException {
 		if (args.length<4) {
-			HelperFunctions.print(WoCoServer.class, "Usage: <listenaddress> <listenport> <cleaning> <threadcount> [<numberOfClients>] [<documentsize(KiB)>] [<filesuffix>]  [<repretitionCount>]");
+			HelperFunctions.print(WoCoServer.class, "Usage: <listenaddress> <listenport> <cleaning> <threadcount> [<numberOfClients>] [<documentsize(KiB)>] [<filesuffix>]  [<repeatCount>]");
 			System.exit(0);
 		}
 		String lAddr 			= args[0];
@@ -37,14 +37,18 @@ public class WoCoServer {
 		dSize 					= (args.length>=6)? Integer.valueOf(args[5].replaceAll("[^\\d.]", "")) : 1;
 		dSize *= 1024;
 		file 					= (args.length>=7)? Integer.valueOf(args[6].replaceAll("[^\\d.]", "")) : 1;
-		repretitionCount 		= (args.length>=8) ? Integer.valueOf(args[7].replaceAll("[^\\d.]", "")) : 0;
-		//System.out.println(cMode? "Clean tags": "Don't clean tags");
-		//System.out.println(threadCount + " number of threads");
+		repeatCount 			= (args.length>=8) ? Integer.valueOf(args[7].replaceAll("[^\\d.]", "")) : 0;
+		StringBuilder sb = new StringBuilder()
+				.append(cMode? "Clean tags": "Don't clean tags, ")
+				.append(threadCount + " number of threads, ")
+				.append(numberOfClients+" number of threads, ")
+				.append(repeatCount +" repeat");
+		System.out.println(sb.toString());
 
 		setUpLogging();
 
 		exec = setUpWorkers(threadCount, true, i -> new WorkerPrimary(cMode, numberOfClients>0, i));
-		server = new Server(lAddr, lPort, threadCount==0,repretitionCount, workerList);
+		server = new Server(lAddr, lPort, threadCount==0, repeatCount, workerList);
 
 		server.startListening();
 	}
