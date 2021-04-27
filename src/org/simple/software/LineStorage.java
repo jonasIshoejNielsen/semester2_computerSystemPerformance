@@ -39,24 +39,18 @@ public class LineStorage {
      * @param cMode
      */
     public void doWordCount(boolean cMode) {
-        try {
-            String ucLine = line;       //todo: .toLowerCase();
-            long beginCleaning = System.nanoTime();
-            ucLine = ucLine.replace('_', ' ');
-            String cleanedLine = (cMode) ? removeTags(ucLine) : ucLine;
-            long endCleaning = System.nanoTime();
-            measurementsCleaning.addMeasurement(beginCleaning, endCleaning);
+        String ucLine = line;       //todo: .toLowerCase();
+        long beginCleaning = System.nanoTime();
+        ucLine = ucLine.replace('_', ' ');
+        String cleanedLine = (cMode) ? removeTags(ucLine) : ucLine;
+        long endCleaning = System.nanoTime();
+        measurementsCleaning.addMeasurement(beginCleaning, endCleaning);
 
-            long beginWordCount = System.nanoTime();
-            String[] words = getWordsFromString(cleanedLine);
-            addWordsToMap(words, results);
-            long endWordCount = System.nanoTime();
-            measurementsWordCount.addMeasurement(beginWordCount, endWordCount);
-
-        } catch (Exception e) {
-            System.out.println(line);
-            throw e;
-        }
+        long beginWordCount = System.nanoTime();
+        String[] words = getWordsFromString(cleanedLine);
+        addWordsToMap(words, results);
+        long endWordCount = System.nanoTime();
+        measurementsWordCount.addMeasurement(beginWordCount, endWordCount);
     }
     private static String removeTags(String line){
         StringBuilder sb = new StringBuilder();

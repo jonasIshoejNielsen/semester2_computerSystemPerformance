@@ -47,7 +47,7 @@ public class TestThreading {
     void asserAllLineStoragesAreCorrect (List<LineStorage> lineStorageList) {
         String res = Arrays.toString(lineStorageList.get(0).returnMessage);
         for (LineStorage ls: lineStorageList) {
-            if(res == null) {
+            if(res == null || ls.returnMessage == null) {
                 System.out.println("null error");
             }
             Assertions.assertEquals(res, Arrays.toString(ls.returnMessage));

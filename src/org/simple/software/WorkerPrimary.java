@@ -48,26 +48,30 @@ public class WorkerPrimary implements Worker {
 
     public void startPipeLine (boolean repeat, boolean sendToClient) {
         do {
-            LineStorage ls = null;
             try {
-                ls = getNextLineStorage();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                continue;
-            }
-            ls.doWordCount(cMode);
-            long beginSerializing = System.nanoTime();
-            byte[] returnMessage = serializeResultForClient(ls).getBytes();
-            long endSerializing = System.nanoTime();
-            ls.sendToClient(returnMessage, sendToClient);
-            long endFromStart = System.nanoTime();
+                LineStorage ls = null;
+                try {
+                    ls = getNextLineStorage();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    continue;
+                }
+                ls.doWordCount(cMode);
+                long beginSerializing = System.nanoTime();
+                byte[] returnMessage = serializeResultForClient(ls).getBytes();
+                long endSerializing = System.nanoTime();
+                ls.sendToClient(returnMessage, sendToClient);
+                long endFromStart = System.nanoTime();
 
-            measurementsSerializing.addMeasurement(beginSerializing, endSerializing);
-            measurementsInServer.addMeasurement(ls.getTimeFromEnteringServer(), endFromStart);
-            measurementsCleaning.add(ls.getMeasurementsCleaning());
-            measurementsWordCount.add(ls.getMeasurementsWordCount());
-            if (fixedNumberOfClients)
-                WoCoServer.reportFinishedMessage();
+                measurementsSerializing.addMeasurement(beginSerializing, endSerializing);
+                measurementsInServer.addMeasurement(ls.getTimeFromEnteringServer(), endFromStart);
+                measurementsCleaning.add(ls.getMeasurementsCleaning());
+                measurementsWordCount.add(ls.getMeasurementsWordCount());
+                if (fixedNumberOfClients)
+                    WoCoServer.reportFinishedMessage();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
         } while (repeat);
     }
 
