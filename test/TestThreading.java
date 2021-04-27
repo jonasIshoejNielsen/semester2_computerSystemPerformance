@@ -16,7 +16,7 @@ public class TestThreading {
         int length  = rand.nextInt(50);
         int file    = rand.nextInt(2) + 1;
         int seed    = (int) (Math.random()*10000);
-        return DocumentGenerator.generateDocument(length, file, seed);
+        return HelperFunctions.generateDocument(length, file, seed);
     }
     List<LineStorage> genListOfLineStorage(String docu, long numberOfLineStorageLists, int threadCount) {
         List<LineStorage> lineStorageList = new ArrayList<>();

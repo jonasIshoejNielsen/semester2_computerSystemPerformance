@@ -1,7 +1,7 @@
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.simple.software.meaurements.Config;
-import org.simple.software.DocumentGenerator;
+import org.simple.software.HelperFunctions;
 
 import java.io.IOException;
 import java.util.Random;
@@ -19,8 +19,8 @@ public class TestDocumentGeneration {
             int length  = rand.nextInt(50);
             int file    = rand.nextInt(2) + 1;
             int seed    = (int) (Math.random()*10000);
-            String docu1 = DocumentGenerator.generateDocument(length, file, seed);
-            String docu2 = DocumentGenerator.generateDocument(length, file, seed);
+            String docu1 = HelperFunctions.generateDocument(length, file, seed);
+            String docu2 = HelperFunctions.generateDocument(length, file, seed);
 
             Assertions.assertEquals(docu1, docu2);
         }
