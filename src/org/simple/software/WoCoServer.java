@@ -85,7 +85,8 @@ public class WoCoServer {
 			return;
 		}
 		server.logMessages();
-		exec.shutdown();
+		if(exec != null)
+			exec.shutdown();
 		System.out.println("Exiting");
 		System.exit(0);
 	}
