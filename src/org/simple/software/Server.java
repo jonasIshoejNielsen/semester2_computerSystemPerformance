@@ -20,35 +20,35 @@ public class Server {
     public static final LinkedBlockingQueue<LineStorage> linesToCount         = new LinkedBlockingQueue<>();
     public static int added = 0;
     public static int removed = 0;
-    private final List<DataHandler> dataHandlerList;
+    private final List<Worker> workersList;
     private Selector selector;
     private ServerSocketChannel serverSocket;
     private final boolean onlyOneThread;
 
-    public Server(String lAddr, int lPort, boolean onlyOneThread, List<DataHandler> dataHandlerList) throws IOException {
+    public Server(String lAddr, int lPort, boolean onlyOneThread, List<Worker>workersList) throws IOException {
         this.onlyOneThread = onlyOneThread;
-        this.dataHandlerList = dataHandlerList;
+        this.workersList = workersList;
         selector = Selector.open();
         openSocket(new InetSocketAddress(lAddr, lPort), selector);
     }
     public void logMessages() {
         System.out.println("Writing to logs");
         Logging.reset();
-        for (DataHandler dh: dataHandlerList) {
-            System.out.println("Writing to logs" + dh.getDataHandlerId());
-            logListOfTimes(dh.getDataHandlerId(), dh.getMeasurementsCleaning(),    Logging::writeCleaningTagsThoughput);
-            logListOfTimes(dh.getDataHandlerId(), dh.getMeasurementsWordCount(),   Logging::writeWordCountThoughput);
-            logTimes(dh.getDataHandlerId(),       dh.getMeasurementsSerializing(), Logging::writeSerializingThoughput);
-            logTimes(dh.getDataHandlerId(),       dh.getMeasurementsInServer(),    Logging::writeTimeInServerThoughput);
+        for (Worker dh: workersList) {
+            System.out.println("Writing to logs" + dh.getWorkerId());
+            logListOfTimes(dh.getWorkerId(), dh.getMeasurementsCleaning(),    Logging::writeCleaningTagsThoughput);
+            logListOfTimes(dh.getWorkerId(), dh.getMeasurementsWordCount(),   Logging::writeWordCountThoughput);
+            logTimes(dh.getWorkerId(),       dh.getMeasurementsSerializing(), Logging::writeSerializingThoughput);
+            logTimes(dh.getWorkerId(),       dh.getMeasurementsInServer(),    Logging::writeTimeInServerThoughput);
         }
         System.out.println("Done loggign");
     }
-    private void logTimes(int dataHandlerId, Measurements measurements, BiConsumer<Measurements, Integer> writeToLog) {
-        writeToLog.accept(measurements, dataHandlerId);
+    private void logTimes(int workerId, Measurements measurements, BiConsumer<Measurements, Integer> writeToLog) {
+        writeToLog.accept(measurements, workerId);
     }
-    private void logListOfTimes(int dataHandlerId, List<Measurements> measurementsList, BiConsumer<Measurements, Integer> writeToLog) {
+    private void logListOfTimes(int workerId, List<Measurements> measurementsList, BiConsumer<Measurements, Integer> writeToLog) {
         for (Measurements measurements: measurementsList) {
-            logTimes(dataHandlerId, measurements, writeToLog);
+            logTimes(workerId, measurements, writeToLog);
         }
     }
 
@@ -104,7 +104,7 @@ public class Server {
 
         if (receivedAllData) {
             if (onlyOneThread) {
-                dataHandlerList.get(0).startPipeLine(false, true);
+                workersList.get(0).startPipeLine(false, true);
             }
         }
         else {
@@ -142,7 +142,7 @@ public class Server {
         String rest = (bufData.length()>indexNL+1) ? bufData.substring(indexNL+1) : null;
 
         if (indexNL==0) {
-            HelperFunctions.print(DataHandlerSynchronized.class, "SEP@", indexNL+"", " bufdata:\n", bufData);
+            HelperFunctions.print(WorkerSynchronized.class, "SEP@", indexNL+"", " bufdata:\n", bufData);
         }
 
         if (rest == null) {
@@ -160,7 +160,7 @@ public class Server {
 
     private static void handleMultipleLines(int clientId, String rest) {
         buffer.remove(clientId);
-        HelperFunctions.print(DataHandlerSynchronized.class, "Unhandled more than one line: \n", rest);
+        HelperFunctions.print(WorkerSynchronized.class, "Unhandled more than one line: \n", rest);
         try {
             System.in.read();
         } catch (IOException e) {

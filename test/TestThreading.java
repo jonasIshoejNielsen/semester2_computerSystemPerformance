@@ -47,32 +47,35 @@ public class TestThreading {
     void asserAllLineStoragesAreCorrect (List<LineStorage> lineStorageList) {
         String res = Arrays.toString(lineStorageList.get(0).returnMessage);
         for (LineStorage ls: lineStorageList) {
+            if(res == null) {
+                System.out.println("null error");
+            }
             Assertions.assertEquals(res, Arrays.toString(ls.returnMessage));
         }
     }
 
     @Test
-    void testThreaddingDataHandlerSynchronized() throws IOException {
+    void testThreaddingWorkerSynchronized() throws IOException {
         Config.setAllToFalse();
         String docu = genDocument();
 
         long numberOfLineStorageLists = 1_000_000;
         int threadCount = 16;
         List<LineStorage> lineStorageList = genListOfLineStorage(docu, numberOfLineStorageLists, threadCount);
-        WoCoServer.setUpDataHandlers(threadCount, false, i -> new DataHandlerSynchronized(true, false, i));
+        WoCoServer.setUpWorkers(threadCount, false, i -> new WorkerSynchronized(true, false, i));
 
         waitForAllToBeDone ();
         asserAllLineStoragesAreCorrect (lineStorageList);
     }
     @Test
-    void testThreaddingDataHandlerPrimary() throws IOException {
+    void testThreaddingWorkerPrimary() throws IOException {
         Config.setAllToFalse();
         String docu = genDocument();
 
         long numberOfLineStorageLists = 1_000_000;
         int threadCount = 16;
         List<LineStorage> lineStorageList = genListOfLineStorage(docu, numberOfLineStorageLists, threadCount);
-        WoCoServer.setUpDataHandlers(threadCount, false, i -> new DataHandlerPrimary(true, false, i));
+        WoCoServer.setUpWorkers(threadCount, false, i -> new WorkerPrimary(true, false, i));
 
         waitForAllToBeDone ();
         asserAllLineStoragesAreCorrect (lineStorageList);

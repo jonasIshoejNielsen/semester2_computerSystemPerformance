@@ -13,7 +13,7 @@ import java.util.function.Function;
 public class WoCoServer {
 
 	public static final char SEPARATOR = '$';
-	private static final List<DataHandler> dataHandlerList = new ArrayList<>();
+	private static final List<Worker> workerList = new ArrayList<>();
 	private static final AtomicInteger messagesLeftCounter = new AtomicInteger(0);
 	private static final Integer[] numberOfClients 			= new Integer[] {1,2,4,8,16};
 	private static final AtomicInteger indexNumberOfClients = new AtomicInteger(0);
@@ -41,22 +41,22 @@ public class WoCoServer {
 
 		setUpLogging();
 
-		setUpDataHandlers(threadCount, true, i -> new DataHandlerPrimary(cMode, fixedNumberOfClients, i));
-		server = new Server(lAddr, lPort, threadCount==0, dataHandlerList);
+		setUpWorkers(threadCount, true, i -> new WorkerPrimary(cMode, fixedNumberOfClients, i));
+		server = new Server(lAddr, lPort, threadCount==0, workerList);
 
 		server.startListening();
 	}
 
-	public static void setUpDataHandlers(int threadCount, boolean sendToCLient, Function<Integer, DataHandler> dataHandlerConstructor) {
+	public static void setUpWorkers(int threadCount, boolean sendToCLient, Function<Integer, Worker> workerConstructor) {
 		for (int i = 1; i <= threadCount; i++) {
-			dataHandlerList.add(dataHandlerConstructor.apply(i));
+			workerList.add(workerConstructor.apply(i));
 		}
 		if(threadCount == 0) {
-			dataHandlerList.add(dataHandlerConstructor.apply(0));
+			workerList.add(workerConstructor.apply(0));
 			return;
 		}
 		final ExecutorService exec = Executors.newFixedThreadPool(threadCount);
-		for (DataHandler dh: dataHandlerList ) {
+		for (Worker dh: workerList ) {
 			exec.submit(() ->dh.startPipeLine(true, sendToCLient));
 		}
 		return;
@@ -87,7 +87,7 @@ public class WoCoServer {
 			return;
 		}
 		server.logMessages();
-		for (DataHandler dh: dataHandlerList) {
+		for (Worker dh: workerList) {
 			dh.restartMessages();
 		}
 		try {
