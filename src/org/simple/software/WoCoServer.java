@@ -47,7 +47,7 @@ public class WoCoServer {
 
 		setUpLogging();
 
-		exec = setUpWorkers(threadCount, true, i -> new WorkerPrimary(cMode, numberOfClients>0, i));
+		exec = setUpWorkers(threadCount, true, i -> new Worker(cMode, numberOfClients>0, i));
 		server = new Server(lAddr, lPort, threadCount==0, repeatCount, workerList);
 
 		server.startListening();

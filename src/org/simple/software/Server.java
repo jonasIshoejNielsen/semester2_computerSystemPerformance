@@ -12,7 +12,6 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class Server {
@@ -27,7 +26,7 @@ public class Server {
 
     public Server(String lAddr, int lPort, boolean onlyOneThread, int repeatCount, List<Worker> workersList) throws IOException {
         this.onlyOneThread      = onlyOneThread;
-        this.repeatCount   = repeatCount;
+        this.repeatCount        = repeatCount;
         this.workersList        = workersList;
         this.selector = Selector.open();
         openSocket(new InetSocketAddress(lAddr, lPort), selector);
@@ -35,10 +34,11 @@ public class Server {
     public void logMessages() {
         Logging.reset();
         for (Worker dh: workersList) {
-            logListOfTimes(dh.getMeasurementsCleaning(),    measurements-> Logging.writeCleaningTagsThoughput(measurements, dh.getWorkerId(), repeatCount));
-            logListOfTimes(dh.getMeasurementsWordCount(),   measurements-> Logging.writeWordCountThoughput(measurements,    dh.getWorkerId(), repeatCount));
-            logTimes(dh.getMeasurementsSerializing(),       measurements-> Logging.writeSerializingThoughput(measurements,  dh.getWorkerId(), repeatCount));
-            logTimes(dh.getMeasurementsInServer(),          measurements-> Logging.writeTimeInServerThoughput(measurements, dh.getWorkerId(), repeatCount));
+            logListOfTimes(dh.getMeasurementsCleaning(),    measurements-> Logging.writeCleaningTags(measurements, dh.getWorkerId(), repeatCount));
+            logListOfTimes(dh.getMeasurementsWordCount(),   measurements-> Logging.writeWordCount(   measurements,    dh.getWorkerId(), repeatCount));
+            logTimes(dh.getMeasurementsSerializing(),       measurements-> Logging.writeSerializing( measurements,  dh.getWorkerId(), repeatCount));
+            logTimes(dh.getMeasurementsInServer(),          measurements-> Logging.writeTimeInServer(measurements, dh.getWorkerId(), repeatCount));
+            logTimes(dh.getMeasurementsInQueue(),           measurements-> Logging.writeTimeInQueue( measurements, dh.getWorkerId(), repeatCount));
         }
         System.out.println("Done loggign");
     }
@@ -141,7 +141,7 @@ public class Server {
         String rest = (bufData.length()>indexNL+1) ? bufData.substring(indexNL+1) : null;
 
         if (indexNL==0) {
-            HelperFunctions.print(WorkerSynchronized.class, "SEP@", indexNL+"", " bufdata:\n", bufData);
+            HelperFunctions.print(Worker.class, "SEP@", indexNL+"", " bufdata:\n", bufData);
         }
 
         if (rest == null) {
@@ -158,7 +158,7 @@ public class Server {
 
     private static void handleMultipleLines(int clientId, String rest) {
         buffer.remove(clientId);
-        HelperFunctions.print(WorkerSynchronized.class, "Unhandled more than one line: \n", rest);
+        HelperFunctions.print(Worker.class, "Unhandled more than one line: \n", rest);
         try {
             System.in.read();
         } catch (IOException e) {

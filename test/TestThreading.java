@@ -53,19 +53,6 @@ public class TestThreading {
     }
 
     @Test
-    void testThreaddingWorkerSynchronized() throws IOException {
-        Config.setAllToFalse();
-        String docu = genDocument();
-
-        long numberOfLineStorageLists = 1_000_000;
-        int threadCount = 16;
-        List<LineStorage> lineStorageList = genListOfLineStorage(docu, numberOfLineStorageLists, threadCount);
-        ExecutorService es = WoCoServer.setUpWorkers(threadCount, false, i -> new WorkerSynchronized(true, false, i));
-
-        waitForAllToBeDone (es);
-        asserAllLineStoragesAreCorrect (lineStorageList);
-    }
-    @Test
     void testThreaddingWorkerPrimary() throws IOException {
         Config.setAllToFalse();
         String docu = genDocument();
@@ -73,7 +60,7 @@ public class TestThreading {
         long numberOfLineStorageLists = 1_000_000;
         int threadCount = 16;
         List<LineStorage> lineStorageList = genListOfLineStorage(docu, numberOfLineStorageLists, threadCount);
-        ExecutorService es = WoCoServer.setUpWorkers(threadCount, false, i -> new WorkerPrimary(true, false, i));
+        ExecutorService es = WoCoServer.setUpWorkers(threadCount, false, i -> new Worker(true, false, i));
 
         waitForAllToBeDone (es);
         asserAllLineStoragesAreCorrect (lineStorageList);

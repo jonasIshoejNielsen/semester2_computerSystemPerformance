@@ -15,6 +15,7 @@ public class Logging {
     private static Map<Integer, WriterHolder> writerHolder_WordCount    = new HashMap<>();
     private static Map<Integer, WriterHolder> writerHolder_Serializing  = new HashMap<>();
     private static Map<Integer, WriterHolder> writerHolder_InServer     = new HashMap<>();
+    private static Map<Integer, WriterHolder> writerHolder_InQueue      = new HashMap<>();
     private static Map<Integer, WriterHolder> writerHolder_Response     = new HashMap<>();
 
     public static void createFolder(String type, Boolean clean, int threads, int numberOfClients, int file, float dSize) throws IOException {
@@ -36,24 +37,29 @@ public class Logging {
             Files.createDirectory(dir);
         } catch (FileAlreadyExistsException e ) { }
     }
-    public static void writeCleaningTagsThoughput(Measurements measurements, int clientId, int repeatCount) {
+    public static void writeCleaningTags(Measurements measurements, int clientId, int repeatCount) {
         if(!Config.writeCleaningTags) return;
         WriterHolder wh = writerHolder_CleaningTags.computeIfAbsent(clientId, id -> new WriterHolder("CleaningTags", clientId, repeatCount));
         writeMeasurements(measurements, clientId, wh);
     }
-    public static void writeWordCountThoughput(Measurements measurements, int clientId, int repeatCount) {
+    public static void writeWordCount(Measurements measurements, int clientId, int repeatCount) {
         if(!Config.writeWordCount) return;
         WriterHolder wh = writerHolder_WordCount.computeIfAbsent(clientId, id -> new WriterHolder("WordCountTags", clientId, repeatCount));
         writeMeasurements(measurements, clientId, wh);
     }
-    public static void writeSerializingThoughput (Measurements measurements, int clientId, int repeatCount) {
+    public static void writeSerializing(Measurements measurements, int clientId, int repeatCount) {
         if(!Config.writeSerializing) return;
         WriterHolder wh = writerHolder_Serializing.computeIfAbsent(clientId, id -> new WriterHolder("Serializing", clientId, repeatCount));
         writeMeasurements(measurements, clientId, wh);
     }
-    public static void writeTimeInServerThoughput (Measurements measurements, int clientId, int repeatCount) {
+    public static void writeTimeInServer(Measurements measurements, int clientId, int repeatCount) {
         if(!Config.writeTimeInServer) return;
         WriterHolder wh = writerHolder_InServer.computeIfAbsent(clientId, id -> new WriterHolder("InServer", clientId, repeatCount));
+        writeMeasurements(measurements, clientId, wh);
+    }
+    public static void writeTimeInQueue(Measurements measurements, int clientId, int repeatCount) {
+        if(!Config.writeTimeInQueue) return;
+        WriterHolder wh = writerHolder_InQueue.computeIfAbsent(clientId, id -> new WriterHolder("InQueue", clientId, repeatCount));
         writeMeasurements(measurements, clientId, wh);
     }
     public static void writeResponseThoughput(Measurements measurements, int clientId, int repeatCount) {
