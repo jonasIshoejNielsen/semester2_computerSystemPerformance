@@ -21,7 +21,8 @@ public class WoCoClient {
 	private static int clientID;
 	private static int repeatCount;
 	private Measurements measurements;
-	public static final int PACKETS_PER_REPEAT 			= 20_000;
+	public static final int PACKETS_PER_REPEAT 	= 12_500;
+	public static final int NUMBER_OF_REPEATS	= 3;
 
 	
 	/**
@@ -146,7 +147,7 @@ public class WoCoClient {
 		client.shutDown();
 
 		Logging.writeResponseThoughput(client.measurements, repeatCount);
-		if(repeatCount == 5) {
+		if(repeatCount == WoCoClient.NUMBER_OF_REPEATS) {
 			Logging.processLogs();
 		}
 

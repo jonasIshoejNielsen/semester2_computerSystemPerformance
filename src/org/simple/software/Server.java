@@ -44,7 +44,7 @@ public class Server {
         Logging.writeSerializing( measurementsSerializing,  repeatCount);
         Logging.writeTimeInServer(measurementsInServer,     repeatCount);
         System.out.println("Done loggign");
-        if(repeatCount == 5) {
+        if(repeatCount == WoCoClient.NUMBER_OF_REPEATS) {
             Logging.processLogs();
         }
     }
