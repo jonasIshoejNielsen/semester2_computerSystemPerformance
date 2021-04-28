@@ -135,13 +135,17 @@ public class Logging {
         Map<String, List<List<Float>>> fileMaps = new HashMap<>();
 
         for (final File fileEntry : folder.listFiles()) {
-            String fileName = fileEntry.getName().split("-repeat_")[0];
-            Path path = Paths.get(fileEntry.getPath());
-            List<Float> fileContent = Files.lines(path).map(v->Float.parseFloat(v.replace(',', '.'))).collect(Collectors.toList());
-            List<List<Float>> currList = fileMaps.getOrDefault(fileName, new ArrayList<>());
-            currList.add(fileContent);
-            fileMaps.put(fileName, currList);
-            fileEntry.delete();
+            try {
+                String fileName = fileEntry.getName().split("-repeat_")[0];
+                Path path = Paths.get(fileEntry.getPath());
+                List<Float> fileContent = Files.lines(path).map(v -> Float.parseFloat(v.replace(',', '.'))).collect(Collectors.toList());
+                List<List<Float>> currList = fileMaps.getOrDefault(fileName, new ArrayList<>());
+                currList.add(fileContent);
+                fileMaps.put(fileName, currList);
+                fileEntry.delete();
+            } catch (Exception e) {
+                continue;
+            }
         }
         return fileMaps;
     }
