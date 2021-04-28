@@ -14,16 +14,16 @@ do
   for (( REPEAT=1; REPEAT<=3; REPEAT++ ))
   do
     echo "$NUMBER_OF_CLIENTS repeat: $REPEAT"
+    date +"%T"
     for (( CLIENT_ID=1; CLIENT_ID<=$NUMBER_OF_CLIENTS; CLIENT_ID++ ))
     do
       java -jar ./jars/WoCoClient.jar $SERVER_HOST $SERVER_PORT $DOC_SIZE $REPEAT $FILE_SUFF $SEED $CLIENT_ID $NUMBER_OF_CLIENTS $CLEANNING $THREADCOUNT &
     done
     wait
-    sleep 10
-    date +"%T"
+    sleep 15
   done
   wait
-  sleep 10
+  sleep 15
 done
 wait
 echo "Done"

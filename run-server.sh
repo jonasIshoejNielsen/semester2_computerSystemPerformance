@@ -13,9 +13,9 @@ for NUMBER_OF_CLIENTS in "${CLIENTS[@]}"
 do
   for (( REPEAT=1; REPEAT<=3; REPEAT++ ))
   do
+    date +"%T"
     java -jar ./jars/WoCoServer.jar $SERVER_HOST $SERVER_PORT $CLEAN "$THREADS" "$NUMBER_OF_CLIENTS" $DOC_SIZE $FILE_SUFF $REPEAT
     wait
-    date +"%T"
   done
   wait
 done

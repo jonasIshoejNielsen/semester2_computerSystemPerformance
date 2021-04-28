@@ -137,7 +137,7 @@ public class WoCoClient {
 				.append(repeatCount +" repeat, ")
 				.append(sName +" sName, ")
 				.append(sPort +" sPort, ");
-		System.out.println(sb.toString());
+		//System.out.println(sb.toString());
 
 		String docu = HelperFunctions.generateDocument((int) (dSize), file, seed);
 		WoCoClient client = new WoCoClient(sName, sPort);
