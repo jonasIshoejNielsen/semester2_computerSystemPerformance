@@ -4,17 +4,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class WriterHolder {
-    public static FileWriter writerTime;
-    public static FileWriter writerTput;
-    public static FileWriter writerInterval;
-    public static FileWriter writerTimePercentile;
-    public static FileWriter writerTputPercentile;
+    public final FileWriter writerTime;
+    public final FileWriter writerTput;
+    public final FileWriter writerInterval;
+    public final FileWriter writerTimePercentile;
 
     public WriterHolder(String wirterType, String optionalName, int repeatCount) {
         writerTime              = createFileWriter(wirterType+"_Time",             optionalName, repeatCount);
         writerTimePercentile    = createFileWriter(wirterType+"_percentiles_Time", optionalName, repeatCount);
         writerTput              = createFileWriter(wirterType+"_Tput",             optionalName, repeatCount);
-        writerTputPercentile    = createFileWriter(wirterType+"_percentiles_Tput", optionalName, repeatCount);
         writerInterval          = createFileWriter(wirterType+"_Interval",         optionalName, repeatCount);
     }
 

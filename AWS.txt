@@ -42,7 +42,11 @@ THREADCOUNT="8"
 sudo chmod 777 ./run-server.sh
 sudo chmod 777 ./run-client.sh
 dos2unix ./run-server.sh
+dos2unix ./experiment-threads-server.sh
+dos2unix ./experiment-documents-server.sh
 dos2unix ./run-client.sh
+dos2unix ./experiment-threads-client.sh
+dos2unix ./experiment-documents-client.sh
 
 
 Server

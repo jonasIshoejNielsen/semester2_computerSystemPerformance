@@ -21,7 +21,7 @@ public class WoCoClient {
 	private static int clientID;
 	private static int repeatCount;
 	private Measurements measurements;
-	public static final int PACKETS_PER_REPEAT 			= 10_000;
+	public static final int PACKETS_PER_REPEAT 			= 1_000;
 
 	
 	/**

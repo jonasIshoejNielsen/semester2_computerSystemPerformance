@@ -38,7 +38,7 @@ public class WoCoServer {
 		file 					= (args.length>=7)? Integer.valueOf(args[6].replaceAll("[^\\d.]", "")) : 1;
 		repeatCount 			= (args.length>=8) ? Integer.valueOf(args[7].replaceAll("[^\\d.]", "")) : 0;
 		StringBuilder sb = new StringBuilder()
-				.append(cMode? "Clean tags": "Don't clean tags, ")
+				.append(cMode? "Clean tags, ": "Don't clean tags, ")
 				.append(threadCount + " number of threads, ")
 				.append(numberOfClients+" number of clients, ")
 				.append(dSize +" dSize, ")
@@ -74,7 +74,6 @@ public class WoCoServer {
 	public static void setUpLogging() throws IOException {
 		messagesLeftCounter.set(numberOfClients*WoCoClient.PACKETS_PER_REPEAT);
 		Logging.createFolder("server", cMode, threadCount, numberOfClients, file, dSize);
-		Logging.setupServer(repeatCount);
 	}
 
 

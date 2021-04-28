@@ -74,9 +74,6 @@ public class Logging {
         for (long valueForP : measurements.computePercentilesTime()) {
             writeToFile(writerHolder.writerTimePercentile, (double) valueForP / 1000000000.0);
         }
-        for (float valueForP : measurements.computePercentilesTput()) {
-            writeToFile(writerHolder.writerTputPercentile, (double) valueForP / 1000000000.0);
-        }
 
     }
 
@@ -99,7 +96,7 @@ public class Logging {
     }
 
     public static void resetClients(int clientID, int repeatCount) {
-        writerHolder_Response     = new WriterHolder("InQueue", "-"+clientID, repeatCount);
+        writerHolder_Response     = new WriterHolder("Response", "-"+clientID, repeatCount);
     }
 
     public static void processLogsServer() {

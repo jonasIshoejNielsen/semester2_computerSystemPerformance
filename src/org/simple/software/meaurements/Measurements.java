@@ -30,9 +30,6 @@ public class Measurements {
     public synchronized List<Long> computePercentilesTime() {
         return computePercentilesLongs(timeMeasurements);
     }
-    public synchronized List<Float> computePercentilesTput() {
-        return computePercentilesFloats(tputs);
-    }
     private synchronized List<Long> computePercentilesLongs(List<Long> values) {
         List<Long> sorted = values.stream().sorted().collect(Collectors.toList());
         List<Long> percentiles = new ArrayList<>();
@@ -42,19 +39,6 @@ public class Measurements {
                 break;
             }
             Long valueForP = sorted.get(index);
-            percentiles.add(valueForP);
-        }
-        return percentiles;
-    }
-    private synchronized List<Float> computePercentilesFloats(List<Float> values) {
-        List<Float> sorted = values.stream().sorted().collect(Collectors.toList());
-        List<Float> percentiles = new ArrayList<>();
-        for (int p=1; p<=100; p++) {
-            int index = sorted.size() * p / 100 - 1;
-            if(index<0) {
-                break;
-            }
-            Float valueForP = sorted.get(index);
             percentiles.add(valueForP);
         }
         return percentiles;
