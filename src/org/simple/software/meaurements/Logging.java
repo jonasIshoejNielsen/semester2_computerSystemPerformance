@@ -141,7 +141,6 @@ public class Logging {
             List<List<Float>> currList = fileMaps.getOrDefault(fileName, new ArrayList<>());
             currList.add(fileContent);
             fileMaps.put(fileName, currList);
-            System.out.println("Delete: "+fileEntry.delete());
             fileEntry.delete();
         }
         return fileMaps;
