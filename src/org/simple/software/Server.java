@@ -34,21 +34,16 @@ public class Server {
     public void logMessages() {
         Logging.reset();
         for (Worker dh: workersList) {
-            logListOfTimes(dh.getMeasurementsCleaning(),    measurements-> Logging.writeCleaningTags(measurements, dh.getWorkerId(), repeatCount));
-            logListOfTimes(dh.getMeasurementsWordCount(),   measurements-> Logging.writeWordCount(   measurements,    dh.getWorkerId(), repeatCount));
-            logTimes(dh.getMeasurementsSerializing(),       measurements-> Logging.writeSerializing( measurements,  dh.getWorkerId(), repeatCount));
-            logTimes(dh.getMeasurementsInServer(),          measurements-> Logging.writeTimeInServer(measurements, dh.getWorkerId(), repeatCount));
-            logTimes(dh.getMeasurementsInQueue(),           measurements-> Logging.writeTimeInQueue( measurements, dh.getWorkerId(), repeatCount));
+            Logging.writeCleaningTags(dh.getMeasurementsCleaning(),     dh.getWorkerId(), repeatCount);
+            Logging.writeWordCount(   dh.getMeasurementsWordCount(),    dh.getWorkerId(), repeatCount);
+            Logging.writeSerializing( dh.getMeasurementsSerializing(),  dh.getWorkerId(), repeatCount);
+            Logging.writeTimeInServer(dh.getMeasurementsInServer(),     dh.getWorkerId(), repeatCount);
+            Logging.writeTimeInQueue( dh.getMeasurementsInQueue(),      dh.getWorkerId(), repeatCount);
         }
         System.out.println("Done loggign");
     }
     private void logTimes(Measurements measurements, Consumer<Measurements> writeToLog) {
         writeToLog.accept(measurements);
-    }
-    private void logListOfTimes(List<Measurements> measurementsList, Consumer<Measurements> writeToLog) {
-        for (Measurements measurements: measurementsList) {
-            logTimes(measurements, writeToLog);
-        }
     }
 
     public void startListening() throws IOException {

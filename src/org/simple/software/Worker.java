@@ -8,8 +8,8 @@ import java.util.Map;
 
 public class Worker {
     private final Measurements measurementsInQueue          = new Measurements();
-    private final List<Measurements> measurementsCleaning   = new ArrayList<>();
-    private final List<Measurements> measurementsWordCount  = new ArrayList<>();
+    private final Measurements measurementsCleaning         = new Measurements();
+    private final Measurements measurementsWordCount        = new Measurements();
     private final Measurements measurementsSerializing      = new Measurements();
     private final Measurements measurementsInServer         = new Measurements();
     private final boolean cMode;
@@ -22,11 +22,11 @@ public class Worker {
         this.workerId             = workerId;
     }
 
-    public List<Measurements> getMeasurementsCleaning() {
+    public Measurements getMeasurementsCleaning() {
         return measurementsCleaning;
     }
 
-    public List<Measurements> getMeasurementsWordCount() {
+    public Measurements getMeasurementsWordCount() {
         return measurementsWordCount;
     }
 
@@ -62,7 +62,7 @@ public class Worker {
                 }
                 try {
                     long endTimeInQueue = System.nanoTime();
-                    ls.doWordCount(cMode);
+                    ls.doWordCount(cMode, measurementsCleaning, measurementsWordCount);
                     long beginSerializing = System.nanoTime();
                     byte[] returnMessage = serializeResultForClient(ls).getBytes();
                     long endSerializing = System.nanoTime();
@@ -70,8 +70,6 @@ public class Worker {
                     long endFromStart = System.nanoTime();
 
                     measurementsInQueue.addMeasurement(ls.getTimeFromEnteringServer(), endTimeInQueue);
-                    measurementsCleaning.add(ls.getMeasurementsCleaning());
-                    measurementsWordCount.add(ls.getMeasurementsWordCount());
                     measurementsSerializing.addMeasurement(beginSerializing, endSerializing);
                     measurementsInServer.addMeasurement(ls.getTimeFromEnteringServer(), endFromStart);
                 } catch (Exception e) {

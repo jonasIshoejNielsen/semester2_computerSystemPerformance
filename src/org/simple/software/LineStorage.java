@@ -4,9 +4,7 @@ import org.simple.software.meaurements.Measurements;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class LineStorage {
@@ -37,20 +35,22 @@ public class LineStorage {
      * words based on spaces.
      *
      * @param cMode
+     * @param measurementsCleaning
+     * @param measurementsWordCount
      */
-    public void doWordCount(boolean cMode) {
+    public void doWordCount(boolean cMode, Measurements measurementsCleaning, Measurements measurementsWordCount) {
         String ucLine = line.toLowerCase();
         long beginCleaning = System.nanoTime();
         ucLine = ucLine.replace('_', ' ');
         String cleanedLine = (cMode) ? removeTags(ucLine) : ucLine;
         long endCleaning = System.nanoTime();
-        measurementsCleaning.addMeasurement(beginCleaning, endCleaning);
+        this.measurementsCleaning.addMeasurement(beginCleaning, endCleaning);
 
         long beginWordCount = System.nanoTime();
         String[] words = getWordsFromString(cleanedLine);
         addWordsToMap(words, results);
         long endWordCount = System.nanoTime();
-        measurementsWordCount.addMeasurement(beginWordCount, endWordCount);
+        this.measurementsWordCount.addMeasurement(beginWordCount, endWordCount);
     }
     private static String removeTags(String line){
         StringBuilder sb = new StringBuilder();
