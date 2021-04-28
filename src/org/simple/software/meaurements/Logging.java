@@ -1,11 +1,17 @@
 package org.simple.software.meaurements;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Logging {
     public static String folderName;
@@ -99,7 +105,71 @@ public class Logging {
         writerHolder_Response     = new WriterHolder("Response", "-"+clientID, repeatCount);
     }
 
-    public static void processLogsServer() {
+    public static void processLogs() throws IOException {
+        Map<String, List<List<Float>>>fileMaps = readFiles();
 
+        for(Map.Entry<String, List<List<Float>>> entry : fileMaps.entrySet()) {
+            int n = entry.getValue().size();
+            int minSize = 9000000;
+            for(List<Float>lst : entry.getValue()) {
+                minSize = Math.min(minSize, lst.size());
+            }
+            Float[] mean = initArray(minSize);
+            Float[] sd   = initArray(minSize);
+            for(int i=0; i<minSize; i++) {
+                for(List<Float>lst : entry.getValue()) {
+                    mean[i] += lst.get(i);
+                }
+                mean[i] /= entry.getValue().size();
+                for(List<Float>lst : entry.getValue()) {
+                    float dif = mean[i]-lst.get(i);
+                    sd[i]+= dif*dif;
+                }
+                sd[i]= (float) Math.sqrt(sd[i]/n);
+            }
+            storeMeanSD(mean, sd, entry);
+        }
+    }
+    private static Map<String, List<List<Float>>> readFiles() throws IOException {
+        File folder = new File(folderName);
+        Map<String, List<List<Float>>> fileMaps = new HashMap<>();
+
+        for (final File fileEntry : folder.listFiles()) {
+            String fileName = fileEntry.getName().split("-repeat_")[0];
+            Path path = Paths.get(fileEntry.getPath());
+            List<Float> fileContent = Files.lines(path).map(v->Float.parseFloat(v.replace(',', '.'))).collect(Collectors.toList());
+            List<List<Float>> currList = fileMaps.getOrDefault(fileName, new ArrayList<>());
+            currList.add(fileContent);
+            fileMaps.put(fileName, currList);
+            System.out.println("Delete: "+fileEntry.delete());
+            fileEntry.delete();
+        }
+        return fileMaps;
+    }
+    private static void storeMeanSD(Float[] mean, Float[] sd, Map.Entry<String, List<List<Float>>> entry) throws IOException {
+        String path = new StringBuilder(folderName).append(entry.getKey()).append("ALL").append(".txt").toString();
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter(path, false);
+            fw.write("");
+            fw.close();
+            fw = new FileWriter(path, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        for(int i=0; i<mean.length; i++) {
+            fw.write(String.valueOf(mean[i]).replace('.', ','));
+            fw.write("\t");
+            fw.write(String.valueOf(sd[i]).replace('.', ','));
+            fw.write("\n");
+            fw.flush();
+        }
+    }
+    private static Float[] initArray(int size) {
+        Float[] arr = new Float[size];
+        for(int i=0; i<size; i++) {
+            arr[i]=0F;
+        }
+        return arr;
     }
 }

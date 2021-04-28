@@ -36,7 +36,7 @@ public class Server {
         this.selector = Selector.open();
         openSocket(new InetSocketAddress(lAddr, lPort), selector);
     }
-    public void logMessages() {
+    public void logMessages() throws IOException {
         Logging.setupServer(repeatCount);
         Logging.writeTimeInQueue( measurementsInQueue,      repeatCount);
         Logging.writeCleaningTags(measurementsCleaning,     repeatCount);
@@ -45,7 +45,7 @@ public class Server {
         Logging.writeTimeInServer(measurementsInServer,     repeatCount);
         System.out.println("Done loggign");
         if(repeatCount == 5) {
-            Logging.processLogsServer();
+            Logging.processLogs();
         }
     }
     private void logTimes(Measurements measurements, Consumer<Measurements> writeToLog) {

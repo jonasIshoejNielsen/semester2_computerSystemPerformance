@@ -146,6 +146,9 @@ public class WoCoClient {
 		client.shutDown();
 
 		Logging.writeResponseThoughput(client.measurements, repeatCount);
+		if(repeatCount == 5) {
+			Logging.processLogs();
+		}
 
         System.exit(0);
 	}
