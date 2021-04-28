@@ -39,7 +39,7 @@ public class LineStorage {
      * @param cMode
      */
     public void doWordCount(boolean cMode) {
-        String ucLine = line;       //todo: .toLowerCase();
+        String ucLine = line.toLowerCase();
         long beginCleaning = System.nanoTime();
         ucLine = ucLine.replace('_', ' ');
         String cleanedLine = (cMode) ? removeTags(ucLine) : ucLine;
@@ -77,13 +77,13 @@ public class LineStorage {
         if (!remainingString.startsWith("a")) {
             return;
         }
-        int index = remainingString.toLowerCase().indexOf("title");
+        int index = remainingString.indexOf("title");
         while (index != -1) {
             if (index + 6 >= remainingString.length()) {
                 break;
             }
             String fromTitle = remainingString.substring(index + 6);
-            int indexEndTitle = fromTitle.toLowerCase().indexOf("&amp");
+            int indexEndTitle = fromTitle.indexOf("&amp");
             String titleValue;
             if (indexEndTitle == -1) {
                 if (fromTitle.length() == 0) {
@@ -97,7 +97,7 @@ public class LineStorage {
             }
             sb.append(" ").append(titleValue).append(" ");
             remainingString = fromTitle.substring(indexEndTitle);
-            index = remainingString.toLowerCase().indexOf("title");
+            index = remainingString.indexOf("title");
         }
     }
 

@@ -22,14 +22,13 @@ public class TestLineStorage {
         init();
         String inputString = "<p><b>Foo hEj</br> hej</p> </b>";
         LineStorage ls  = makeLineStorage(inputString);
-        ls.putResultValue("Foo", 4);
+        ls.putResultValue("foo", 4);
         ls.putResultValue("br", 1);
         ls.putResultValue("p", 2);
 
         ls.doWordCount(true);
-        Assertions.assertEquals(5, ls.getResults().get("Foo"));
-        Assertions.assertEquals(1, ls.getResults().get("hEj"));
-        Assertions.assertEquals(1, ls.getResults().get("hej"));
+        Assertions.assertEquals(5, ls.getResults().get("foo"));
+        Assertions.assertEquals(2, ls.getResults().get("hej"));
         Assertions.assertEquals(1, ls.getResults().get("br"));
         Assertions.assertEquals(2, ls.getResults().get("p"));
     }
@@ -42,7 +41,7 @@ public class TestLineStorage {
         ls.doWordCount(true);
         Assertions.assertEquals(3, ls.getResults().get("foo"));
         Assertions.assertEquals(1, ls.getResults().get("bar"));
-        Assertions.assertEquals(1, ls.getResults().get("FooBar"));
+        Assertions.assertEquals(1, ls.getResults().get("foobar"));
     }
 
     @Test
@@ -52,7 +51,7 @@ public class TestLineStorage {
         LineStorage ls  = makeLineStorage(inputString);
         ls.doWordCount(true);
         Assertions.assertEquals(1, ls.getResults().get("foo"));
-        Assertions.assertEquals(3, ls.getResults().get("FooBar"));
+        Assertions.assertEquals(3, ls.getResults().get("foobar"));
     }
 
     @Test
@@ -62,11 +61,11 @@ public class TestLineStorage {
 
         LineStorage ls  = makeLineStorage(inputString);
         ls.doWordCount(true);
-        Assertions.assertEquals(1, ls.getResults().get("Distributed"));
+        Assertions.assertEquals(1, ls.getResults().get("distributed"));
         Assertions.assertEquals(1, ls.getResults().get("computing"));
-        Assertions.assertEquals(1, ls.getResults().get("Edit"));
+        Assertions.assertEquals(2, ls.getResults().get("edit"));
         Assertions.assertEquals(1, ls.getResults().get("section"));
-        Assertions.assertEquals(1, ls.getResults().get("History"));
+        Assertions.assertEquals(1, ls.getResults().get("history"));
         Assertions.assertEquals(1, ls.getResults().get("edit"));
     }
 
@@ -77,7 +76,7 @@ public class TestLineStorage {
 
         LineStorage ls  = makeLineStorage(inputString);
         ls.doWordCount(true);
-        Assertions.assertEquals(1, ls.getResults().get("Di"));
+        Assertions.assertEquals(1, ls.getResults().get("di"));
     }
     @Test
     void testDoWordCountLinkEndInEmptyTile() {
@@ -86,7 +85,7 @@ public class TestLineStorage {
 
         LineStorage ls  = makeLineStorage(inputString);
         ls.doWordCount(true);
-        Assertions.assertEquals(1, ls.getResults().get("Distributed"));
+        Assertions.assertEquals(1, ls.getResults().get("distributed"));
         Assertions.assertEquals(1, ls.getResults().get("computing"));
     }
     @Test
