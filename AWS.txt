@@ -35,9 +35,9 @@ sudo apt-get install ant
 ant
 
 #"127.0.0.1"		#server
-IP="127.0.0.1"
-DOCUMENT_SIZE="16"
-FILESUFFIX="1"
+SERVER_HOST="127.0.0.1"
+DOC_SIZE="16"
+FILE_SUFF="1"
 THREADCOUNT="8"
 sudo chmod 777 ./run-server.sh
 sudo chmod 777 ./run-client.sh
@@ -47,19 +47,18 @@ dos2unix ./run-client.sh
 
 Server
 echo "<listenaddress> <cleaning> <threadcount> <FIXED_NUMBER_OF_CLIENTS> <doc_size> <file>"
-./run-server.sh $IP true $THREADCOUNT $DOCUMENT_SIZE $FILESUFFIX
-./experiment-threads-server.sh $IP 
-./experiment-documents-server.sh $IP 
+./run-server.sh $SERVER_HOST true $THREADCOUNT $DOCUMENT_SIZE $FILESUFFIX 1 1
+./experiment-threads-server.sh $SERVER_HOST
+./experiment-documents-server.sh $SERVER_HOST 
 
 
 
 Client
 echo "<servername> <doc_size> <file> <number of clients> <cmode> <threads>"
 
-#./run-client.sh $IP $DOCUMENT_SIZE $FILESUFFIX 1 true $THREADCOUNT
-./run-client.sh $IP $DOCUMENT_SIZE $FILESUFFIX true $THREADCOUNT
-./experiment-threads-client.sh $IP 
-./experiment-documents-client.sh $IP 
+./run-client.sh $SERVER_HOST "16" "1" true "8" 1 1
+./experiment-threads-client.sh $SERVER_HOST 
+./experiment-documents-client.sh $SERVER_HOST 
 
 
 

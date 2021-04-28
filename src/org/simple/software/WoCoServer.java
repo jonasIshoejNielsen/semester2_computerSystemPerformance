@@ -1,8 +1,6 @@
 package org.simple.software;
 
 import org.simple.software.meaurements.Logging;
-import sun.rmi.runtime.Log;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,8 +40,12 @@ public class WoCoServer {
 		StringBuilder sb = new StringBuilder()
 				.append(cMode? "Clean tags": "Don't clean tags, ")
 				.append(threadCount + " number of threads, ")
-				.append(numberOfClients+" number of threads, ")
-				.append(repeatCount +" repeat");
+				.append(numberOfClients+" number of clients, ")
+				.append(dSize +" dSize, ")
+				.append(file +" file, ")
+				.append(repeatCount +" repeat, ")
+				.append(lAddr +" lAddr, ")
+				.append(lPort +" lPort, ");
 		System.out.println(sb.toString());
 
 		setUpLogging();

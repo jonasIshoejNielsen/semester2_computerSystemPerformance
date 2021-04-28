@@ -37,7 +37,11 @@ public class Measurements {
         List<Long> sorted = values.stream().sorted().collect(Collectors.toList());
         List<Long> percentiles = new ArrayList<>();
         for (int p=1; p<=100; p++) {
-            Long valueForP = sorted.get(sorted.size() * p / 100 - 1);
+            int index = sorted.size() * p / 100 - 1;
+            if(index<0) {
+                break;
+            }
+            Long valueForP = sorted.get(index);
             percentiles.add(valueForP);
         }
         return percentiles;
@@ -46,7 +50,11 @@ public class Measurements {
         List<Float> sorted = values.stream().sorted().collect(Collectors.toList());
         List<Float> percentiles = new ArrayList<>();
         for (int p=1; p<=100; p++) {
-            Float valueForP = sorted.get(sorted.size() * p / 100 - 1);
+            int index = sorted.size() * p / 100 - 1;
+            if(index<0) {
+                break;
+            }
+            Float valueForP = sorted.get(index);
             percentiles.add(valueForP);
         }
         return percentiles;

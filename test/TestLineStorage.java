@@ -27,8 +27,7 @@ public class TestLineStorage {
         ls.putResultValue("br", 1);
         ls.putResultValue("p", 2);
 
-        Measurements measurements = new Measurements();
-        ls.doWordCount(true, measurements, measurements);
+        ls.doWordCount(true);
         Assertions.assertEquals(5, ls.getResults().get("foo"));
         Assertions.assertEquals(2, ls.getResults().get("hej"));
         Assertions.assertEquals(1, ls.getResults().get("br"));
@@ -40,8 +39,7 @@ public class TestLineStorage {
         init();
         String inputString = "<a href='xyz' title='FooBar'>foo<a title='foo' href='xyz' > foo</a> bar</a>";
         LineStorage ls  = makeLineStorage(inputString);
-        Measurements measurements = new Measurements();
-        ls.doWordCount(true, measurements, measurements);
+        ls.doWordCount(true);
         Assertions.assertEquals(3, ls.getResults().get("foo"));
         Assertions.assertEquals(1, ls.getResults().get("bar"));
         Assertions.assertEquals(1, ls.getResults().get("foobar"));
@@ -52,8 +50,7 @@ public class TestLineStorage {
         init();
         String inputString = "<a title='FooBar' title='FooBar' href='xyz' title='FooBar'>foo</a>";
         LineStorage ls  = makeLineStorage(inputString);
-        Measurements measurements = new Measurements();
-        ls.doWordCount(true, measurements, measurements);
+        ls.doWordCount(true);
         Assertions.assertEquals(1, ls.getResults().get("foo"));
         Assertions.assertEquals(3, ls.getResults().get("foobar"));
     }
@@ -64,8 +61,7 @@ public class TestLineStorage {
         String inputString = "<a href=\"/w/index.php?title=Distributed_computing&amp;action=edit&amp;section=3\" title=\"Edit section: History\">edit</a>";
 
         LineStorage ls  = makeLineStorage(inputString);
-        Measurements measurements = new Measurements();
-        ls.doWordCount(true, measurements, measurements);
+        ls.doWordCount(true);
         Assertions.assertEquals(1, ls.getResults().get("distributed"));
         Assertions.assertEquals(1, ls.getResults().get("computing"));
         Assertions.assertEquals(2, ls.getResults().get("edit"));
@@ -79,8 +75,7 @@ public class TestLineStorage {
         String inputString = "<a href=\"/wiki/Distributed database\" title=\"Di";
 
         LineStorage ls  = makeLineStorage(inputString);
-        Measurements measurements = new Measurements();
-        ls.doWordCount(true, measurements, measurements);
+        ls.doWordCount(true);
         Assertions.assertEquals(1, ls.getResults().get("di"));
     }
     @Test
@@ -89,8 +84,7 @@ public class TestLineStorage {
         String inputString = "<a href=\"/w/index.php?title=Distributed computing&amp;action=edit&amp;section=8\" title=";
 
         LineStorage ls  = makeLineStorage(inputString);
-        Measurements measurements = new Measurements();
-        ls.doWordCount(true, measurements, measurements);
+        ls.doWordCount(true);
         Assertions.assertEquals(1, ls.getResults().get("distributed"));
         Assertions.assertEquals(1, ls.getResults().get("computing"));
     }
@@ -100,8 +94,7 @@ public class TestLineStorage {
         String inputString = "hi<a href=\"/wiki/Client%E2%80%93server model\" title";
 
         LineStorage ls  = makeLineStorage(inputString);
-        Measurements measurements = new Measurements();
-        ls.doWordCount(true, measurements, measurements);
+        ls.doWordCount(true);
         Assertions.assertEquals(1, ls.getResults().get("hi"));
     }
     @Test
@@ -114,8 +107,7 @@ public class TestLineStorage {
             int seed        = (int) (Math.random()*10000);
             String docu1    = HelperFunctions.generateDocument(length, file, seed);
             LineStorage ls  = makeLineStorage(docu1);
-            Measurements measurements = new Measurements();
-            ls.doWordCount(true, measurements, measurements);
+            ls.doWordCount(true);
         }
         Assertions.assertEquals(true, true);
     }

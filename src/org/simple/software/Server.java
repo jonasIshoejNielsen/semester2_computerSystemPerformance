@@ -37,6 +37,7 @@ public class Server {
         openSocket(new InetSocketAddress(lAddr, lPort), selector);
     }
     public void logMessages() {
+        System.out.println("Start logging");
         Logging.writeTimeInQueue( measurementsInQueue,      repeatCount);
         Logging.writeCleaningTags(measurementsCleaning,     repeatCount);
         Logging.writeWordCount(   measurementsWordCount,    repeatCount);
@@ -66,7 +67,7 @@ public class Server {
                     SocketChannel client = serverSocket.accept();
                     client.configureBlocking(false);
                     client.register(selector, SelectionKey.OP_READ);
-                    //HelperFunctions.print(WoCoServer.class, "Connection Accepted: ", client.getLocalAddress().toString(), "\n");
+                    HelperFunctions.print(WoCoServer.class, "Connection Accepted: ", client.getLocalAddress().toString(), "\n");
 
                 } else if (key.isReadable()) {
                     handleRead(bb, key);

@@ -21,7 +21,7 @@ public class WoCoClient {
 	private static int clientID;
 	private static int repeatCount;
 	private Measurements measurements;
-	public static final int PACKETS_PER_REPEAT 			= 100;
+	public static final int PACKETS_PER_REPEAT 			= 10_000;
 
 	
 	/**
@@ -100,6 +100,8 @@ public class WoCoClient {
 		//send requests to the server in a loop.
 		for (int i=0; i<ops; i++) {
 			HashMap<String, Integer> result = this.getWordCount(docu);
+			if(clientID==1 && i%500==0)
+				System.out.println(i);
 		}
 	}
 	
@@ -125,8 +127,16 @@ public class WoCoClient {
 		int threadCount 	= (args.length>=10) ? Integer.valueOf(args[9].replaceAll("[^\\d.]", "")) : 0;
 		Logging.createFolder("client", cMode, threadCount, numberOfClients, file, dSize);
 		Logging.resetClients(clientID, repeatCount);
-		//We generate one document for the entire runtime of this client
-		//Otherwise the client would spend too much time generating new inputs.
+		StringBuilder sb = new StringBuilder()
+				.append(cMode? "Clean tags": "Don't clean tags, ")
+				.append(threadCount + " number of threads, ")
+				.append(numberOfClients+" number of clients, ")
+				.append(dSize +" dSize, ")
+				.append(file +" file, ")
+				.append(repeatCount +" repeat, ")
+				.append(sName +" sName, ")
+				.append(sPort +" sPort, ");
+		System.out.println(sb.toString());
 
 		String docu = HelperFunctions.generateDocument((int) (dSize), file, seed);
 		WoCoClient client = new WoCoClient(sName, sPort);

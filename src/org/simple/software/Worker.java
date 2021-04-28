@@ -43,7 +43,6 @@ public class Worker {
                     long endSerializing = System.nanoTime();
                     ls.sendToClient(returnMessage, sendToClient);
                     long endFromStart = System.nanoTime();
-
                     Server.measurementsCleaning.addMeasurement(ls.beginCleaning, ls.endCleaning);
                     Server.measurementsWordCount.addMeasurement(ls.beginWordCount, ls.endWordCount);
                     Server.measurementsInQueue.addMeasurement(ls.getTimeFromEnteringServer(), endTimeInQueue);
