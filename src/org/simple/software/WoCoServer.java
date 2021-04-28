@@ -73,6 +73,7 @@ public class WoCoServer {
 
 	public static void setUpLogging() throws IOException {
 		messagesLeftCounter.set(numberOfClients*WoCoClient.PACKETS_PER_REPEAT);
+		System.out.println("Messages to handle: "+messagesLeftCounter.get());
 		Logging.createFolder("server", cMode, threadCount, numberOfClients, file, dSize);
 	}
 
