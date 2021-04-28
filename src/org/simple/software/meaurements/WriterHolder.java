@@ -10,17 +10,17 @@ public class WriterHolder {
     public static FileWriter writerTimePercentile;
     public static FileWriter writerTputPercentile;
 
-    public WriterHolder(String wirterType, int clientId, int repeatCount) {
-        writerTime              = createFileWriter(wirterType+"_Time", clientId, repeatCount);
-        writerTimePercentile    = createFileWriter(wirterType+"_percentiles_Time", clientId, repeatCount);
-        writerTput              = createFileWriter(wirterType+"_Tput", clientId, repeatCount);
-        writerTputPercentile    = createFileWriter(wirterType+"_percentiles_Tput", clientId, repeatCount);
-        writerInterval          = createFileWriter(wirterType+"_Interval", clientId, repeatCount);
+    public WriterHolder(String wirterType, String optionalName, int repeatCount) {
+        writerTime              = createFileWriter(wirterType+"_Time",             optionalName, repeatCount);
+        writerTimePercentile    = createFileWriter(wirterType+"_percentiles_Time", optionalName, repeatCount);
+        writerTput              = createFileWriter(wirterType+"_Tput",             optionalName, repeatCount);
+        writerTputPercentile    = createFileWriter(wirterType+"_percentiles_Tput", optionalName, repeatCount);
+        writerInterval          = createFileWriter(wirterType+"_Interval",         optionalName, repeatCount);
     }
 
 
-    private static FileWriter createFileWriter(String name, int clientId, int repeatCount) {
-        String path = new StringBuilder(Logging.folderName).append(name).append("-id_").append(clientId).append("-repeat_").append(repeatCount).append(".txt").toString();
+    private static FileWriter createFileWriter(String name, String optionalName, int repeatCount) {
+        String path = new StringBuilder(Logging.folderName).append(name).append(optionalName).append("-repeat_").append(repeatCount).append(".txt").toString();
         FileWriter writer = null;
         try {
             writer = new FileWriter(path, false);

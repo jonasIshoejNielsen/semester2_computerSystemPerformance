@@ -23,6 +23,11 @@ public class Server {
     private Selector selector;
     private ServerSocketChannel serverSocket;
     private final boolean onlyOneThread;
+    public static final Measurements measurementsInQueue          = new Measurements();
+    public static final Measurements measurementsCleaning         = new Measurements();
+    public static final Measurements measurementsWordCount        = new Measurements();
+    public static final Measurements measurementsSerializing      = new Measurements();
+    public static final Measurements measurementsInServer         = new Measurements();
 
     public Server(String lAddr, int lPort, boolean onlyOneThread, int repeatCount, List<Worker> workersList) throws IOException {
         this.onlyOneThread      = onlyOneThread;
@@ -32,15 +37,15 @@ public class Server {
         openSocket(new InetSocketAddress(lAddr, lPort), selector);
     }
     public void logMessages() {
-        Logging.reset();
-        for (Worker dh: workersList) {
-            Logging.writeCleaningTags(dh.getMeasurementsCleaning(),     dh.getWorkerId(), repeatCount);
-            Logging.writeWordCount(   dh.getMeasurementsWordCount(),    dh.getWorkerId(), repeatCount);
-            Logging.writeSerializing( dh.getMeasurementsSerializing(),  dh.getWorkerId(), repeatCount);
-            Logging.writeTimeInServer(dh.getMeasurementsInServer(),     dh.getWorkerId(), repeatCount);
-            Logging.writeTimeInQueue( dh.getMeasurementsInQueue(),      dh.getWorkerId(), repeatCount);
-        }
+        Logging.writeTimeInQueue( measurementsInQueue,      repeatCount);
+        Logging.writeCleaningTags(measurementsCleaning,     repeatCount);
+        Logging.writeWordCount(   measurementsWordCount,    repeatCount);
+        Logging.writeSerializing( measurementsSerializing,  repeatCount);
+        Logging.writeTimeInServer(measurementsInServer,     repeatCount);
         System.out.println("Done loggign");
+        if(repeatCount == 5) {
+            Logging.processLogsServer();
+        }
     }
     private void logTimes(Measurements measurements, Consumer<Measurements> writeToLog) {
         writeToLog.accept(measurements);

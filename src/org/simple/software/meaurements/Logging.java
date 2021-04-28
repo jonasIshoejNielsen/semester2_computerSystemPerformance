@@ -6,17 +6,15 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Logging {
     public static String folderName;
-    private static Map<Integer, WriterHolder> writerHolder_CleaningTags = new HashMap<>();
-    private static Map<Integer, WriterHolder> writerHolder_WordCount    = new HashMap<>();
-    private static Map<Integer, WriterHolder> writerHolder_Serializing  = new HashMap<>();
-    private static Map<Integer, WriterHolder> writerHolder_InServer     = new HashMap<>();
-    private static Map<Integer, WriterHolder> writerHolder_InQueue      = new HashMap<>();
-    private static Map<Integer, WriterHolder> writerHolder_Response     = new HashMap<>();
+    private static WriterHolder writerHolder_CleaningTags;
+    private static WriterHolder writerHolder_WordCount;
+    private static WriterHolder writerHolder_Serializing;
+    private static WriterHolder writerHolder_InServer;
+    private static WriterHolder writerHolder_InQueue;
+    private static WriterHolder writerHolder_Response;
 
     public static void createFolder(String type, Boolean clean, int threads, int numberOfClients, int file, float dSize) throws IOException {
 
@@ -37,38 +35,33 @@ public class Logging {
             Files.createDirectory(dir);
         } catch (FileAlreadyExistsException e ) { }
     }
-    public static void writeCleaningTags(Measurements measurements, int clientId, int repeatCount) {
-        if(!Config.writeCleaningTags) return;
-        WriterHolder wh = writerHolder_CleaningTags.computeIfAbsent(clientId, id -> new WriterHolder("CleaningTags", clientId, repeatCount));
-        writeMeasurements(measurements, clientId, wh);
-    }
-    public static void writeWordCount(Measurements measurements, int clientId, int repeatCount) {
-        if(!Config.writeWordCount) return;
-        WriterHolder wh = writerHolder_WordCount.computeIfAbsent(clientId, id -> new WriterHolder("WordCountTags", clientId, repeatCount));
-        writeMeasurements(measurements, clientId, wh);
-    }
-    public static void writeSerializing(Measurements measurements, int clientId, int repeatCount) {
-        if(!Config.writeSerializing) return;
-        WriterHolder wh = writerHolder_Serializing.computeIfAbsent(clientId, id -> new WriterHolder("Serializing", clientId, repeatCount));
-        writeMeasurements(measurements, clientId, wh);
-    }
-    public static void writeTimeInServer(Measurements measurements, int clientId, int repeatCount) {
-        if(!Config.writeTimeInServer) return;
-        WriterHolder wh = writerHolder_InServer.computeIfAbsent(clientId, id -> new WriterHolder("InServer", clientId, repeatCount));
-        writeMeasurements(measurements, clientId, wh);
-    }
-    public static void writeTimeInQueue(Measurements measurements, int clientId, int repeatCount) {
+
+    public static void writeTimeInQueue(Measurements measurements, int repeatCount) {
         if(!Config.writeTimeInQueue) return;
-        WriterHolder wh = writerHolder_InQueue.computeIfAbsent(clientId, id -> new WriterHolder("InQueue", clientId, repeatCount));
-        writeMeasurements(measurements, clientId, wh);
+        writeMeasurements(measurements, writerHolder_InQueue);
     }
-    public static void writeResponseThoughput(Measurements measurements, int clientId, int repeatCount) {
+    public static void writeCleaningTags(Measurements measurements, int clientId) {
+        if(!Config.writeCleaningTags) return;
+        writeMeasurements(measurements, writerHolder_CleaningTags);
+    }
+    public static void writeWordCount(Measurements measurements, int clientId) {
+        if(!Config.writeWordCount) return;
+        writeMeasurements(measurements, writerHolder_WordCount);
+    }
+    public static void writeSerializing(Measurements measurements, int clientId) {
+        if(!Config.writeSerializing) return;
+        writeMeasurements(measurements, writerHolder_Serializing);
+    }
+    public static void writeTimeInServer(Measurements measurements, int clientId) {
+        if(!Config.writeTimeInServer) return;
+        writeMeasurements(measurements, writerHolder_InServer);
+    }
+    public static void writeResponseThoughput(Measurements measurements, int repeatCount) {
         if(!Config.writeResponseTime) return;
-        WriterHolder wh = writerHolder_Response.computeIfAbsent(clientId, id -> new WriterHolder("Response", clientId, repeatCount));
-        writeMeasurements(measurements, clientId, wh);
+        writeMeasurements(measurements, writerHolder_Response);
     }
 
-    private static void writeMeasurements(Measurements measurements, int clientId, WriterHolder writerHolder) {
+    private static void writeMeasurements(Measurements measurements, WriterHolder writerHolder) {
         for (long time_ns : measurements.timeMeasurements) {
             writeToFile(writerHolder.writerTime, (double) time_ns / 1000000000.0);
         }
@@ -97,11 +90,19 @@ public class Logging {
         }
     }
 
-    public static void reset() {
-        writerHolder_CleaningTags = new HashMap<>();
-        writerHolder_Serializing  = new HashMap<>();
-        writerHolder_WordCount    = new HashMap<>();
-        writerHolder_InServer     = new HashMap<>();
-        writerHolder_Response     = new HashMap<>();
+    public static void setupServer(int repeatCount) {
+        writerHolder_InQueue      = new WriterHolder("InQueue","", repeatCount);
+        writerHolder_CleaningTags = new WriterHolder("CleaningTags", "", repeatCount);
+        writerHolder_Serializing  = new WriterHolder("Serializing", "", repeatCount);
+        writerHolder_WordCount    = new WriterHolder("WordCountTags", "", repeatCount);
+        writerHolder_InServer     = new WriterHolder("InServer", "", repeatCount);
+    }
+
+    public static void resetClients(int clientID, int repeatCount) {
+        writerHolder_Response     = new WriterHolder("InQueue", "-"+clientID, repeatCount);
+    }
+
+    public static void processLogsServer() {
+
     }
 }

@@ -1,6 +1,7 @@
 package org.simple.software;
 
 import org.simple.software.meaurements.Logging;
+import sun.rmi.runtime.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -71,6 +72,7 @@ public class WoCoServer {
 	public static void setUpLogging() throws IOException {
 		messagesLeftCounter.set(numberOfClients*WoCoClient.PACKETS_PER_REPEAT);
 		Logging.createFolder("server", cMode, threadCount, numberOfClients, file, dSize);
+		Logging.setupServer(repeatCount);
 	}
 
 

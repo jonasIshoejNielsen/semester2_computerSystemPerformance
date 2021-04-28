@@ -12,10 +12,12 @@ public class LineStorage {
     private final int clientId;
     private final SocketChannel client;
     private final long timeFromEnteringServer;
-    private final Measurements measurementsCleaning  = new Measurements();
-    private final Measurements measurementsWordCount = new Measurements();
     private final HashMap<String, Integer> results = new HashMap<>();
     public byte[] returnMessage;
+    public long endCleaning;
+    public long endWordCount;
+    public long beginCleaning;
+    public long beginWordCount;
 
     public LineStorage(String line, int clientId, SocketChannel client, long timeFromEnteringServer) {
         this.line     = line;
@@ -38,19 +40,17 @@ public class LineStorage {
      * @param measurementsCleaning
      * @param measurementsWordCount
      */
-    public void doWordCount(boolean cMode, Measurements measurementsCleaning, Measurements measurementsWordCount) {
+    public void doWordCount(boolean cMode) {
         String ucLine = line.toLowerCase();
-        long beginCleaning = System.nanoTime();
+        beginCleaning = System.nanoTime();
         ucLine = ucLine.replace('_', ' ');
         String cleanedLine = (cMode) ? removeTags(ucLine) : ucLine;
-        long endCleaning = System.nanoTime();
-        this.measurementsCleaning.addMeasurement(beginCleaning, endCleaning);
+        endCleaning = System.nanoTime();
 
-        long beginWordCount = System.nanoTime();
+        beginWordCount = System.nanoTime();
         String[] words = getWordsFromString(cleanedLine);
         addWordsToMap(words, results);
         long endWordCount = System.nanoTime();
-        this.measurementsWordCount.addMeasurement(beginWordCount, endWordCount);
     }
     private static String removeTags(String line){
         StringBuilder sb = new StringBuilder();
@@ -130,14 +130,6 @@ public class LineStorage {
         } else {
             this.returnMessage = returnMessage;
         }
-    }
-
-    public Measurements getMeasurementsCleaning() {
-        return measurementsCleaning;
-    }
-
-    public Measurements getMeasurementsWordCount() {
-        return measurementsWordCount;
     }
 
     public Map<String, Integer> getResults() {

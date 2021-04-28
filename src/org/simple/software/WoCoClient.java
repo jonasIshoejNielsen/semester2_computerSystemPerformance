@@ -124,6 +124,7 @@ public class WoCoClient {
 		boolean cMode 		= (args.length>=9)  ? Boolean.parseBoolean(args[8]) 	: true;
 		int threadCount 	= (args.length>=10) ? Integer.valueOf(args[9].replaceAll("[^\\d.]", "")) : 0;
 		Logging.createFolder("client", cMode, threadCount, numberOfClients, file, dSize);
+		Logging.resetClients(clientID, repeatCount);
 		//We generate one document for the entire runtime of this client
 		//Otherwise the client would spend too much time generating new inputs.
 
@@ -134,7 +135,7 @@ public class WoCoClient {
 		Thread.sleep(2000);
 		client.shutDown();
 
-		Logging.writeResponseThoughput(client.measurements, clientID, repeatCount);
+		Logging.writeResponseThoughput(client.measurements, repeatCount);
 
         System.exit(0);
 	}

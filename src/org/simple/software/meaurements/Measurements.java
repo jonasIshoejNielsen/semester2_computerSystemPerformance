@@ -13,7 +13,7 @@ public class Measurements {
     public List<Long> timeMeasurements = new ArrayList<>();
 
 
-    public void addMeasurement(long beginTimeCurrOps, long endTimeCurrOps) {
+    public synchronized void addMeasurement(long beginTimeCurrOps, long endTimeCurrOps) {
         timeMeasurements.add(endTimeCurrOps - beginTimeCurrOps);
         cntSincePrint++;
         float elapsedSeconds = (float) ((endTimeCurrOps-timeLastPrint)/1000000000.0);
@@ -27,13 +27,13 @@ public class Measurements {
         cntSincePrint = 0;
     }
 
-    public List<Long> computePercentilesTime() {
+    public synchronized List<Long> computePercentilesTime() {
         return computePercentilesLongs(timeMeasurements);
     }
-    public List<Float> computePercentilesTput() {
+    public synchronized List<Float> computePercentilesTput() {
         return computePercentilesFloats(tputs);
     }
-    private List<Long> computePercentilesLongs(List<Long> values) {
+    private synchronized List<Long> computePercentilesLongs(List<Long> values) {
         List<Long> sorted = values.stream().sorted().collect(Collectors.toList());
         List<Long> percentiles = new ArrayList<>();
         for (int p=1; p<=100; p++) {
@@ -42,7 +42,7 @@ public class Measurements {
         }
         return percentiles;
     }
-    private List<Float> computePercentilesFloats(List<Float> values) {
+    private synchronized List<Float> computePercentilesFloats(List<Float> values) {
         List<Float> sorted = values.stream().sorted().collect(Collectors.toList());
         List<Float> percentiles = new ArrayList<>();
         for (int p=1; p<=100; p++) {

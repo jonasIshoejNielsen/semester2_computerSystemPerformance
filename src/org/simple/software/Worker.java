@@ -7,11 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 public class Worker {
-    private final Measurements measurementsInQueue          = new Measurements();
-    private final Measurements measurementsCleaning         = new Measurements();
-    private final Measurements measurementsWordCount        = new Measurements();
-    private final Measurements measurementsSerializing      = new Measurements();
-    private final Measurements measurementsInServer         = new Measurements();
     private final boolean cMode;
     private final boolean fixedNumberOfClients;
     private final int workerId;
@@ -20,26 +15,6 @@ public class Worker {
         this.cMode                = cMode;
         this.fixedNumberOfClients = fixedNumberOfClients;
         this.workerId             = workerId;
-    }
-
-    public Measurements getMeasurementsCleaning() {
-        return measurementsCleaning;
-    }
-
-    public Measurements getMeasurementsWordCount() {
-        return measurementsWordCount;
-    }
-
-    public Measurements getMeasurementsSerializing() {
-        return measurementsSerializing;
-    }
-
-    public Measurements getMeasurementsInServer() {
-        return measurementsInServer;
-    }
-
-    public Measurements getMeasurementsInQueue() {
-        return measurementsInQueue;
     }
 
     public int getWorkerId() {
@@ -62,16 +37,18 @@ public class Worker {
                 }
                 try {
                     long endTimeInQueue = System.nanoTime();
-                    ls.doWordCount(cMode, measurementsCleaning, measurementsWordCount);
+                    ls.doWordCount(cMode);
                     long beginSerializing = System.nanoTime();
                     byte[] returnMessage = serializeResultForClient(ls).getBytes();
                     long endSerializing = System.nanoTime();
                     ls.sendToClient(returnMessage, sendToClient);
                     long endFromStart = System.nanoTime();
 
-                    measurementsInQueue.addMeasurement(ls.getTimeFromEnteringServer(), endTimeInQueue);
-                    measurementsSerializing.addMeasurement(beginSerializing, endSerializing);
-                    measurementsInServer.addMeasurement(ls.getTimeFromEnteringServer(), endFromStart);
+                    Server.measurementsCleaning.addMeasurement(ls.beginCleaning, ls.endCleaning);
+                    Server.measurementsWordCount.addMeasurement(ls.beginWordCount, ls.endWordCount);
+                    Server.measurementsInQueue.addMeasurement(ls.getTimeFromEnteringServer(), endTimeInQueue);
+                    Server.measurementsSerializing.addMeasurement(beginSerializing, endSerializing);
+                    Server.measurementsInServer.addMeasurement(ls.getTimeFromEnteringServer(), endFromStart);
                 } catch (Exception e) {
                     System.out.println(ls.line);
                     System.out.println(e.getMessage());
