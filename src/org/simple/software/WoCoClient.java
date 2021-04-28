@@ -102,7 +102,7 @@ public class WoCoClient {
 		for (int i=0; i<ops; i++) {
 			HashMap<String, Integer> result = this.getWordCount(docu);
 			if(clientID==1 && i%500==0)
-				System.out.println(i);
+				System.out.println(i+"/"+ops);
 		}
 	}
 	
