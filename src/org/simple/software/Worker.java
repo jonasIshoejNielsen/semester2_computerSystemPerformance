@@ -3,6 +3,7 @@ package org.simple.software;
 import org.simple.software.meaurements.Measurements;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,11 +38,25 @@ public class Worker {
                 }
                 try {
                     long endTimeInQueue = System.nanoTime();
-                    ls.doWordCount(cMode);
+                    try {
+                        ls.doWordCount(cMode);
+                    } catch (Exception e) {
+                        System.out.println("error word count");
+                    }
                     long beginSerializing = System.nanoTime();
-                    byte[] returnMessage = serializeResultForClient(ls).getBytes();
+                    byte[] returnMessage;
+                    try {
+                        returnMessage = serializeResultForClient(ls.getResults()).getBytes();
+                    } catch (Exception e) {
+                        System.out.println("error serialize");
+                        returnMessage = serializeResultForClient(new HashMap<>()).getBytes();
+                    }
                     long endSerializing = System.nanoTime();
-                    ls.sendToClient(returnMessage, sendToClient);
+                    try {
+                        ls.sendToClient(returnMessage, sendToClient);
+                    } catch (Exception e) {
+                        System.out.println("error sending");
+                    }
                     long endFromStart = System.nanoTime();
                     Server.measurementsCleaning.addMeasurement(ls.beginCleaning, ls.endCleaning);
                     Server.measurementsWordCount.addMeasurement(ls.beginWordCount, ls.endWordCount);
@@ -67,9 +82,9 @@ public class Worker {
      * @param ls
      * @return
      */
-    public String serializeResultForClient(LineStorage ls) {
+    public String serializeResultForClient(Map<String, Integer> result) {
         StringBuilder sb = new StringBuilder();
-        for (Map.Entry<String, Integer> entry : ls.getResults().entrySet()) {
+        for (Map.Entry<String, Integer> entry : result.entrySet()) {
             sb.append(entry.getKey()).append(",");
             sb.append(entry.getValue()).append(",");
         }

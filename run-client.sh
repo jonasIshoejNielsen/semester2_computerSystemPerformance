@@ -20,8 +20,10 @@ do
     done
     wait
     sleep 10
+    date +"%T"
   done
   wait
+  sleep 10
 done
 wait
 echo "Done"

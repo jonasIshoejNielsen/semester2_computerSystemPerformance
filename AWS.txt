@@ -30,14 +30,12 @@ cd semester2_computerSystemPerformance/
 sudo apt-get update
 sudo apt-get install openjdk-8-jdk
 
-sudo apt-get install openjdk-8-doc
-sudo apt-get install openjdk-8-jre-lib
 sudo apt-get install ant
 
 ant
 
-#"127.0.0.1"		#server
-SERVER_HOST="127.31.84.65"
+SERVER_HOST="127.0.0.1"
+SERVER_HOST="172.31.84.65"
 DOC_SIZE="16"
 FILE_SUFF="1"
 THREADCOUNT="8"

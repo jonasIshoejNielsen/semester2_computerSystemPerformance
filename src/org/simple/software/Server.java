@@ -84,7 +84,6 @@ public class Server {
         serverSocket.register(selector, ops, null);
     }
     private void handleRead(ByteBuffer bb, SelectionKey key) throws IOException {
-        bb.rewind();
         SocketChannel client = (SocketChannel) key.channel();
         Boolean readFromChannel = readFromChanel(bb, client);
         if (readFromChannel.equals(false)) {
@@ -93,6 +92,7 @@ public class Server {
     }
 
     public synchronized boolean readFromChanel(ByteBuffer bb, SocketChannel client) throws IOException {
+        bb.rewind();
         int readCnt = client.read(bb);
         if (readCnt<=0) {
             return false;

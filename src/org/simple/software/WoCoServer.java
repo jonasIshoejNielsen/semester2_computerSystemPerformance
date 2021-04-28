@@ -3,6 +3,7 @@ package org.simple.software;
 import org.simple.software.meaurements.Logging;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,7 +33,7 @@ public class WoCoServer {
 		int lPort 				= Integer.parseInt(args[1].replaceAll("[^\\d.]", ""));
 		cMode 					= Boolean.parseBoolean(args[2]);
 		threadCount 			= Integer.valueOf(args[3].replaceAll("[^\\d.]", ""));
-		numberOfClients 		= (args.length>=5)? Integer.valueOf(args[4].replaceAll("[^\\d.]", "")) : -1;
+		numberOfClients 		= (args.length>=5)? Integer.valueOf(args[4].replaceAll("[^\\d.]", "")) : 0;
 		dSize 					= (args.length>=6)? Integer.valueOf(args[5].replaceAll("[^\\d.]", "")) : 1;
 		dSize *= 1024;
 		file 					= (args.length>=7)? Integer.valueOf(args[6].replaceAll("[^\\d.]", "")) : 1;
@@ -73,8 +74,6 @@ public class WoCoServer {
 
 	public static void setUpLogging() throws IOException {
 		messagesLeftCounter.set(numberOfClients*WoCoClient.PACKETS_PER_REPEAT);
-		System.out.println("per client: "+WoCoClient.PACKETS_PER_REPEAT);
-		System.out.println("numberOfClients: "+numberOfClients);
 		Logging.createFolder("server", cMode, threadCount, numberOfClients, file, dSize);
 	}
 

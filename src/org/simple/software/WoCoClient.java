@@ -101,7 +101,7 @@ public class WoCoClient {
 		//send requests to the server in a loop.
 		for (int i=0; i<ops; i++) {
 			HashMap<String, Integer> result = this.getWordCount(docu);
-			if(clientID==1 && i%500==0)
+			if(clientID==1 && i%2000==1999)
 				System.out.println(i+"/"+ops);
 		}
 	}
@@ -150,7 +150,6 @@ public class WoCoClient {
 		if(repeatCount == WoCoClient.NUMBER_OF_REPEATS) {
 			Logging.processLogs();
 		}
-
         System.exit(0);
 	}
 
