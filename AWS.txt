@@ -14,13 +14,13 @@ two t2.2xlarge
 
 
 
-IP server:	54.152.59.251
-	ssh ubuntu@54.152.59.251 -i ~/AWSubuntu20t2micro.pem
-scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@54.152.59.251:./semester2_computerSystemPerformance/Logs ./Graphs/logs-server
+IP server:	3.83.246.38
+	ssh ubuntu@3.83.246.38 -i ~/AWSubuntu20t2micro.pem
+scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@3.83.246.38:./semester2_computerSystemPerformance/Logs ./Graphs/logs-server
 
-IP clint:	3.93.9.55
-	ssh ubuntu@3.93.9.55 -i ~/AWSubuntu20t2micro.pem
-scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@3.93.9.55:./semester2_computerSystemPerformance/Logs ./Graphs/logs-client
+IP clint:	35.171.23.121
+	ssh ubuntu@35.171.23.121 -i ~/AWSubuntu20t2micro.pem
+scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@35.171.23.121:./semester2_computerSystemPerformance/Logs ./Graphs/logs-client
 
 
 
@@ -33,15 +33,21 @@ sudo apt-get install openjdk-8-jdk
 sudo apt-get install openjdk-8-doc
 sudo apt-get install openjdk-8-jre-lib
 sudo apt-get install ant
+
 ant
 
 #"127.0.0.1"		#server
-SERVER_HOST="127.0.0.1"
+SERVER_HOST="127.31.84.65"
 DOC_SIZE="16"
 FILE_SUFF="1"
 THREADCOUNT="8"
 sudo chmod 777 ./run-server.sh
 sudo chmod 777 ./run-client.sh
+sudo chmod 777 ./experiment-threads-server.sh
+sudo chmod 777 ./experiment-documents-server.sh
+sudo chmod 777 ./experiment-threads-client.sh
+sudo chmod 777 ./experiment-documents-client.sh
+sudo apt install dos2unix
 dos2unix ./run-server.sh
 dos2unix ./experiment-threads-server.sh
 dos2unix ./experiment-documents-server.sh
