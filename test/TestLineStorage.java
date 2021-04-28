@@ -66,7 +66,6 @@ public class TestLineStorage {
         Assertions.assertEquals(2, ls.getResults().get("edit"));
         Assertions.assertEquals(1, ls.getResults().get("section"));
         Assertions.assertEquals(1, ls.getResults().get("history"));
-        Assertions.assertEquals(1, ls.getResults().get("edit"));
     }
 
     @Test
