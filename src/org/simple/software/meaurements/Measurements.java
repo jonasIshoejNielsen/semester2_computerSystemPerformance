@@ -27,20 +27,4 @@ public class Measurements {
         cntSincePrint = 0;
     }
 
-    public synchronized List<Long> computePercentilesTime() {
-        return computePercentilesLongs(timeMeasurements);
-    }
-    private synchronized List<Long> computePercentilesLongs(List<Long> values) {
-        List<Long> sorted = values.stream().sorted().collect(Collectors.toList());
-        List<Long> percentiles = new ArrayList<>();
-        for (int p=1; p<=100; p++) {
-            int index = sorted.size() * p / 100 - 1;
-            if(index<0) {
-                break;
-            }
-            Long valueForP = sorted.get(index);
-            percentiles.add(valueForP);
-        }
-        return percentiles;
-    }
 }

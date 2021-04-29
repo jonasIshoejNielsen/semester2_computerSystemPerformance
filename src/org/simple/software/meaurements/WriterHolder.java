@@ -7,11 +7,9 @@ public class WriterHolder {
     public final FileWriter writerTime;
     public final FileWriter writerTput;
     public final FileWriter writerInterval;
-    public final FileWriter writerTimePercentile;
 
     public WriterHolder(String wirterType, String optionalName, int repeatCount) {
         writerTime              = createFileWriter(wirterType+"_Time",             optionalName, repeatCount);
-        writerTimePercentile    = createFileWriter(wirterType+"_percentiles_Time", optionalName, repeatCount);
         writerTput              = createFileWriter(wirterType+"_Tput",             optionalName, repeatCount);
         writerInterval          = createFileWriter(wirterType+"_Interval",         optionalName, repeatCount);
     }

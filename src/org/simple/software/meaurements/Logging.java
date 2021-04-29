@@ -7,10 +7,7 @@ import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Logging {
@@ -77,10 +74,6 @@ public class Logging {
         for (float interval : measurements.tputs_interval) {
             writeToFile(writerHolder.writerInterval, interval);
         }
-        for (long valueForP : measurements.computePercentilesTime()) {
-            writeToFile(writerHolder.writerTimePercentile, (double) valueForP / 1000000000.0);
-        }
-
     }
 
     private static void writeToFile(FileWriter fw, double seconds) {
@@ -167,6 +160,25 @@ public class Logging {
             fw.write("\n");
             fw.flush();
         }
+
+        if(entry.getKey().contains("Interval"))
+            return;
+        List<Float> percentile = computePercentilesLongs(mean);
+        String path2 = new StringBuilder(folderName).append(entry.getKey()).append("-Percentiles-").append("ALL").append(".txt").toString();
+        fw = null;
+        try {
+            fw = new FileWriter(path2, false);
+            fw.write("");
+            fw.close();
+            fw = new FileWriter(path2, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        for(int i=0; i<percentile.size(); i++) {
+            fw.write(String.valueOf(percentile.get(i)).replace('.', ','));
+            fw.write("\n");
+            fw.flush();
+        }
     }
     private static Float[] initArray(int size) {
         Float[] arr = new Float[size];
@@ -174,5 +186,19 @@ public class Logging {
             arr[i]=0F;
         }
         return arr;
+    }
+    private static List<Float> computePercentilesLongs(Float[] values) {
+        Arrays.sort(values);
+        List<Float> percentiles = new ArrayList<>();
+        for (int p=1; p<=100; p++) {
+            int index = values.length * p / 100 - 1;
+            if(index<0) {
+                percentiles.add(0.0F);
+                continue;
+            }
+            Float valueForP = values[index];
+            percentiles.add(valueForP);
+        }
+        return percentiles;
     }
 }
