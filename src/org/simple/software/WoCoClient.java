@@ -128,16 +128,18 @@ public class WoCoClient {
 		int threadCount 	= (args.length>=10) ? Integer.valueOf(args[9].replaceAll("[^\\d.]", "")) : 0;
 		Logging.createFolder("client", cMode, threadCount, numberOfClients, file, dSize);
 		Logging.resetClients(clientID, repeatCount);
-		StringBuilder sb = new StringBuilder()
-				.append(cMode? "Clean tags": "Don't clean tags, ")
-				.append(threadCount + " number of threads, ")
-				.append(numberOfClients+" number of clients, ")
-				.append(dSize +" dSize, ")
-				.append(file +" file, ")
-				.append(repeatCount +" repeat, ")
-				.append(sName +" sName, ")
-				.append(sPort +" sPort, ");
-		//System.out.println(sb.toString());
+		if(clientID==1) {
+			StringBuilder sb = new StringBuilder()
+					.append(cMode ? "Clean tags" : "Don't clean tags, ")
+					.append(threadCount + " number of threads, ")
+					.append(numberOfClients + " number of clients, ")
+					.append(dSize + " dSize, ")
+					.append(file + " file, ")
+					.append(repeatCount + " repeat, ")
+					.append(sName + " sName, ")
+					.append(sPort + " sPort, ");
+			System.out.println(sb.toString());
+		}
 
 		String docu = HelperFunctions.generateDocument((int) (dSize), file, seed);
 		WoCoClient client = new WoCoClient(sName, sPort);

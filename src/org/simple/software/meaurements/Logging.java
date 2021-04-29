@@ -102,6 +102,8 @@ public class Logging {
         Map<String, List<List<Float>>>fileMaps = readFiles();
 
         for(Map.Entry<String, List<List<Float>>> entry : fileMaps.entrySet()) {
+            if(entry.getKey().contains("ALL"))
+                continue;
             int n = entry.getValue().size();
             int minSize = 9000000;
             for(List<Float>lst : entry.getValue()) {
