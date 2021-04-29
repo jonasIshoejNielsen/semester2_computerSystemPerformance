@@ -3,7 +3,6 @@ package org.simple.software;
 import org.simple.software.meaurements.Logging;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -52,7 +51,7 @@ public class WoCoServer {
 		setUpLogging();
 
 		exec = setUpWorkers(threadCount, true, i -> new Worker(cMode, numberOfClients>0, i));
-		server = new Server(lAddr, lPort, threadCount==0, repeatCount, workerList);
+		server = new Server(lAddr, lPort, threadCount==0, numberOfClients, repeatCount, workerList);
 
 		server.startListening();
 	}
@@ -74,7 +73,7 @@ public class WoCoServer {
 
 	public static void setUpLogging() throws IOException {
 		messagesLeftCounter.set(numberOfClients*WoCoClient.PACKETS_PER_REPEAT);
-		Logging.createFolder("server", cMode, threadCount, numberOfClients, file, dSize);
+		Logging.createFolder("server", cMode, threadCount, file, dSize);
 	}
 
 

@@ -126,8 +126,8 @@ public class WoCoClient {
 		numberOfClients 	= (args.length>=8)  ? Integer.parseInt(args[7]) 		: 1;
 		boolean cMode 		= (args.length>=9)  ? Boolean.parseBoolean(args[8]) 	: true;
 		int threadCount 	= (args.length>=10) ? Integer.valueOf(args[9].replaceAll("[^\\d.]", "")) : 0;
-		Logging.createFolder("client", cMode, threadCount, numberOfClients, file, dSize);
-		Logging.resetClients(clientID, repeatCount);
+		Logging.createFolder("client", cMode, threadCount, file, dSize);
+		Logging.resetClients(clientID, numberOfClients, repeatCount);
 		if(clientID==1) {
 			StringBuilder sb = new StringBuilder()
 					.append(cMode ? "Clean tags" : "Don't clean tags, ")

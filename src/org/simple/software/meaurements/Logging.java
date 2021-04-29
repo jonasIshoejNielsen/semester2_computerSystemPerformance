@@ -19,12 +19,11 @@ public class Logging {
     private static WriterHolder writerHolder_InQueue;
     private static WriterHolder writerHolder_Response;
 
-    public static void createFolder(String type, Boolean clean, int threads, int numberOfClients, int file, float dSize) throws IOException {
+    public static void createFolder(String type, Boolean clean, int threads, int file, float dSize) throws IOException {
 
         String prefix = new StringBuilder(type)
                         .append("-clean-").append(clean)
                         .append("-threads-").append(threads)
-                        .append("-clients-").append(numberOfClients)
                         .append("-file-").append(file)
                         .append("-dSize-").append((long)dSize).toString();
         Path dir = Paths.get("Logs/");
@@ -86,16 +85,17 @@ public class Logging {
         }
     }
 
-    public static void setupServer(int repeatCount) {
-        writerHolder_InQueue      = new WriterHolder("InQueue","", repeatCount);
-        writerHolder_CleaningTags = new WriterHolder("CleaningTags", "", repeatCount);
-        writerHolder_Serializing  = new WriterHolder("Serializing", "", repeatCount);
-        writerHolder_WordCount    = new WriterHolder("WordCountTags", "", repeatCount);
-        writerHolder_InServer     = new WriterHolder("InServer", "", repeatCount);
+    public static void setupServer(int numberOfClients, int repeatCount) {
+        String optional = "-"+numberOfClients;
+        writerHolder_InQueue      = new WriterHolder("InQueue",optional, repeatCount);
+        writerHolder_CleaningTags = new WriterHolder("CleaningTags", optional, repeatCount);
+        writerHolder_Serializing  = new WriterHolder("Serializing", optional, repeatCount);
+        writerHolder_WordCount    = new WriterHolder("WordCountTags", optional, repeatCount);
+        writerHolder_InServer     = new WriterHolder("InServer", optional, repeatCount);
     }
 
-    public static void resetClients(int clientID, int repeatCount) {
-        writerHolder_Response     = new WriterHolder("Response", "-"+clientID, repeatCount);
+    public static void resetClients(int clientID, int numberOfClients, int repeatCount) {
+        writerHolder_Response     = new WriterHolder("Response", "-"+numberOfClients+"-"+clientID, repeatCount);
     }
 
     public static void processLogs() throws IOException {

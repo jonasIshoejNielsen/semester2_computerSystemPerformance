@@ -19,6 +19,7 @@ public class Server {
     public static final HashMap<Integer, Long> timesFromEnteringServer = new HashMap<>();
     public static final LinkedBlockingQueue<LineStorage> linesToCount         = new LinkedBlockingQueue<>();
     private final List<Worker> workersList;
+    private final int numberOfClients;
     private final int repeatCount;
     private Selector selector;
     private ServerSocketChannel serverSocket;
@@ -29,15 +30,16 @@ public class Server {
     public static final Measurements measurementsSerializing      = new Measurements();
     public static final Measurements measurementsInServer         = new Measurements();
 
-    public Server(String lAddr, int lPort, boolean onlyOneThread, int repeatCount, List<Worker> workersList) throws IOException {
+    public Server(String lAddr, int lPort, boolean onlyOneThread, int numberOfClients, int repeatCount, List<Worker> workersList) throws IOException {
         this.onlyOneThread      = onlyOneThread;
+        this.numberOfClients    = numberOfClients;
         this.repeatCount        = repeatCount;
         this.workersList        = workersList;
         this.selector = Selector.open();
         openSocket(new InetSocketAddress(lAddr, lPort), selector);
     }
     public void logMessages() throws IOException {
-        Logging.setupServer(repeatCount);
+        Logging.setupServer(numberOfClients, repeatCount);
         Logging.writeTimeInQueue( measurementsInQueue,      repeatCount);
         Logging.writeCleaningTags(measurementsCleaning,     repeatCount);
         Logging.writeWordCount(   measurementsWordCount,    repeatCount);
