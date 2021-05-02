@@ -11,9 +11,16 @@ MAX_CLIENTS=$7
 declare -a CLIENTS=(1 8 16)
 for NUMBER_OF_CLIENTS in "${CLIENTS[@]}"
 do
+  if [[ $NUMBER_OF_CLIENTS -lt $MIN_CLIENTS ]]; then
+    continue
+  fi
+  if [[ $NUMBER_OF_CLIENTS -gt $MAX_CLIENTS ]]; then
+    continue
+  fi
   for (( REPEAT=1; REPEAT<=3; REPEAT++ ))
   do
     date +"%T"
+    echo "test" &
     java -jar ./jars/WoCoServer.jar $SERVER_HOST $SERVER_PORT $CLEAN "$THREADS" "$NUMBER_OF_CLIENTS" $DOC_SIZE $FILE_SUFF $REPEAT
     wait
   done

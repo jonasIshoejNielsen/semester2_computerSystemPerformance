@@ -3,6 +3,7 @@ https://www.awseducate.com/signin/SiteLogin
 44.57$
 41.94$
 40.36$
+38.6$
 
 
 Ubuntu Server 20.04 LTS (HVM), SSD Volume Type
@@ -14,13 +15,13 @@ two t2.2xlarge
 
 
 
-IP server:	3.83.246.38
-	ssh ubuntu@3.83.246.38 -i ~/AWSubuntu20t2micro.pem
-scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@3.83.246.38:./semester2_computerSystemPerformance/Logs ./Graphs/logs-server
+IP server:	54.237.3.183
+	ssh ubuntu@54.237.3.183 -i ~/AWSubuntu20t2micro.pem
+scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@54.237.3.183:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-threads-server
 
-IP clint:	35.171.23.121
-	ssh ubuntu@35.171.23.121 -i ~/AWSubuntu20t2micro.pem
-scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@35.171.23.121:./semester2_computerSystemPerformance/Logs ./Graphs/logs-client
+IP clint:	54.157.175.160
+	ssh ubuntu@54.157.175.160 -i ~/AWSubuntu20t2micro.pem
+scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@54.157.175.160:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-threads-client
 
 
 
@@ -28,6 +29,7 @@ Both:
 git clone https://github.com/jonasIshoejNielsen/semester2_computerSystemPerformance.git
 cd semester2_computerSystemPerformance/
 sudo apt-get update
+
 sudo apt-get install openjdk-8-jdk
 
 sudo apt-get install ant
@@ -35,10 +37,12 @@ sudo apt-get install ant
 ant
 
 SERVER_HOST="127.0.0.1"
-SERVER_HOST="172.31.84.65"
+SERVER_HOST="172.31.59.247"
 DOC_SIZE="16"
 FILE_SUFF="1"
 THREADCOUNT="8"
+MIN_CLIENTS=1
+MAX_CLIENTS=16
 sudo chmod 777 ./run-server.sh
 sudo chmod 777 ./run-client.sh
 sudo chmod 777 ./experiment-threads-server.sh
