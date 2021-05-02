@@ -4,6 +4,7 @@ https://www.awseducate.com/signin/SiteLogin
 41.94$
 40.36$
 38.6$
+36.12$
 
 
 Ubuntu Server 20.04 LTS (HVM), SSD Volume Type
@@ -15,13 +16,13 @@ two t2.2xlarge
 
 
 
-IP server:	54.237.3.183
-	ssh ubuntu@54.237.3.183 -i ~/AWSubuntu20t2micro.pem
-scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@54.237.3.183:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-threads-server
+IP server:	18.235.234.204
+	ssh ubuntu@18.235.234.204 -i ~/AWSubuntu20t2micro.pem
+scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@18.235.234.204:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-threads-server
 
-IP clint:	54.157.175.160
-	ssh ubuntu@54.157.175.160 -i ~/AWSubuntu20t2micro.pem
-scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@54.157.175.160:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-threads-client
+IP clint:	54.234.98.83
+	ssh ubuntu@54.234.98.83 -i ~/AWSubuntu20t2micro.pem
+scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@54.234.98.83:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-threads-client
 
 
 

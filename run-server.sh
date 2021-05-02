@@ -8,7 +8,7 @@ FILE_SUFF=$5
 MIN_CLIENTS=$6
 MAX_CLIENTS=$7
 
-declare -a CLIENTS=(1 8 16)
+declare -a CLIENTS=(4 12 32)
 for NUMBER_OF_CLIENTS in "${CLIENTS[@]}"
 do
   if [[ $NUMBER_OF_CLIENTS -lt $MIN_CLIENTS ]]; then
