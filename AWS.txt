@@ -38,12 +38,12 @@ sudo apt-get install ant
 ant
 
 SERVER_HOST="127.0.0.1"
-SERVER_HOST="172.31.59.247"
+SERVER_HOST="172.31.55.147"
 DOC_SIZE="16"
 FILE_SUFF="1"
 THREADCOUNT="8"
 MIN_CLIENTS=1
-MAX_CLIENTS=16
+MAX_CLIENTS=32
 sudo chmod 777 ./run-server.sh
 sudo chmod 777 ./run-client.sh
 sudo chmod 777 ./experiment-threads-server.sh

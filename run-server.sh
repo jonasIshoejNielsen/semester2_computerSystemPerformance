@@ -8,7 +8,7 @@ FILE_SUFF=$5
 MIN_CLIENTS=$6
 MAX_CLIENTS=$7
 
-declare -a CLIENTS=(4 12 32)
+declare -a CLIENTS=(1 4 8 12 16 32)
 for NUMBER_OF_CLIENTS in "${CLIENTS[@]}"
 do
   if [[ $NUMBER_OF_CLIENTS -lt $MIN_CLIENTS ]]; then
@@ -20,7 +20,6 @@ do
   for (( REPEAT=1; REPEAT<=3; REPEAT++ ))
   do
     date +"%T"
-    echo "test" &
     java -jar ./jars/WoCoServer.jar $SERVER_HOST $SERVER_PORT $CLEAN "$THREADS" "$NUMBER_OF_CLIENTS" $DOC_SIZE $FILE_SUFF $REPEAT
     wait
   done

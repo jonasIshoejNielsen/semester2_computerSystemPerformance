@@ -9,7 +9,7 @@ THREADCOUNT=$5
 MIN_CLIENTS=$6
 MAX_CLIENTS=$7
 
-declare -a CLIENTS=(4 12 32)
+declare -a CLIENTS=(1 4 8 12 16 32)
 for NUMBER_OF_CLIENTS in "${CLIENTS[@]}"
 do
   if [[ $NUMBER_OF_CLIENTS -lt $MIN_CLIENTS ]]; then
