@@ -21,7 +21,7 @@ public class WoCoClient {
 	private static int clientID;
 	private static int repeatCount;
 	private Measurements measurements;
-	public static final int PACKETS_PER_REPEAT 	= 12_500;
+	public static final int PACKETS_PER_REPEAT 	= 100;
 	public static final int NUMBER_OF_REPEATS	= 3;
 
 	
@@ -111,14 +111,13 @@ public class WoCoClient {
 		//reading in parameters
 
 		if (args.length<5) {
-			System.out.println("Usage: <servername> <serverport> <documentsize(KiB)> <opcount(x1000)> <filesuffix> [<seed>] [<clientID>] [<numberOfClients>] [<cleaning>] [<threadcount>]");
+			System.out.println("Usage: <servername> <serverport> <documentsize(KiB)> <opcount(x100)> <filesuffix> [<seed>] [<clientID>] [<numberOfClients>] [<cleaning>] [<threadcount>] [<repeatCount>]");
 			System.exit(0);
 		}
-
 		String sName 		= args[0];
 		int sPort 			= Integer.parseInt(args[1]);
 		float dSize 		= Float.parseFloat(args[2])*1024;
-		repeatCount			= Integer.valueOf(args[3].replaceAll("[^\\d.]", ""));
+		int ops 			= Integer.parseInt(args[3])*PACKETS_PER_REPEAT;
 		int file 			= Integer.parseInt(args[4]);
 		int seed 			= (args.length>=6)  ? Integer.parseInt(args[5]) : (int) (Math.random()*10000);
 		seed				= (seed != -1)      ? seed : (int) (Math.random()*10000);
@@ -126,6 +125,7 @@ public class WoCoClient {
 		numberOfClients 	= (args.length>=8)  ? Integer.parseInt(args[7]) 		: 1;
 		boolean cMode 		= (args.length>=9)  ? Boolean.parseBoolean(args[8]) 	: true;
 		int threadCount 	= (args.length>=10) ? Integer.valueOf(args[9].replaceAll("[^\\d.]", "")) : 0;
+		repeatCount			= (args.length>=11) ? Integer.valueOf(args[10].replaceAll("[^\\d.]", "")) : 1;
 		Logging.createFolder("client", cMode, threadCount, file, dSize);
 		Logging.resetClients(clientID, numberOfClients, repeatCount);
 		if(clientID==1) {
@@ -139,11 +139,12 @@ public class WoCoClient {
 					.append(sName + " sName, ")
 					.append(sPort + " sPort, ");
 			System.out.println(sb.toString());
+			System.out.println(ops);
 		}
 
 		String docu = HelperFunctions.generateDocument((int) (dSize), file, seed);
 		WoCoClient client = new WoCoClient(sName, sPort);
-    	client.sendDocu(PACKETS_PER_REPEAT, docu);
+    	client.sendDocu(ops, docu);
 
 		Thread.sleep(2000);
 		client.shutDown();

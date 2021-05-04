@@ -37,6 +37,7 @@ public class WoCoServer {
 		dSize *= 1024;
 		file 					= (args.length>=7)? Integer.valueOf(args[6].replaceAll("[^\\d.]", "")) : 1;
 		repeatCount 			= (args.length>=8) ? Integer.valueOf(args[7].replaceAll("[^\\d.]", "")) : 0;
+		int ops 				= (args.length>=9) ? Integer.parseInt(args[8])*WoCoClient.PACKETS_PER_REPEAT : 0;
 		StringBuilder sb = new StringBuilder()
 				.append(cMode? "Clean tags, ": "Don't clean tags, ")
 				.append(threadCount + " number of threads, ")
@@ -47,8 +48,9 @@ public class WoCoServer {
 				.append(lAddr +" lAddr, ")
 				.append(lPort +" lPort, ");
 		System.out.println(sb.toString());
+		System.out.println(ops);
 
-		setUpLogging();
+		setUpLogging(ops);
 
 		exec = setUpWorkers(threadCount, true, i -> new Worker(cMode, numberOfClients>0, i));
 		server = new Server(lAddr, lPort, threadCount==0, numberOfClients, repeatCount, workerList);
@@ -71,8 +73,8 @@ public class WoCoServer {
 		return exec;
 	}
 
-	public static void setUpLogging() throws IOException {
-		messagesLeftCounter.set(numberOfClients*WoCoClient.PACKETS_PER_REPEAT);
+	public static void setUpLogging(int ops) throws IOException {
+		messagesLeftCounter.set(numberOfClients*ops);
 		Logging.createFolder("server", cMode, threadCount, file, dSize);
 	}
 
