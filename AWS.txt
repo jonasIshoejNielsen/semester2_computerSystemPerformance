@@ -17,13 +17,15 @@ two t2.2xlarge
 
 
 
-IP server:	52.87.219.205
-	ssh ubuntu@52.87.219.205 -i ~/AWSubuntu20t2micro.pem
-scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@52.87.219.205:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-threads-server
+IP server:	54.90.14.179
+	ssh ubuntu@54.90.14.179 -i ~/AWSubuntu20t2micro.pem
+scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@54.90.14.179:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-threads-server
+scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@54.90.14.179:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-documents-server
 
-IP clint:	100.25.10.32
-	ssh ubuntu@100.25.10.32 -i ~/AWSubuntu20t2micro.pem
-scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@100.25.10.32:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-threads-client
+IP clint:	100.26.156.162
+	ssh ubuntu@100.26.156.162 -i ~/AWSubuntu20t2micro.pem
+scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@100.26.156.162:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-threads-client
+scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@100.26.156.162:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-documents-server
 
 
 
@@ -37,9 +39,8 @@ sudo apt-get install openjdk-8-jdk
 sudo apt-get install ant
 
 ant
-
 SERVER_HOST="127.0.0.1"
-SERVER_HOST="172.31.49.11"
+SERVER_HOST="172.31.51.35"
 DOC_SIZE="16"
 FILE_SUFF="1"
 THREADCOUNT="8"
@@ -64,7 +65,7 @@ Server
 echo "<listenaddress> <cleaning> <threadcount> <FIXED_NUMBER_OF_CLIENTS> <doc_size> <file>"
 ./run-server.sh $SERVER_HOST true $THREADCOUNT $DOCUMENT_SIZE $FILESUFFIX 1 1
 ./experiment-threads-server.sh $SERVER_HOST
-./experiment-documents-server.sh $SERVER_HOST 
+./experiment-documents-server.sh $SERVER_HOST 4
 
 
 
@@ -73,7 +74,7 @@ echo "<servername> <doc_size> <file> <number of clients> <cmode> <threads>"
 
 ./run-client.sh $SERVER_HOST "16" "1" true "8" 1 1
 ./experiment-threads-client.sh $SERVER_HOST 
-./experiment-documents-client.sh $SERVER_HOST 
+./experiment-documents-client.sh $SERVER_HOST 4
 
 
 

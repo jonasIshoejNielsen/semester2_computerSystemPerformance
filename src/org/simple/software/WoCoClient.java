@@ -13,6 +13,7 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 
 public class WoCoClient {
+	private static int everyTenthOps;
 	private Socket sHandle;
 	private BufferedReader sInput;
 	private BufferedWriter sOutput;
@@ -101,7 +102,7 @@ public class WoCoClient {
 		//send requests to the server in a loop.
 		for (int i=0; i<ops; i++) {
 			HashMap<String, Integer> result = this.getWordCount(docu);
-			if(clientID==1 && i%2000==1999)
+			if(clientID==1 && i%everyTenthOps==0)
 				System.out.println(i+"/"+ops);
 		}
 	}
@@ -141,6 +142,7 @@ public class WoCoClient {
 			System.out.println(sb.toString());
 			System.out.println(ops);
 		}
+		everyTenthOps=ops/10;
 
 		String docu = HelperFunctions.generateDocument((int) (dSize), file, seed);
 		WoCoClient client = new WoCoClient(sName, sPort);

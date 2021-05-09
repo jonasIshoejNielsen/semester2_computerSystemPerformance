@@ -81,8 +81,6 @@ public class WoCoServer {
 
 	public static void reportFinishedMessage() {
 		int messagesLeft = messagesLeftCounter.decrementAndGet();
-		if(messagesLeft%100000 == 0)
-			System.out.println(messagesLeft);
 		if (messagesLeft < 0) {
 			System.out.println("Error wrong ammount of messages handled");
 			System.exit(0);

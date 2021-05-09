@@ -28,7 +28,8 @@ do
       java -jar ./jars/WoCoClient.jar $SERVER_HOST $SERVER_PORT $DOC_SIZE $OPS $FILE_SUFF $SEED $CLIENT_ID $NUMBER_OF_CLIENTS $CLEANNING $THREADCOUNT $REPEAT &
     done
     wait
-    sleep 15
+    echo "done, now sleep: $((20+OPS/10))"
+    sleep $((20+OPS/100))
   done
   wait
   sleep 15
