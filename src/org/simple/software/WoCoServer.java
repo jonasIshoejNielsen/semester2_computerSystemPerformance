@@ -48,9 +48,9 @@ public class WoCoServer {
 				.append(lAddr +" lAddr, ")
 				.append(lPort +" lPort, ");
 		System.out.println(sb.toString());
-		System.out.println(ops);
 
 		setUpLogging(ops);
+		System.out.println(messagesLeftCounter.get());
 
 		exec = setUpWorkers(threadCount, true, i -> new Worker(cMode, numberOfClients>0, i));
 		server = new Server(lAddr, lPort, threadCount==0, numberOfClients, repeatCount, workerList);
@@ -81,6 +81,8 @@ public class WoCoServer {
 
 	public static void reportFinishedMessage() {
 		int messagesLeft = messagesLeftCounter.decrementAndGet();
+		if(messagesLeft%100000 == 0)
+			System.out.println(messagesLeft);
 		if (messagesLeft < 0) {
 			System.out.println("Error wrong ammount of messages handled");
 			System.exit(0);
