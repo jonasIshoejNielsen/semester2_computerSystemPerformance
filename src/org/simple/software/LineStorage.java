@@ -37,8 +37,6 @@ public class LineStorage {
      * words based on spaces.
      *
      * @param cMode
-     * @param measurementsCleaning
-     * @param measurementsWordCount
      */
     public void doWordCount(boolean cMode) {
         String ucLine = line.toLowerCase();
@@ -50,7 +48,7 @@ public class LineStorage {
         beginWordCount = System.nanoTime();
         String[] words = getWordsFromString(cleanedLine);
         addWordsToMap(words, results);
-        long endWordCount = System.nanoTime();
+        endWordCount = System.nanoTime();
     }
     private static String removeTags(String line){
         StringBuilder sb = new StringBuilder();

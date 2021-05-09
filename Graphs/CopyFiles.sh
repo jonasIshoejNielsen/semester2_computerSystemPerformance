@@ -16,7 +16,7 @@ do
   if [ "$takeSums" = true ] ;
   then
     #awk -f merge.awk "$folder/$fileType-$NUMBER_OF_CLIENTS$end" | clip.exe
-    ../ConcatFile.sh "$folder/$fileType-$NUMBER_OF_CLIENTS$end" | clip.exe
+    ../ConcatFile.sh "$folder/$fileType-$NUMBER_OF_CLIENTS$end" | sed 's/\./,/' | sed 's/\./,/' | clip.exe
     echo $NUMBER_OF_CLIENTS
   else
     cat "$folder/$fileType-$NUMBER_OF_CLIENTS$end" | clip.exe
