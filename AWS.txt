@@ -25,7 +25,7 @@ scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@54.90.14.179:./semester2_computerSyste
 IP clint:	100.26.156.162
 	ssh ubuntu@100.26.156.162 -i ~/AWSubuntu20t2micro.pem
 scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@100.26.156.162:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-threads-client
-scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@100.26.156.162:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-documents-server
+scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@100.26.156.162:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-documents-client
 
 
 
