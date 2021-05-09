@@ -29,10 +29,11 @@ do
     done
     wait
     echo "done, now sleep: $((20+OPS/10))"
-    sleep $((20+OPS/100))
+    date +"%T"
+    sleep $((30+OPS/100))
   done
   wait
-  sleep 15
+  sleep $((15+OPS/100))
 done
 wait
 echo "Done"

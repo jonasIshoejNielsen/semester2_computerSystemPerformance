@@ -65,7 +65,7 @@ Server
 echo "<listenaddress> <cleaning> <threadcount> <FIXED_NUMBER_OF_CLIENTS> <doc_size> <file>"
 ./run-server.sh $SERVER_HOST true $THREADCOUNT $DOCUMENT_SIZE $FILESUFFIX 1 1
 ./experiment-threads-server.sh $SERVER_HOST
-./experiment-documents-server.sh $SERVER_HOST 4
+./experiment-documents-server.sh $SERVER_HOST
 
 
 
@@ -74,7 +74,7 @@ echo "<servername> <doc_size> <file> <number of clients> <cmode> <threads>"
 
 ./run-client.sh $SERVER_HOST "16" "1" true "8" 1 1
 ./experiment-threads-client.sh $SERVER_HOST 
-./experiment-documents-client.sh $SERVER_HOST 4
+./experiment-documents-client.sh $SERVER_HOST
 
 
 
