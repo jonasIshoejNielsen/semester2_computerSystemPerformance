@@ -5,15 +5,13 @@ CLEAN=$2    #true
 THREADS=$3
 DOC_SIZE=$4
 FILE_SUFF=$5
-MIN_CLIENTS=$6
-MAX_CLIENTS=$7
+OPS=$6
+MIN_CLIENTS=$7
+MAX_CLIENTS=$8
 
 declare -a CLIENTS=(1 4 8 12 16 32 64 128)
-declare -a sends=(125 125 125 125 125 125 30 15)
-for ((i=0;i<${#CLIENTS[@]};i++))
+for NUMBER_OF_CLIENTS in "${CLIENTS[@]}"
 do
-  NUMBER_OF_CLIENTS=${CLIENTS[$i]}
-  OPS=${sends[$i]}
   if [[ $NUMBER_OF_CLIENTS -lt $MIN_CLIENTS ]]; then
     continue
   fi

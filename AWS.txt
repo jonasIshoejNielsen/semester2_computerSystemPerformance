@@ -18,15 +18,15 @@ two t2.2xlarge
 
 
 
-IP server:	35.175.135.247
-				ssh ubuntu@35.175.135.247 -i ~/AWSubuntu20t2micro.pem
-scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@35.175.135.247:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-threads-server
-scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@35.175.135.247:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-documents-server
+IP server:	100.26.170.201
+				ssh ubuntu@100.26.170.201 -i ~/AWSubuntu20t2micro.pem
+scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@100.26.170.201:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-threads-server
+scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@100.26.170.201:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-documents-server
 
-IP clint:	100.26.154.221
-				ssh ubuntu@100.26.154.221 -i ~/AWSubuntu20t2micro.pem
-scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@100.26.154.221:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-threads-client
-scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@100.26.154.221:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-documents-client
+IP clint:	100.25.28.249
+				ssh ubuntu@100.25.28.249 -i ~/AWSubuntu20t2micro.pem
+scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@100.25.28.249:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-threads-client
+scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@100.25.28.249:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-documents-client
 
 
 
@@ -41,23 +41,27 @@ sudo apt-get install ant
 
 ant
 SERVER_HOST="127.0.0.1"
-SERVER_HOST="172.31.57.141"
+SERVER_HOST="172.31.59.48"
 DOC_SIZE="16"
 FILE_SUFF="1"
 THREADCOUNT="8"
 MIN_CLIENTS=1
-MAX_CLIENTS=32
+MAX_CLIENTS=128
 sudo chmod 777 ./run-server.sh
 sudo chmod 777 ./run-client.sh
+sudo chmod 777 ./run-documents-server.sh
+sudo chmod 777 ./run-documents-client.sh
 sudo chmod 777 ./experiment-threads-server.sh
 sudo chmod 777 ./experiment-documents-server.sh
 sudo chmod 777 ./experiment-threads-client.sh
 sudo chmod 777 ./experiment-documents-client.sh
 sudo apt install dos2unix
 dos2unix ./run-server.sh
+dos2unix ./run-documents-server.sh
 dos2unix ./experiment-threads-server.sh
 dos2unix ./experiment-documents-server.sh
 dos2unix ./run-client.sh
+dos2unix ./run-documents-client.sh
 dos2unix ./experiment-threads-client.sh
 dos2unix ./experiment-documents-client.sh
 
@@ -65,14 +69,15 @@ dos2unix ./experiment-documents-client.sh
 Server
 echo "<listenaddress> <cleaning> <threadcount> <FIXED_NUMBER_OF_CLIENTS> <doc_size> <file>"
 ./run-server.sh $SERVER_HOST true $THREADCOUNT $DOCUMENT_SIZE $FILESUFFIX 1 1
+
 ./experiment-threads-server.sh $SERVER_HOST
 
 ./experiment-documents-server.sh $SERVER_HOST 0
 ./experiment-documents-server.sh $SERVER_HOST 1
 ./experiment-documents-server.sh $SERVER_HOST 2
-./experiment-documents-server.sh $SERVER_HOST 3	#missing
+./experiment-documents-server.sh $SERVER_HOST 3
 ./experiment-documents-server.sh $SERVER_HOST 4
-./experiment-documents-server.sh $SERVER_HOST 5	#missing
+./experiment-documents-server.sh $SERVER_HOST 5
 ./experiment-documents-server.sh $SERVER_HOST 6
 ./experiment-documents-server.sh $SERVER_HOST 7
 
@@ -80,8 +85,8 @@ echo "<listenaddress> <cleaning> <threadcount> <FIXED_NUMBER_OF_CLIENTS> <doc_si
 
 Client
 echo "<servername> <doc_size> <file> <number of clients> <cmode> <threads>"
-
 ./run-client.sh $SERVER_HOST "16" "1" true "8" 1 1
+
 ./experiment-threads-client.sh $SERVER_HOST 
 
 ./experiment-documents-client.sh $SERVER_HOST 0
