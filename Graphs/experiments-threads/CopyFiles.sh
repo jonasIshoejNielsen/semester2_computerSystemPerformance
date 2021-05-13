@@ -10,17 +10,18 @@ end="ALL.txt"
 
 
 echo "start"
-declare -a CLIENTS=(1 4 8 12 16 32)
+sleep 1
+declare -a CLIENTS=(1 4 8 12 16 32 64 128)
 for NUMBER_OF_CLIENTS in "${CLIENTS[@]}"
 do
+  sleep 1
   if [ "$takeSums" = true ] ;
   then
     #awk -f merge.awk "$folder/$fileType-$NUMBER_OF_CLIENTS$end" | clip.exe
-    ../ConcatFile.sh 100 "$folder/$fileType-$NUMBER_OF_CLIENTS$end" | sed 's/\./,/' | sed 's/\./,/' | clip.exe
+    ../ConcatFile.sh "$folder/$fileType-$NUMBER_OF_CLIENTS$end" 10 | sed 's/\./,/' | sed 's/\./,/' | clip.exe
     echo $NUMBER_OF_CLIENTS
   else
-    cat "$folder/$fileType-$NUMBER_OF_CLIENTS$end" | clip.exe
+    ../ConcatFile.sh "$folder/$fileType-$NUMBER_OF_CLIENTS$end" 1 | sed 's/\./,/' | sed 's/\./,/' | clip.exe
     echo $NUMBER_OF_CLIENTS
   fi
-  sleep 3
 done

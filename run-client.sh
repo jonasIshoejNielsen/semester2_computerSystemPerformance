@@ -10,7 +10,7 @@ MIN_CLIENTS=$6
 MAX_CLIENTS=$7
 
 declare -a CLIENTS=(1 4 8 12 16 32 64 128)
-declare -a sends=(125 125 125 125 125 125 30 15)
+declare -a sends=(125 125 125 125 125 125 50 25)
 for ((i=0;i<${#CLIENTS[@]};i++))
 do
   NUMBER_OF_CLIENTS=${CLIENTS[$i]}
