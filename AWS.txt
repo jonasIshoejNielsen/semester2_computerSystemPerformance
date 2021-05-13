@@ -8,7 +8,7 @@ https://www.awseducate.com/signin/SiteLogin
 32.41$
 29.61$
 27.94$
-
+24.73$
 
 Ubuntu Server 20.04 LTS (HVM), SSD Volume Type
 two t2.2xlarge
@@ -20,14 +20,14 @@ two t2.2xlarge
 
 
 IP server:
-				ssh ubuntu@54.157.139.106 -i ~/AWSubuntu20t2micro.pem
-scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@54.157.139.106:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-threads-server
-scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@54.157.139.106:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-documents-server
+				ssh ubuntu@100.24.255.22 -i ~/AWSubuntu20t2micro.pem
+scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@100.24.255.22:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-threads-server
+scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@100.24.255.22:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-documents-server
 
 IP clint:
-				ssh ubuntu@34.224.83.187 -i ~/AWSubuntu20t2micro.pem
-scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@34.224.83.187:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-threads-client
-scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@34.224.83.187:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-documents-client
+				ssh ubuntu@100.25.41.31 -i ~/AWSubuntu20t2micro.pem
+scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@100.25.41.31:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-threads-client
+scp -r -i ~/AWSubuntu20t2micro.pem ubuntu@100.25.41.31:./semester2_computerSystemPerformance/Logs ./Graphs/experiments-documents-client
 
 
 
@@ -42,7 +42,7 @@ sudo apt-get install ant
 
 ant
 SERVER_HOST="127.0.0.1"
-SERVER_HOST="172.31.54.247"
+SERVER_HOST="172.31.49.97"
 DOC_SIZE="16"
 FILE_SUFF="1"
 THREADCOUNT="8"
