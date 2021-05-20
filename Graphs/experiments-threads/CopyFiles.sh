@@ -4,6 +4,7 @@ threads=$2
 file=$3
 fileType=$4
 takeSums=$5
+getStd=$6
 
 folder="experiments-threads-server/Logsserver-clean-$clean-threads-$threads-file-$file-dSize-16384"
 end="ALL.txt"
@@ -18,10 +19,10 @@ do
   if [ "$takeSums" = true ] ;
   then
     #awk -f merge.awk "$folder/$fileType-$NUMBER_OF_CLIENTS$end" | clip.exe
-    ../ConcatFile.sh "$folder/$fileType-$NUMBER_OF_CLIENTS$end" 10 | sed 's/\./,/' | sed 's/\./,/' | clip.exe
+    ../ConcatFile.sh "$folder/$fileType-$NUMBER_OF_CLIENTS$end" 10 $getStd | sed 's/\./,/' | sed 's/\./,/' | clip.exe
     echo $NUMBER_OF_CLIENTS
   else
-    ../ConcatFile.sh "$folder/$fileType-$NUMBER_OF_CLIENTS$end" 1 | sed 's/\./,/' | sed 's/\./,/' | clip.exe
+    ../ConcatFile.sh "$folder/$fileType-$NUMBER_OF_CLIENTS$end" 1 $getStd | sed 's/\./,/' | sed 's/\./,/' | clip.exe
     echo $NUMBER_OF_CLIENTS
   fi
 done
