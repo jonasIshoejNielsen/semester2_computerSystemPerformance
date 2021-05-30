@@ -1,10 +1,6 @@
 package org.simple.software;
 
-import org.simple.software.meaurements.Measurements;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Worker {

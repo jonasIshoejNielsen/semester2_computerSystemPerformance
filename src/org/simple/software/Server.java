@@ -15,8 +15,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Consumer;
 
 public class Server {
-    public static final HashMap<Integer, StringBuilder> buffer = new HashMap<>();
-    public static final HashMap<Integer, Long> timesFromEnteringServer = new HashMap<>();
+    public static final HashMap<Integer, StringBuilder> buffer          = new HashMap<>();
+    public static final HashMap<Integer, Long> timesFromEnteringServer  = new HashMap<>();
     public static final LinkedBlockingQueue<LineStorage> linesToCount         = new LinkedBlockingQueue<>();
     private final List<Worker> workersList;
     private final int numberOfClients;

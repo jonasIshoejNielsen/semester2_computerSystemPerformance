@@ -1,0 +1,33 @@
+./CopyFiles.sh "false" "0" "1" "InServer_Tput" "false" "true" 
+./CopyFiles.sh "true" "0" "1" "InServer_Tput" "false" "true" 
+./CopyFiles.sh "true" "1" "1" "InServer_Tput" "false" "true" 
+./CopyFiles.sh "true" "4" "1" "InServer_Tput" "false" "true" 
+./CopyFiles.sh "true" "8" "1" "InServer_Tput" "false" "true" 
+./CopyFiles.sh "true" "16" "1" "InServer_Tput" "false" "true" 
+
+./CopyFiles.sh "false" "0" "2" "InServer_Tput" "false" "true" 
+./CopyFiles.sh "true" "0" "2" "InServer_Tput" "false" "true" 
+./CopyFiles.sh "true" "1" "2" "InServer_Tput" "false" "true" 
+./CopyFiles.sh "true" "4" "2" "InServer_Tput" "false" "true" 
+./CopyFiles.sh "true" "8" "2" "InServer_Tput" "false" "true" 
+./CopyFiles.sh "true" "16" "2" "InServer_Tput" "false" "true" 
+
+
+
+
+./CopyFiles.sh "false" "0" "1" "InServer_Time" "true" "true" 
+./CopyFiles.sh "true" "0" "1" "InServer_Time" "true" "true" 
+./CopyFiles.sh "true" "1" "1" "InServer_Time" "true" "true" 
+./CopyFiles.sh "true" "4" "1" "InServer_Time" "true" "true" 
+./CopyFiles.sh "true" "8" "1" "InServer_Time" "true" "true" 
+./CopyFiles.sh "true" "16" "1" "InServer_Time" "true" "true" 
+
+./CopyFiles.sh "false" "0" "2" "InServer_Time" "true" "true" 
+./CopyFiles.sh "true" "0" "2" "InServer_Time" "true" "true" 
+./CopyFiles.sh "true" "1" "2" "InServer_Time" "true" "true" 
+./CopyFiles.sh "true" "4" "2" "InServer_Time" "true" "true" 
+./CopyFiles.sh "true" "8" "2" "InServer_Time" "true" "true" 
+./CopyFiles.sh "true" "16" "2" "InServer_Time" "true" "true" 
+
+
+

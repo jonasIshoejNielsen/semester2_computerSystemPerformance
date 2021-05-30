@@ -1,0 +1,75 @@
+./CopyFiles.sh "false" "0" "1" "InServer_Tput" "false" "false"
+./CopyFiles.sh "true" "0" "1" "InServer_Tput" "false" "false"
+./CopyFiles.sh "true" "1" "1" "InServer_Tput" "false" "false"
+./CopyFiles.sh "true" "4" "1" "InServer_Tput" "false" "false"
+./CopyFiles.sh "true" "8" "1" "InServer_Tput" "false" "false"
+./CopyFiles.sh "true" "16" "1" "InServer_Tput" "false" "false"
+
+./CopyFiles.sh "false" "0" "2" "InServer_Tput" "false" "false"
+./CopyFiles.sh "true" "0" "2" "InServer_Tput" "false" "false"
+./CopyFiles.sh "true" "1" "2" "InServer_Tput" "false" "false"
+./CopyFiles.sh "true" "4" "2" "InServer_Tput" "false" "false"
+./CopyFiles.sh "true" "8" "2" "InServer_Tput" "false" "false"
+./CopyFiles.sh "true" "16" "2" "InServer_Tput" "false" "false"
+
+
+
+
+./CopyFiles.sh "false" "0" "1" "InServer_Time" "true" "false"
+./CopyFiles.sh "true" "0" "1" "InServer_Time" "true" "false"
+./CopyFiles.sh "true" "1" "1" "InServer_Time" "true" "false"
+./CopyFiles.sh "true" "4" "1" "InServer_Time" "true" "false"
+./CopyFiles.sh "true" "8" "1" "InServer_Time" "true" "false"
+./CopyFiles.sh "true" "16" "1" "InServer_Time" "true" "false"
+
+./CopyFiles.sh "false" "0" "2" "InServer_Time" "true" "false"
+./CopyFiles.sh "true" "0" "2" "InServer_Time" "true" "false"
+./CopyFiles.sh "true" "1" "2" "InServer_Time" "true" "false"
+./CopyFiles.sh "true" "4" "2" "InServer_Time" "true" "false"
+./CopyFiles.sh "true" "8" "2" "InServer_Time" "true" "false"
+./CopyFiles.sh "true" "16" "2" "InServer_Time" "true" "false"
+
+
+
+
+
+./CopyFiles.sh "false" "0" "1" "InQueue_Time" "true" "false"
+./CopyFiles.sh "true" "0" "1" "InQueue_Time" "true" "false"
+./CopyFiles.sh "true" "1" "1" "InQueue_Time" "true" "false"
+./CopyFiles.sh "true" "4" "1" "InQueue_Time" "true" "false"
+./CopyFiles.sh "true" "8" "1" "InQueue_Time" "true" "false"
+./CopyFiles.sh "true" "16" "1" "InQueue_Time" "true" "false"
+
+./CopyFiles.sh "false" "0" "2" "InQueue_Time" "true" "false"
+./CopyFiles.sh "true" "0" "2" "InQueue_Time" "true" "false"
+./CopyFiles.sh "true" "1" "2" "InQueue_Time" "true" "false"
+./CopyFiles.sh "true" "4" "2" "InQueue_Time" "true" "false"
+./CopyFiles.sh "true" "8" "2" "InQueue_Time" "true" "false"
+./CopyFiles.sh "true" "16" "2" "InQueue_Time" "true" "false"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

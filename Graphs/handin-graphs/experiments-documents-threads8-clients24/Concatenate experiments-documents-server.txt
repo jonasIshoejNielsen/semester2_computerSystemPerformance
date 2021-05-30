@@ -1,0 +1,28 @@
+./CopyFiles.sh "1" "InServer_Time" "true" "false"
+./CopyFiles.sh "1" "InQueue_Time" "true" "false"
+./CopyFiles.sh "1" "CleaningTags_Time" "true" "false"
+./CopyFiles.sh "1" "WordCountTags_Time" "true" "false"
+./CopyFiles.sh "1" "Serializing_Time" "true" "false"
+
+./CopyFiles.sh "2" "InServer_Time" "true" "false"
+./CopyFiles.sh "2" "InQueue_Time" "true" "false"
+./CopyFiles.sh "2" "CleaningTags_Time" "true" "false"
+./CopyFiles.sh "2" "WordCountTags_Time" "true" "false"
+./CopyFiles.sh "2" "Serializing_Time" "true" "false"
+
+
+
+
+
+
+./CopyFiles.sh "1" "InServer_Tput" "false" "false"
+./CopyFiles.sh "1" "InQueue_Tput" "false" "false"
+./CopyFiles.sh "1" "CleaningTags_Tput" "false" "false"
+./CopyFiles.sh "1" "WordCountTags_Tput" "false" "false"
+./CopyFiles.sh "1" "Serializing_Tput" "false" "false"
+
+./CopyFiles.sh "2" "InServer_Tput" "false" "false"
+./CopyFiles.sh "2" "InQueue_Tput" "false" "false"
+./CopyFiles.sh "2" "CleaningTags_Tput" "false" "false"
+./CopyFiles.sh "2" "WordCountTags_Tput" "false" "false"
+./CopyFiles.sh "2" "Serializing_Tput" "false" "false"
